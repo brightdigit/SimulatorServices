@@ -58,7 +58,7 @@ public struct GetAppContainer : Subcommand {
     guard let errorString = lines.last?.trimmingCharacters(in: .whitespacesAndNewlines) else {
       throw error
     }
-    print(errorString)
+    
     guard errorString == "No such file or directory" else {
       throw error
     }
