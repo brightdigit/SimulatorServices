@@ -3,11 +3,11 @@
 
   @available(macOS 10.15.4, iOS 13.0.0, *)
   public struct SimCtl {
+    public let xcRunURL: URL
+
     public init(xcRunURL: URL = URL(fileURLWithPath: "/usr/bin/xcrun")) {
       self.xcRunURL = xcRunURL
     }
-
-    let xcRunURL: URL
 
     public func run<SubcommandType: Subcommand>(
       _ subcommand: SubcommandType

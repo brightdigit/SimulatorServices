@@ -4,6 +4,8 @@
 
   @available(macOS 10.15.4, *)
   public struct GetAppContainer: Subcommand {
+    public typealias OutputType = Path
+
     public enum Error: Swift.Error {
       case missingData
       case invalidData(Data)
@@ -14,6 +16,15 @@
     public let container: ContainerID
     public let simulator: SimulatorID
 
+    public var arguments: [String] {
+      [
+        "get_app_container",
+        simulator.description,
+        appBundleIdentifier,
+        container.description
+      ]
+    }
+
     public init(
       appBundleIdentifier: String,
       container: ContainerID,
@@ -22,17 +33,6 @@
       self.appBundleIdentifier = appBundleIdentifier
       self.container = container
       self.simulator = simulator
-    }
-
-    public typealias OutputType = Path
-
-    public var arguments: [String] {
-      [
-        "get_app_container",
-        simulator.description,
-        appBundleIdentifier,
-        container.description
-      ]
     }
 
     public func parse(_ data: Data?) throws -> Path {

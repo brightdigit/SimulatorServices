@@ -1,5 +1,7 @@
 // swift-tools-version: 5.5
 
+// swiftlint:disable explicit_acl explicit_top_level_acl
+
 import PackageDescription
 
 let package = Package(

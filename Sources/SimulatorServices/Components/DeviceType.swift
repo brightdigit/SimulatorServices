@@ -1,11 +1,11 @@
 public struct DeviceType: Decodable {
-  let productFamily: ProductFamily // deviceType
-  let bundlePath: Path // URL?
-  let maxRuntimeVersion: Int
-  let maxRuntimeVersionString: Version
-  let identifier: DeviceTypeID // identifier
-  let modelIdentifier: ModelID // model
-  let minRuntimeVersionString: Version
-  let minRuntimeVersion: Int
-  let name: String
+  public let productFamily: ProductFamily // deviceType
+  public let bundlePath: Path // URL?
+  public let maxRuntimeVersion: Int
+  public let maxRuntimeVersionString: Version
+  public let identifier: DeviceTypeID // identifier
+  public let modelIdentifier: ModelID // model
+  public let minRuntimeVersionString: Version
+  public let minRuntimeVersion: Int
+  public let name: String
 }

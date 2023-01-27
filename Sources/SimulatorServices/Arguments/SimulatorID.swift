@@ -1,5 +1,7 @@
 import Foundation
 public enum SimulatorID: CustomStringConvertible {
+  case id(UUID)
+  case booted
   public var description: String {
     switch self {
     case .booted:
@@ -8,7 +10,4 @@ public enum SimulatorID: CustomStringConvertible {
       return uuid.uuidString
     }
   }
-
-  case id(UUID)
-  case booted
 }
