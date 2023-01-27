@@ -42,6 +42,35 @@
       public let output: Data?
     }
 
+    private static func process(
+      _ process: Process,
+      timeout: DispatchTime,
+      result: DispatchTimeoutResult,
+      withOutput standardOutput: Pipe,
+      andError standardError: Pipe
+    ) -> Result<Data?, Error> {
+      let outputData = Result { try standardOutput.fileHandleForReading.readToEnd() }
+      switch result {
+      case .success:
+        if let error = UncaughtSignalError(
+          reason: process.terminationReason,
+          status: process.terminationStatus,
+          standardError: standardError,
+          output: try? outputData.get()
+        ) {
+          return .failure(error)
+        } else {
+          return outputData
+        }
+
+      case .timedOut:
+        return .failure(TimeoutError(timeout: timeout))
+      }
+    }
+
+    /// Run the process asyncronously and returns the output as data.
+    /// - Parameter timeout: Timeout for the process to be done.
+    /// - Returns: Data if there anything output from the process.
     public func run(timeout: DispatchTime) async throws -> Data? {
       let standardError = Pipe()
       let standardOutput = Pipe()
@@ -56,26 +85,14 @@
       }
       try run()
       return try await withCheckedThrowingContinuation { continuation in
-        let result: Result<Data?, Error>
-        let outputData = Result { try standardOutput.fileHandleForReading.readToEnd() }
         let semaphoreResult = semaphore.wait(timeout: timeout)
-
-        switch semaphoreResult {
-        case .success:
-          if let error = UncaughtSignalError(
-            reason: terminationReason,
-            status: terminationStatus,
-            standardError: standardError,
-            output: try? outputData.get()
-          ) {
-            result = .failure(error)
-          } else {
-            result = outputData
-          }
-
-        case .timedOut:
-          result = .failure(TimeoutError(timeout: timeout))
-        }
+        let result = Self.process(
+          self,
+          timeout: timeout,
+          result: semaphoreResult,
+          withOutput: standardOutput,
+          andError: standardError
+        )
         continuation.resume(with: result)
       }
     }
