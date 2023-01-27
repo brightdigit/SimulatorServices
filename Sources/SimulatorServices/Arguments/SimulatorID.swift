@@ -1,15 +1,14 @@
 import Foundation
-public enum SimulatorID : CustomStringConvertible {
+public enum SimulatorID: CustomStringConvertible {
   public var description: String {
     switch self {
-    case .booted :
+    case .booted:
       return "booted"
-    case .id(let uuid):
+    case let .id(uuid):
       return uuid.uuidString
     }
   }
-  
+
   case id(UUID)
   case booted
 }
-

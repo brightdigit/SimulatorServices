@@ -1,25 +1,18 @@
-//
-//  File.swift
-//  
-//
-//  Created by Leo Dion on 1/16/23.
-//
-
 import Foundation
 
-public struct DevicePair : Decodable {
-  public struct Device : Decodable {
-    let name : String
-    let udid : UUID
-    let state : DeviceState // Device.State
+public struct DevicePair: Decodable {
+  public struct Device: Decodable {
+    let name: String
+    let udid: UUID
+    let state: DeviceState // Device.State
   }
-  let watch : Device
-  let phone : Device
-  let state : PairState  // Pair.State
+
+  let watch: Device
+  let phone: Device
+  let state: PairState // Pair.State
 }
 
-
-//{
+// {
 //  "pairs" : {
 //    "90341D00-2703-444D-AF24-39AAA6F96FE5" : {
 //      "watch" : {
@@ -282,4 +275,4 @@ public struct DevicePair : Decodable {
 //      "state" : "(active, disconnected)"
 //    }
 //  }
-//}
+// }
