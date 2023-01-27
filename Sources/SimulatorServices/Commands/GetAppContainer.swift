@@ -52,9 +52,12 @@
         throw error
       }
 
-      let lines = text.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+      let lines = text.components(separatedBy: .newlines)
+        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        .filter { !$0.isEmpty }
 
-      guard let errorString = lines.last?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+      guard let errorString = lines.last?
+        .trimmingCharacters(in: .whitespacesAndNewlines) else {
         throw error
       }
 

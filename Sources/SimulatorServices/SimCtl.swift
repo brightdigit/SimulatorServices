@@ -9,7 +9,9 @@
 
     let xcRunURL: URL
 
-    public func run<SubcommandType: Subcommand>(_ subcommand: SubcommandType) async throws -> SubcommandType.OutputType {
+    public func run<SubcommandType: Subcommand>(
+      _ subcommand: SubcommandType
+    ) async throws -> SubcommandType.OutputType {
       let process = Process()
       process.executableURL = xcRunURL
       process.arguments = ["simctl"] + subcommand.arguments

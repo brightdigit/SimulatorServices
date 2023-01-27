@@ -8,14 +8,24 @@
     }
 
     public struct UncaughtSignalError: Error {
-      private init(reason: Process.TerminationReason, status: Int, data: Data?, output: Data?) {
+      private init(
+        reason: Process.TerminationReason,
+        status: Int,
+        data: Data?,
+        output: Data?
+      ) {
         self.reason = reason
         self.status = status
         self.data = data
         self.output = output
       }
 
-      internal init?(reason: Process.TerminationReason, status: Int32, standardError: Pipe, output: Data?) {
+      internal init?(
+        reason: Process.TerminationReason,
+        status: Int32,
+        standardError: Pipe,
+        output: Data?
+      ) {
         if reason == .exit, status == 0 {
           return nil
         }
@@ -52,7 +62,12 @@
 
         switch semaphoreResult {
         case .success:
-          if let error = UncaughtSignalError(reason: terminationReason, status: terminationStatus, standardError: standardError, output: try? outputData.get()) {
+          if let error = UncaughtSignalError(
+            reason: terminationReason,
+            status: terminationStatus,
+            standardError: standardError,
+            output: try? outputData.get()
+          ) {
             result = .failure(error)
           } else {
             result = outputData
