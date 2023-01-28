@@ -7,7 +7,7 @@
       public let timeout: DispatchTime
     }
 
-    public struct UncaughtSignalError: Error {
+    public struct UncaughtSignalError: Error, LocalizedError {
       private init(
         reason: Process.TerminationReason,
         status: Int,
@@ -40,16 +40,20 @@
       public let status: Int
       public let data: Data?
       public let output: Data?
+      
+      public var errorDescription: String? {
+        let errorText = self.data.flatMap{String(bytes: $0, encoding: .utf8)}
+        return ["reason": self.reason, "status" : self.status, "message" : errorText].compactMapValues{$0}.debugDescription
+      }
     }
 
     private static func process(
       _ process: Process,
       timeout: DispatchTime,
       result: DispatchTimeoutResult,
-      withOutput standardOutput: Pipe,
+      withOutput outputData: Result<Data?, Error>,
       andError standardError: Pipe
     ) -> Result<Data?, Error> {
-      let outputData = Result { try standardOutput.fileHandleForReading.readToEnd() }
       switch result {
       case .success:
         if let error = UncaughtSignalError(
@@ -85,12 +89,13 @@
       }
       try run()
       return try await withCheckedThrowingContinuation { continuation in
+        let output = Result { try standardOutput.fileHandleForReading.readToEnd() }
         let semaphoreResult = semaphore.wait(timeout: timeout)
         let result = Self.process(
           self,
           timeout: timeout,
           result: semaphoreResult,
-          withOutput: standardOutput,
+          withOutput: output,
           andError: standardError
         )
         continuation.resume(with: result)
