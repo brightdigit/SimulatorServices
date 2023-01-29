@@ -2,13 +2,20 @@
   import Foundation
 
   @available(macOS 10.15.4, iOS 13.0.0, *)
+  /// Interface for running `simctl`.
   public struct SimCtl {
+    /// URL Path to `xcrun`
     public let xcRunURL: URL
 
+    /// Create an interface to `simctl`
+    /// - Parameter xcRunURL: URL path to `xcrun`.
     public init(xcRunURL: URL = URL(fileURLWithPath: "/usr/bin/xcrun")) {
       self.xcRunURL = xcRunURL
     }
 
+    /// Run a subcommand under `simctl`.
+    /// - Parameter subcommand: subcommand to run.
+    /// - Returns: Result of the subcommand.
     public func run<SubcommandType: Subcommand>(
       _ subcommand: SubcommandType
     ) async throws -> SubcommandType.OutputType {

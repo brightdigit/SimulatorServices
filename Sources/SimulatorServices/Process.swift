@@ -40,10 +40,13 @@
       public let status: Int
       public let data: Data?
       public let output: Data?
-      
+
       public var errorDescription: String? {
-        let errorText = self.data.flatMap{String(bytes: $0, encoding: .utf8)}
-        return ["reason": self.reason, "status" : self.status, "message" : errorText].compactMapValues{$0}.debugDescription
+        if let errorText = data.flatMap({ String(bytes: $0, encoding: .utf8) }) {
+          return errorText
+        } else {
+          return "Termination Reason: \(reason) with status: \(status)"
+        }
       }
     }
 
