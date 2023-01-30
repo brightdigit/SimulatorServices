@@ -1,8 +1,8 @@
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
   import Foundation
 
-  @available(macOS 10.15.4, iOS 13.0.0, *)
   /// Interface for running `simctl`.
+  @available(macOS 10.15.4, iOS 13.0.0, *)
   public struct SimCtl {
     /// URL Path to `xcrun`
     public let xcRunURL: URL

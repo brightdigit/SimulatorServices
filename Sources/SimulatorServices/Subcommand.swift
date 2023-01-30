@@ -1,8 +1,8 @@
 import Foundation
 
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
-  @available(macOS 10.15.4, *)
   /// Subcommand to be run from `simctl`
+  @available(macOS 10.15.4, *)
   public protocol Subcommand {
     /// The output type of the subcommand
     associatedtype OutputType

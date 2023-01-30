@@ -75,21 +75,31 @@
       }
     }
 
-    /// Run the process asyncronously and returns the output as data.
-    /// - Parameter timeout: Timeout for the process to be done.
-    /// - Returns: Data if there anything output from the process.
-    public func run(timeout: DispatchTime) async throws -> Data? {
+    private func setupPipes() -> (Pipe, Pipe) {
       let standardError = Pipe()
       let standardOutput = Pipe()
 
       self.standardError = standardError
       self.standardOutput = standardOutput
 
+      return (standardOutput, standardError)
+    }
+
+    private func setupSemaphore() -> DispatchSemaphore {
       let semaphore = DispatchSemaphore(value: 0)
 
       terminationHandler = { _ in
         semaphore.signal()
       }
+      return semaphore
+    }
+
+    /// Run the process asyncronously and returns the output as data.
+    /// - Parameter timeout: Timeout for the process to be done.
+    /// - Returns: Data if there anything output from the process.
+    public func run(timeout: DispatchTime) async throws -> Data? {
+      let (standardOutput, standardError) = setupPipes()
+      let semaphore = setupSemaphore()
       try run()
       return try await withCheckedThrowingContinuation { continuation in
         let output = Result { try standardOutput.fileHandleForReading.readToEnd() }
