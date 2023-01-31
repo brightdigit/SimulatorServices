@@ -1,47 +1,6 @@
 @testable import SimulatorServices
 import XCTest
 
-extension Data {
-  static func random() -> Data {
-    let bytes: [UInt8] = (0 ... 255).map { _ in UInt8.random(in: 0 ... 255) }
-    return Data(bytes)
-  }
-}
-
-// --
-class MockSimCtlProcess: _SimCtlProcess {
-  internal init(result: Result<Data?, Error>, executableURL: URL? = nil, arguments: [String]? = nil) {
-    self.result = result
-    self.executableURL = executableURL
-    self.arguments = arguments
-  }
-
-  let result: Result<Data?, Error>
-  var executableURL: URL?
-
-  var arguments: [String]?
-
-  func run(timeout _: DispatchTime) async throws -> Data? {
-    try result.get()
-  }
-}
-
-// --
-class MockSubcommand<OutputType>: Subcommand {
-  internal init(arguments: [String] = [String](), callback: @escaping (Data?) throws -> OutputType) {
-    self.callback = callback
-    self.arguments = arguments
-  }
-
-  let callback: (Data?) throws -> OutputType
-  func parse(_ data: Data?) throws -> OutputType {
-    try callback(data)
-  }
-
-  var arguments = [String]()
-}
-
-// --
 public class SimCtlTests: XCTestCase {
   func testInit() {
     let expectedXcRunURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
