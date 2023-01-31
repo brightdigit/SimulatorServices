@@ -1,41 +1,43 @@
-import XCTest
 @testable import SimulatorServices
+import XCTest
 
 struct MockDecoder<U>: _ListDecoder {
-  struct MismatchError<U> : Error {
-    init<U>(_ type: U.Type) {}
+  struct MismatchError: Error {
+    let typeName: String
+    init<U>(_ type: U.Type) {
+      typeName = String(describing: type)
+    }
   }
+
   typealias CallbackType<U> = (Data) throws -> U
-  let callback : CallbackType<U>
-  func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable {
-    guard let result = try self.callback(data) as? T else {
-      throw MismatchError<T>(type)
+  let callback: CallbackType<U>
+  func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
+    guard let result = try callback(data) as? T else {
+      throw MismatchError(type)
     }
     return result
   }
-  
-  
 }
 
 extension String {
-  static func random () -> String {
+  static func random() -> String {
     UUID().uuidString
   }
 }
 
 public class ListTests: XCTestCase {
-  func testArguments () {
+  func testArguments() {
     let listCommand = List()
     XCTAssertEqual(listCommand.arguments, ["list", "-j"])
   }
-  
-  func testParse () throws {
+
+  func testParse() throws {
     let actualList = SimulatorList(devicetypes: [.init(productFamily: .random(), bundlePath: .random(), maxRuntimeVersion: 1, maxRuntimeVersionString: .random(), identifier: .random(), modelIdentifier: .random(), minRuntimeVersionString: .random(), minRuntimeVersion: 2, name: .random())], runtimes: [], devices: [:], pairs: [:])
     let expectation = expectation(description: "decoder called")
-    let expectedData : Data = .random()
+    let expectedData: Data = .random()
     let decoder = MockDecoder { actualData in
       XCTAssertEqual(expectedData, actualData)
-      defer{
+      defer {
         expectation.fulfill()
       }
       return actualList
@@ -49,7 +51,7 @@ public class ListTests: XCTestCase {
   }
 }
 
-//#if !os(iOS) && !os(watchOS) && !os(tvOS)
+// #if !os(iOS) && !os(watchOS) && !os(tvOS)
 //  import Foundation
 //
 //  public struct List: Subcommand {
@@ -87,4 +89,4 @@ public class ListTests: XCTestCase {
 //    }
 //  }
 //
-//#endif
+// #endif

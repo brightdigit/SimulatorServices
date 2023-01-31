@@ -47,8 +47,12 @@
       return text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    public func recover(_ error: Process.UncaughtSignalError) throws {
-      guard let text = error.data.flatMap({ String(data: $0, encoding: .utf8) }) else {
+    public func recover(_ error: ProcessError) throws {
+      guard case let .uncaughtSignal(signal) = error else {
+        throw error
+      }
+
+      guard let text = signal.data.flatMap({ String(data: $0, encoding: .utf8) }) else {
         throw error
       }
 

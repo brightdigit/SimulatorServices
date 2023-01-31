@@ -1,5 +1,5 @@
-import XCTest
 @testable import SimulatorServices
+import XCTest
 
 extension FileHandle {
   convenience init(temporaryFromData data: Data) throws {
@@ -8,7 +8,8 @@ extension FileHandle {
     try self.init(forReadingFrom: url)
   }
 }
-class MockAsyncableProcess : _AsyncableProcess, ProcessCompletionPromise {
+
+class MockAsyncableProcess: _AsyncableProcess, ProcessCompletionPromise {
   internal init(outputData: Data, errorData: Data, terminationResult: TerminationResult, runError: Error? = nil, willTimeout: Bool) {
     self.outputData = outputData
     self.errorData = errorData
@@ -16,7 +17,7 @@ class MockAsyncableProcess : _AsyncableProcess, ProcessCompletionPromise {
     self.runError = runError
     self.willTimeout = willTimeout
   }
-  
+
   func waitForCompletion(for timeout: DispatchTime, with result: @autoclosure @escaping () -> SimulatorServices.TerminationResult) -> SimulatorServices.ProcessResult {
     sleep(1)
     if willTimeout {
@@ -25,54 +26,51 @@ class MockAsyncableProcess : _AsyncableProcess, ProcessCompletionPromise {
       return .success(result())
     }
   }
-  
-  
+
   func run() throws {
     guard let runError else {
       return
     }
-    
+
     throw runError
   }
-  
+
   func promise() -> SimulatorServices.ProcessCompletionPromise {
-    return self
+    self
   }
-  
+
   func fileHandles() -> SimulatorServices.ProcessOutputHandleSet {
-    return try! .init(
+    try! .init(
       output: .init(temporaryFromData: outputData),
       error: .init(temporaryFromData: errorData)
     )
   }
-  
-  func termintationResult() -> SimulatorServices.TerminationResult {
-    return terminationResult
-  }
-  
-  let outputData : Data
-  let errorData: Data
-  let terminationResult : TerminationResult
-  let runError : Error?
-  let willTimeout: Bool
 
-  
-  
+  func termintationResult() -> SimulatorServices.TerminationResult {
+    terminationResult
+  }
+
+  let outputData: Data
+  let errorData: Data
+  let terminationResult: TerminationResult
+  let runError: Error?
+  let willTimeout: Bool
 }
+
 public class ProcessTests: XCTestCase {
-  func testRunProcess () async throws {
-    let timeout : DispatchTime = .now() + 1.0
-    let output : Data = .random()
-    let error : Data = .random()
-    let termination : TerminationResult = .init(reason: .exit, status: 0)
-    
+  func testRunProcess() async throws {
+    let timeout: DispatchTime = .now() + 1.0
+    let output: Data = .random()
+    let error: Data = .random()
+    let termination: TerminationResult = .init(reason: .exit, status: 0)
+
     let process = MockAsyncableProcess(outputData: output, errorData: error, terminationResult: termination, willTimeout: false)
     let actualOutput = try await process.run(timeout: timeout)
     XCTAssertEqual(output, actualOutput)
   }
-  
 }
-//#if !os(iOS) && !os(watchOS) && !os(tvOS)
+
+// #if !os(iOS) && !os(watchOS) && !os(tvOS)
 //  import Foundation
 //
 //  @available(macOS 10.15.4, *)
@@ -190,4 +188,4 @@ public class ProcessTests: XCTestCase {
 //    }
 //  }
 //
-//#endif
+// #endif

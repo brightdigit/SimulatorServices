@@ -1,15 +1,13 @@
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
   import Foundation
 
-protocol _ListDecoder {
-  func decode<T>(_ type: T.Type, from data: Data) throws -> T where T : Decodable
-}
+  protocol _ListDecoder {
+    func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
+  }
 
-extension JSONDecoder : _ListDecoder {
-  
-}
+  extension JSONDecoder: _ListDecoder {}
+
   public struct List: Subcommand {
-  
     public typealias OutputType = SimulatorList
 
     public enum Error: Swift.Error {
@@ -22,8 +20,8 @@ extension JSONDecoder : _ListDecoder {
       decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
       return decoder
     }()
-    
-    private let decoder : _ListDecoder
+
+    private let decoder: _ListDecoder
 
     public var arguments: [String] {
       ["list", "-j"]
@@ -32,7 +30,7 @@ extension JSONDecoder : _ListDecoder {
     public init() {
       self.init(decoder: Self.decoder)
     }
-    
+
     internal init(decoder: _ListDecoder) {
       self.decoder = decoder
     }
@@ -43,7 +41,7 @@ extension JSONDecoder : _ListDecoder {
       }
 
       do {
-        return try self.decoder.decode(SimulatorList.self, from: data)
+        return try decoder.decode(SimulatorList.self, from: data)
       } catch let error as DecodingError {
         throw Error.deocdingError(error)
       } catch {

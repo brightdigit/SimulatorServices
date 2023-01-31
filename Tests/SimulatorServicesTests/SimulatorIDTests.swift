@@ -1,19 +1,10 @@
-//
-//  SimulatorIDTests.swift
-//  
-//
-//  Created by Leo Dion on 1/31/23.
-//
-
-import XCTest
 import SimulatorServices
+import XCTest
 
 final class SimulatorIDTests: XCTestCase {
-
-  func testDescription () {
+  func testDescription() {
     let id = UUID()
     XCTAssertEqual(SimulatorID.booted.description, "booted")
     XCTAssertEqual(SimulatorID.id(id).description, id.uuidString)
   }
-
 }

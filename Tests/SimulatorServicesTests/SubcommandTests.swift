@@ -1,27 +1,28 @@
-import XCTest
 @testable import SimulatorServices
-
+import XCTest
 
 public class SubcommandTests: XCTestCase {
-  func testRecover () {
-    
-    let expectedError = Process.UncaughtSignalError(reason: Process.TerminationReason.uncaughtSignal, status: 2, standardError: FileHandle.nullDevice, output: nil)!
+  func testRecover() {
+    let expectedError = ProcessError.uncaughtSignal(
+      .init(reason: Process.TerminationReason.uncaughtSignal, status: 2, standardError: FileHandle.nullDevice, output: nil)!
+    )
     let subcommand = MockSubcommand { _ in
-      
+
       throw expectedError
     }
-    
+
     XCTAssertThrowsError(try subcommand.recover(expectedError)) { actualError in
-      XCTAssertEqual(actualError as? Process.UncaughtSignalError, expectedError)
+      XCTAssertEqual(actualError as? ProcessError, expectedError)
     }
 
     XCTAssertEqual(expectedError.localizedDescription, "Termination Reason: \(Process.TerminationReason.uncaughtSignal) with status: 2")
     XCTAssertEqual(expectedError.errorDescription, "Termination Reason: \(Process.TerminationReason.uncaughtSignal) with status: 2")
   }
 }
-//import Foundation
+
+// import Foundation
 //
-//#if !os(iOS) && !os(watchOS) && !os(tvOS)
+// #if !os(iOS) && !os(watchOS) && !os(tvOS)
 //  /// Subcommand to be run from `simctl`
 //  @available(macOS 10.15.4, *)
 //  public protocol Subcommand {
@@ -50,4 +51,4 @@ public class SubcommandTests: XCTestCase {
 //      throw error
 //    }
 //  }
-//#endifa
+// #endifa

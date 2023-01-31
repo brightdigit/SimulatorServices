@@ -1,15 +1,13 @@
-import XCTest
 @testable import SimulatorServices
+import XCTest
 
 public class UncaughtSignalErrorTests: XCTestCase {
-  func testInit () {
-    
-  }
-  func testDescription () {
-    
-  }
+  func testInit() {}
+
+  func testDescription() {}
 }
-//#if !os(iOS) && !os(watchOS) && !os(tvOS)
+
+// #if !os(iOS) && !os(watchOS) && !os(tvOS)
 //  import Foundation
 //
 //  @available(macOS 10.15.4, *)
@@ -127,4 +125,4 @@ public class UncaughtSignalErrorTests: XCTestCase {
 //    }
 //  }
 //
-//#endif
+// #endif

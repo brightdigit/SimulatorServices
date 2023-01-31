@@ -1,47 +1,42 @@
-import XCTest
 @testable import SimulatorServices
+import XCTest
 
 extension Data {
-  static func random () -> Data {
-    let bytes : [UInt8] = (0...255).map{_ in UInt8.random(in: 0...255)}
+  static func random() -> Data {
+    let bytes: [UInt8] = (0 ... 255).map { _ in UInt8.random(in: 0 ... 255) }
     return Data(bytes)
   }
 }
 
-class MockSimCtlProcess : _SimCtlProcess {
+class MockSimCtlProcess: _SimCtlProcess {
   internal init(result: Result<Data?, Error>, executableURL: URL? = nil, arguments: [String]? = nil) {
     self.result = result
     self.executableURL = executableURL
     self.arguments = arguments
   }
-  
-  let result : Result<Data?, Error>
+
+  let result: Result<Data?, Error>
   var executableURL: URL?
-  
+
   var arguments: [String]?
-  
-  func run(timeout: DispatchTime) async throws -> Data? {
-    return try result.get()
+
+  func run(timeout _: DispatchTime) async throws -> Data? {
+    try result.get()
   }
-  
-  
 }
 
-class MockSubcommand<OutputType> : Subcommand {
+class MockSubcommand<OutputType>: Subcommand {
   internal init(arguments: [String] = [String](), callback: @escaping (Data?) throws -> OutputType) {
     self.callback = callback
     self.arguments = arguments
   }
-  
-  let callback : (Data?) throws -> OutputType
+
+  let callback: (Data?) throws -> OutputType
   func parse(_ data: Data?) throws -> OutputType {
-    try self.callback(data)
+    try callback(data)
   }
-  
-  
+
   var arguments = [String]()
-  
-  
 }
 
 public class SimCtlTests: XCTestCase {
@@ -50,7 +45,7 @@ public class SimCtlTests: XCTestCase {
     let simctl = SimCtl(xcRunURL: expectedXcRunURL)
     XCTAssertEqual(expectedXcRunURL, simctl.xcRunURL)
   }
-  
+
   func testRunSubcommandParse() async throws {
     let expectedUUID = UUID()
     let expectedData = Data.random()
@@ -69,7 +64,8 @@ public class SimCtlTests: XCTestCase {
     }
   }
 }
-//#if !os(iOS) && !os(watchOS) && !os(tvOS)
+
+// #if !os(iOS) && !os(watchOS) && !os(tvOS)
 //  import Foundation
 //
 //  /// Interface for running `simctl`.
@@ -103,4 +99,4 @@ public class SimCtlTests: XCTestCase {
 //      return try subcommand.parse(data)
 //    }
 //  }
-//#endif
+// #endif

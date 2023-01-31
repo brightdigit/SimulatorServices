@@ -6,9 +6,9 @@
   public struct SimCtl {
     /// URL Path to `xcrun`
     public let xcRunURL: URL
-    
-    private let processFactory : () -> _SimCtlProcess
-    
+
+    private let processFactory: () -> _SimCtlProcess
+
     internal init(xcRunURL: URL, processFactory: @escaping @autoclosure () -> _SimCtlProcess) {
       self.xcRunURL = xcRunURL
       self.processFactory = processFactory
@@ -26,13 +26,13 @@
     public func run<SubcommandType: Subcommand>(
       _ subcommand: SubcommandType
     ) async throws -> SubcommandType.OutputType {
-      let process = self.processFactory()
+      let process = processFactory()
       process.executableURL = xcRunURL
       process.arguments = ["simctl"] + subcommand.arguments
       let data: Data?
       do {
         data = try await process.run(timeout: .distantFuture)
-      } catch let error as Process.UncaughtSignalError {
+      } catch let error as ProcessError {
         try subcommand.recover(error)
         data = nil
       }
