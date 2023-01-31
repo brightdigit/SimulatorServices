@@ -2,7 +2,7 @@
   import Foundation
 
   @available(macOS 10.15.4, *)
-  extension Process {
+extension Process : ProcessProtocol {
     public struct TimeoutError: Error {
       public let timeout: DispatchTime
     }

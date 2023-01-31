@@ -6,11 +6,18 @@
   public struct SimCtl {
     /// URL Path to `xcrun`
     public let xcRunURL: URL
+    
+    private let processFactory : () -> ProcessProtocol
+    
+    internal init(xcRunURL: URL, processFactory: @escaping @autoclosure () -> ProcessProtocol) {
+      self.xcRunURL = xcRunURL
+      self.processFactory = processFactory
+    }
 
     /// Create an interface to `simctl`
     /// - Parameter xcRunURL: URL path to `xcrun`.
     public init(xcRunURL: URL = URL(fileURLWithPath: "/usr/bin/xcrun")) {
-      self.xcRunURL = xcRunURL
+      self.init(xcRunURL: xcRunURL, processFactory: Process())
     }
 
     /// Run a subcommand under `simctl`.
@@ -19,7 +26,7 @@
     public func run<SubcommandType: Subcommand>(
       _ subcommand: SubcommandType
     ) async throws -> SubcommandType.OutputType {
-      let process = Process()
+      let process = self.processFactory()
       process.executableURL = xcRunURL
       process.arguments = ["simctl"] + subcommand.arguments
       let data: Data?
