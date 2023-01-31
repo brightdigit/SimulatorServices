@@ -6,7 +6,7 @@
   public struct GetAppContainer: Subcommand {
     public typealias OutputType = Path
 
-    public enum Error: Swift.Error {
+    public enum Error: Swift.Error, Equatable {
       case missingData
       case invalidData(Data)
       case invalidPath(String)

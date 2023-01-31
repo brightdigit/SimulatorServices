@@ -23,7 +23,7 @@ extension Process : ProcessProtocol {
       internal init?(
         reason: Process.TerminationReason,
         status: Int32,
-        standardError: Pipe,
+        standardError: FileHandle,
         output: Data?
       ) {
         if reason == .exit, status == 0 {
@@ -31,7 +31,7 @@ extension Process : ProcessProtocol {
         }
         let reason = reason
         let status = status
-        let data = try? standardError.fileHandleForReading.readToEnd()
+        let data = try? standardError.readToEnd()
 
         self.init(reason: reason, status: Int(status), data: data, output: output)
       }
@@ -62,7 +62,7 @@ extension Process : ProcessProtocol {
         if let error = UncaughtSignalError(
           reason: process.terminationReason,
           status: process.terminationStatus,
-          standardError: standardError,
+          standardError: standardError.fileHandleForReading,
           output: try? outputData.get()
         ) {
           return .failure(error)

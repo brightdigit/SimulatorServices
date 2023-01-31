@@ -1,7 +1,9 @@
 import XCTest
-import SimulatorServices
+@testable import SimulatorServices
 
 public class GetAppContainerTests: XCTestCase {
+  static let utf32String = "Hello, playground".data(using: .utf32)!
+  
   func testArguments () {
     
   }
@@ -17,12 +19,61 @@ public class GetAppContainerTests: XCTestCase {
     XCTAssertEqual(appContainer.simulator, simulator)
   }
   
-  func testParse () {
+  
+  func testParseString () throws {
+    let appBundleIdentifier = UUID().uuidString
+    let container = ContainerID.appGroup(UUID().uuidString)
+    let simulator = SimulatorID.id(.init())
+    let appContainer = GetAppContainer(appBundleIdentifier: appBundleIdentifier, container: container, simulator: simulator)
     
+    let expectedPath = UUID().uuidString
+    let actualPath = try appContainer.parse(
+      expectedPath.appending(String.init(repeating: Character(" "), count: .random(in: 3...10))).data(using: .utf8)
+    )
+    XCTAssertEqual(expectedPath, actualPath)
   }
   
-  func testRecover () {
+  
+  func testParseEmptyEncoding () {
+    let appBundleIdentifier = UUID().uuidString
+    let container = ContainerID.appGroup(UUID().uuidString)
+    let simulator = SimulatorID.id(.init())
+    let appContainer = GetAppContainer(appBundleIdentifier: appBundleIdentifier, container: container, simulator: simulator)
     
+    XCTAssertThrowsError(try appContainer.parse(nil)) { error in
+      XCTAssertEqual(error as? GetAppContainer.Error,  GetAppContainer.Error.missingData)
+    }
+  }
+  
+  func testParseInvalidEncoding () {
+    let appBundleIdentifier = UUID().uuidString
+    let container = ContainerID.appGroup(UUID().uuidString)
+    let simulator = SimulatorID.id(.init())
+    let appContainer = GetAppContainer(appBundleIdentifier: appBundleIdentifier, container: container, simulator: simulator)
+    
+    XCTAssertThrowsError(try appContainer.parse(Self.utf32String)) { error in
+      XCTAssertEqual(error as? GetAppContainer.Error,  GetAppContainer.Error.invalidData(Self.utf32String))
+      
+    }
+  }
+  
+  func testRecover () throws {
+    let appBundleIdentifier = UUID().uuidString
+    let container = ContainerID.appGroup(UUID().uuidString)
+    let simulator = SimulatorID.id(.init())
+    let appContainer = GetAppContainer(appBundleIdentifier: appBundleIdentifier, container: container, simulator: simulator)
+    
+    let tmpPath = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+    try "No such file or directory".write(to: tmpPath, atomically: true, encoding: .utf8)
+    let standardError = try FileHandle(forReadingFrom: tmpPath)
+    
+    let error = Process.UncaughtSignalError(reason: Process.TerminationReason.uncaughtSignal, status: 2, standardError: standardError, output: nil)
+    
+    guard let error else {
+      XCTAssertNotNil(error)
+      return
+    }
+    try appContainer.recover(error)
   }
 }
 //#if !os(iOS) && !os(watchOS) && !os(tvOS)
