@@ -1,13 +1,66 @@
 #if !os(iOS) && !os(watchOS) && !os(tvOS)
   import Foundation
 
+
+@available(macOS 10.15.4, *)
+public enum ProcessError : Error, LocalizedError, Equatable
+{
+  @available(macOS 10.15.4, *)
+  public struct UncaughtSignal: Error, LocalizedError, Equatable {
+    private init(
+      reason: Process.TerminationReason,
+      status: Int,
+      data: Data?,
+      output: Data?
+    ) {
+      self.reason = reason
+      self.status = status
+      self.data = data
+      self.output = output
+    }
+
+    internal init?(
+      reason: Process.TerminationReason,
+      status: Int32,
+      standardError: FileHandle,
+      output: Data?
+    ) {
+      if reason == .exit, status == 0 {
+        return nil
+      }
+      let reason = reason
+      let status = status
+      let data = try? standardError.readToEnd()
+
+      self.init(reason: reason, status: Int(status), data: data, output: output)
+    }
+
+    public let reason: Process.TerminationReason
+    public let status: Int
+    public let data: Data?
+    public let output: Data?
+
+    public var errorDescription: String? {
+      if let errorText = data.flatMap({ String(bytes: $0, encoding: .utf8) }) {
+        return errorText
+      } else {
+        return "Termination Reason: \(reason) with status: \(status)"
+      }
+    }
+  }
+  
+  case timeout(DispatchTime)
+  case uncaughtSignal(UncaughtSignal)
+}
   @available(macOS 10.15.4, *)
 extension Process : ProcessProtocol {
+  @available(*, deprecated)
     public struct TimeoutError: Error {
       public let timeout: DispatchTime
     }
 
-    public struct UncaughtSignalError: Error, LocalizedError {
+  @available(*, deprecated)
+    public struct UncaughtSignalError: Error, LocalizedError, Equatable {
       private init(
         reason: Process.TerminationReason,
         status: Int,
@@ -50,6 +103,7 @@ extension Process : ProcessProtocol {
       }
     }
 
+  @available(*, deprecated)
     private static func process(
       _ process: Process,
       timeout: DispatchTime,

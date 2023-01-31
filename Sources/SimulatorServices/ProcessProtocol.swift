@@ -13,3 +13,7 @@ internal protocol ProcessProtocol : AnyObject {
   var arguments: [String]? { set get }
   func run(timeout: DispatchTime) async throws -> Data?
 }
+
+internal protocol ProcessSync : AnyObject {
+  
+}

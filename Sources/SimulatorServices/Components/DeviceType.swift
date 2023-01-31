@@ -1,4 +1,4 @@
-public struct DeviceType: Decodable {
+public struct DeviceType: Decodable, Equatable {
   public let productFamily: ProductFamily // deviceType
   public let bundlePath: Path // URL?
   public let maxRuntimeVersion: Int

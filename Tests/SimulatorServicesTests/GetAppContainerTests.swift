@@ -5,7 +5,19 @@ public class GetAppContainerTests: XCTestCase {
   static let utf32String = "Hello, playground".data(using: .utf32)!
   
   func testArguments () {
-    
+    let appBundleIdentifier = UUID().uuidString
+    let container = ContainerID.appGroup(UUID().uuidString)
+    let simulator = SimulatorID.id(.init())
+    let appContainer = GetAppContainer(appBundleIdentifier: appBundleIdentifier, container: container, simulator: simulator)
+    let expectedArgs = [
+      "get_app_container",
+      simulator.description,
+      appBundleIdentifier,
+      container.description
+    ]
+    let actualArgs = appContainer.arguments
+    XCTAssertEqual(actualArgs, expectedArgs)
+
   }
   
   func testInit () {
