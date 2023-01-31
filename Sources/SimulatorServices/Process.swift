@@ -21,7 +21,7 @@ public enum ProcessError : Error, LocalizedError, Equatable
 
     internal init?(
       reason: Process.TerminationReason,
-      status: Int32,
+      status: Int,
       standardError: FileHandle,
       output: Data?
     ) {
@@ -33,6 +33,15 @@ public enum ProcessError : Error, LocalizedError, Equatable
       let data = try? standardError.readToEnd()
 
       self.init(reason: reason, status: Int(status), data: data, output: output)
+    }
+    
+    internal init?(
+      termination: TerminationResult,
+      standardError: FileHandle,
+      output: Data?
+    ) {
+
+      self.init(reason: termination.reason, status: termination.status, standardError: standardError, output: output)
     }
 
     public let reason: Process.TerminationReason
@@ -52,11 +61,22 @@ public enum ProcessError : Error, LocalizedError, Equatable
   case timeout(DispatchTime)
   case uncaughtSignal(UncaughtSignal)
 }
+
+
   @available(macOS 10.15.4, *)
-extension Process : ProcessProtocol {
+extension Process : _SimCtlProcess, _AsyncableProcess {
+  func termintationResult() -> TerminationResult {
+    return .init(reason: self.terminationReason, status: Int(self.terminationStatus))
+  }
+  
+
+  
+
+  
+  
   @available(*, deprecated)
     public struct TimeoutError: Error {
-      public let timeout: DispatchTime
+      public let timedOut: DispatchTime
     }
 
   @available(*, deprecated)
@@ -106,17 +126,17 @@ extension Process : ProcessProtocol {
   @available(*, deprecated)
     private static func process(
       _ process: Process,
-      timeout: DispatchTime,
+      timedOut: DispatchTime,
       result: DispatchTimeoutResult,
       withOutput outputData: Result<Data?, Error>,
-      andError standardError: Pipe
+      andError standardError: FileHandle
     ) -> Result<Data?, Error> {
       switch result {
       case .success:
         if let error = UncaughtSignalError(
           reason: process.terminationReason,
           status: process.terminationStatus,
-          standardError: standardError.fileHandleForReading,
+          standardError: standardError,
           output: try? outputData.get()
         ) {
           return .failure(error)
@@ -125,21 +145,31 @@ extension Process : ProcessProtocol {
         }
 
       case .timedOut:
-        return .failure(TimeoutError(timeout: timeout))
+        return .failure(TimeoutError(timedOut: timedOut))
       }
     }
+  
 
-    private func setupPipes() -> (Pipe, Pipe) {
+  func fileHandles() -> ProcessOutputHandleSet {
+    let standardError = Pipe()
+    let standardOutput = Pipe()
+
+    self.standardError = standardError
+    self.standardOutput = standardOutput
+
+    return .init(output: standardOutput.fileHandleForReading, error: standardError.fileHandleForReading)
+  }
+    private func setupPipes() -> (FileHandle, FileHandle) {
       let standardError = Pipe()
       let standardOutput = Pipe()
 
       self.standardError = standardError
       self.standardOutput = standardOutput
 
-      return (standardOutput, standardError)
+      return (standardOutput.fileHandleForReading, standardError.fileHandleForReading)
     }
 
-    private func setupSemaphore() -> DispatchSemaphore {
+    internal func promise() -> ProcessCompletionPromise {
       let semaphore = DispatchSemaphore(value: 0)
 
       terminationHandler = { _ in
@@ -148,26 +178,27 @@ extension Process : ProcessProtocol {
       return semaphore
     }
 
-    /// Run the process asyncronously and returns the output as data.
-    /// - Parameter timeout: Timeout for the process to be done.
-    /// - Returns: Data if there anything output from the process.
-    public func run(timeout: DispatchTime) async throws -> Data? {
-      let (standardOutput, standardError) = setupPipes()
-      let semaphore = setupSemaphore()
-      try run()
-      return try await withCheckedThrowingContinuation { continuation in
-        let output = Result { try standardOutput.fileHandleForReading.readToEnd() }
-        let semaphoreResult = semaphore.wait(timeout: timeout)
-        let result = Self.process(
-          self,
-          timeout: timeout,
-          result: semaphoreResult,
-          withOutput: output,
-          andError: standardError
-        )
-        continuation.resume(with: result)
-      }
-    }
+//    /// Run the process asyncronously and returns the output as data.
+//    /// - Parameter timeout: Timeout for the process to be done.
+//    /// - Returns: Data if there anything output from the process.
+//    public func run(timeout: DispatchTime) async throws -> Data? {
+//      let (standardOutput, standardError) = setupPipes()
+//      let semaphore = setupSemaphore()
+//      try run()
+//      return try await withCheckedThrowingContinuation { continuation in
+//        let output = Result { try standardOutput.readToEnd() }
+//        let semaphoreResult = semaphore.wait(timeout: timeout)
+//
+//        let result = Self.process(
+//          self,
+//          timeout: timeout,
+//          result: semaphoreResult,
+//          withOutput: output,
+//          andError: standardError
+//        )
+//        continuation.resume(with: result)
+//      }
+//    }
   }
 
 #endif

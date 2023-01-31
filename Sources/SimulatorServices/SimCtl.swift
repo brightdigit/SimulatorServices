@@ -7,9 +7,9 @@
     /// URL Path to `xcrun`
     public let xcRunURL: URL
     
-    private let processFactory : () -> ProcessProtocol
+    private let processFactory : () -> _SimCtlProcess
     
-    internal init(xcRunURL: URL, processFactory: @escaping @autoclosure () -> ProcessProtocol) {
+    internal init(xcRunURL: URL, processFactory: @escaping @autoclosure () -> _SimCtlProcess) {
       self.xcRunURL = xcRunURL
       self.processFactory = processFactory
     }

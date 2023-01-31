@@ -8,7 +8,7 @@ extension Data {
   }
 }
 
-class MockProcess : ProcessProtocol {
+class MockSimCtlProcess : _SimCtlProcess {
   internal init(result: Result<Data?, Error>, executableURL: URL? = nil, arguments: [String]? = nil) {
     self.result = result
     self.executableURL = executableURL
@@ -55,7 +55,7 @@ public class SimCtlTests: XCTestCase {
     let expectedUUID = UUID()
     let expectedData = Data.random()
     let expectedXcRunURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    let simctl = SimCtl(xcRunURL: expectedXcRunURL, processFactory: MockProcess(result: .success(expectedData)))
+    let simctl = SimCtl(xcRunURL: expectedXcRunURL, processFactory: MockSimCtlProcess(result: .success(expectedData)))
     let commandExpectation = expectation(description: "subcommand run")
     let command = MockSubcommand { actualData in
       XCTAssertEqual(actualData, expectedData)
