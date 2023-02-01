@@ -6,7 +6,7 @@ import PackageDescription
 
 let package = Package(
   name: "SimulatorServices",
-  platforms: [.iOS(.v13), .macOS(.v10_15)],
+  platforms: [.iOS(.v13), .macOS(.v10_15), .watchOS(.v6)],
   products: [
     .library(
       name: "SimulatorServices",
