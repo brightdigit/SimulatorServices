@@ -81,7 +81,7 @@ public class GetAppContainerTests: XCTestCase {
       error = UncaughtSignal(reason: 2, status: 2, data: "No such file or directory".data(using: .utf8), output: nil).map(ProcessError.uncaughtSignal)
     }
 
-    guard let error else {
+    guard let error = error else {
       XCTAssertNotNil(error)
       return
     }
