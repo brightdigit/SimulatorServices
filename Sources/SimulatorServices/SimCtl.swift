@@ -18,6 +18,7 @@ public struct SimCtl {
   #if !os(iOS) && !os(watchOS) && !os(tvOS)
     /// Create an interface to `simctl`
     /// - Parameter xcRunURL: URL path to `xcrun`.
+    @available(macOS 10.15.4, *)
     public init(xcRunURL: URL = URL(fileURLWithPath: "/usr/bin/xcrun")) {
       self.init(xcRunURL: xcRunURL, processFactory: Process())
     }
