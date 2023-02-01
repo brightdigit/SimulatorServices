@@ -7,9 +7,12 @@ internal protocol _AsyncableProcess: AnyObject {
   func termintationResult() -> TerminationResult
 }
 
-@available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4,*)
+@available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
 extension _AsyncableProcess {
-  internal func data(basedOn result: ProcessResult, from fileHandles: ProcessOutputHandleSet) throws -> Data? {
+  internal func data(
+    basedOn result: ProcessResult,
+    from fileHandles: ProcessOutputHandleSet
+  ) throws -> Data? {
     switch result {
     case let .success(termination):
       let outputResult = Result { try fileHandles.output.readToEnd() }
@@ -36,7 +39,10 @@ extension _AsyncableProcess {
     let semaphore = promise()
     try run()
     return try await withCheckedThrowingContinuation { continuation in
-      let semaphoreResult = semaphore.waitForCompletion(for: timeout, with: self.termintationResult())
+      let semaphoreResult = semaphore.waitForCompletion(
+        for: timeout,
+        with: self.termintationResult()
+      )
       let result = Result {
         try self.data(basedOn: semaphoreResult, from: handles)
       }

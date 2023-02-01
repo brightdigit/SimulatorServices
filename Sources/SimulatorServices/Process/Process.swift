@@ -14,7 +14,10 @@
       self.standardError = standardError
       self.standardOutput = standardOutput
 
-      return .init(output: standardOutput.fileHandleForReading, error: standardError.fileHandleForReading)
+      return .init(
+        output: standardOutput.fileHandleForReading,
+        error: standardError.fileHandleForReading
+      )
     }
 
     internal func promise() -> ProcessCompletionPromise {

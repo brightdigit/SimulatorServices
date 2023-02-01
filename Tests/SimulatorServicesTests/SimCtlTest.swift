@@ -14,7 +14,7 @@ public class SimCtlTests: XCTestCase {
     let expectedXcRunURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
     let simctl = SimCtl(xcRunURL: expectedXcRunURL, processFactory: MockSimCtlProcess(result: .success(expectedData)))
     let commandExpectation = expectation(description: "subcommand run")
-    let command = MockSubcommand { actualData in
+    let command = MockSubcommand { actualData -> UUID in
       XCTAssertEqual(actualData, expectedData)
       commandExpectation.fulfill()
       return expectedUUID

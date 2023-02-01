@@ -1,7 +1,10 @@
 import Foundation
 
 extension DispatchSemaphore: ProcessCompletionPromise {
-  internal func waitForCompletion(for timeout: DispatchTime, with result: @autoclosure @escaping () -> TerminationResult) -> ProcessResult {
+  internal func waitForCompletion(
+    for timeout: DispatchTime,
+    with result: @autoclosure @escaping () -> TerminationResult
+  ) -> ProcessResult {
     let processResult = wait(timeout: timeout)
 
     switch processResult {

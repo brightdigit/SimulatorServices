@@ -23,23 +23,27 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible {
     data: Data?,
     output: Data?
   ) {
-    self.reason = uncheckedReason
-    self.status = uncheckedStatus
+    reason = uncheckedReason
+    status = uncheckedStatus
     self.data = data
     self.output = output
   }
-  
+
   internal init?(
     reason: TerminationReason,
     status: Int,
     data: Data?,
     output: Data?
   ) {
-    
-      if reason == UncaughtSignal.exitReason, status == 0 {
-        return nil
-      }
-    self.init(uncheckedReason: reason, uncheckedStatus: status, data: data, output: output)
+    if reason == UncaughtSignal.exitReason, status == 0 {
+      return nil
+    }
+    self.init(
+      uncheckedReason: reason,
+      uncheckedStatus: status,
+      data: data,
+      output: output
+    )
   }
 
   @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
@@ -56,15 +60,25 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible {
     let status = status
     let data = try? standardError.readToEnd()
 
-    self.init(uncheckedReason: reason, uncheckedStatus: Int(status), data: data, output: output)
+    self.init(
+      uncheckedReason: reason,
+      uncheckedStatus: Int(status),
+      data: data,
+      output: output
+    )
   }
 
-  @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4,*)
+  @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
   internal init?(
     termination: TerminationResult,
     standardError: FileHandle,
     output: Data?
   ) {
-    self.init(reason: termination.reason, status: termination.status, standardError: standardError, output: output)
+    self.init(
+      reason: termination.reason,
+      status: termination.status,
+      standardError: standardError,
+      output: output
+    )
   }
 }

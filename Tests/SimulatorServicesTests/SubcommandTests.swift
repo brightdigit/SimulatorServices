@@ -3,21 +3,17 @@ import XCTest
 
 public class SubcommandTests: XCTestCase {
   func testRecover() {
-    let expectedError : ProcessError
+    let expectedError: ProcessError
     if #available(iOS 13.4, *) {
-      
       expectedError = ProcessError.uncaughtSignal(
         .init(reason: 2, status: 2, standardError: FileHandle.nullDevice, output: nil)!
       )
+    } else {
+      expectedError = ProcessError.uncaughtSignal(
+        .init(reason: 2, status: 2, data: nil, output: nil)!
+      )
     }
-      else {
-        
-          expectedError = ProcessError.uncaughtSignal(
-            
-            .init(reason: 2, status: 2, data: nil, output: nil)!
-          )
-      }
-      
+
     let subcommand = MockSubcommand { _ in
 
       throw expectedError
