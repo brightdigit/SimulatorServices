@@ -57,8 +57,8 @@ jobs:
         run: tar xzf swift-${SWIFT_VER}-RELEASE-ubuntu${RELEASE_DOT}.tar.gz
       - name: Add Path
         run: echo "$GITHUB_WORKSPACE/swift-${SWIFT_VER}-RELEASE-ubuntu${RELEASE_DOT}/usr/bin" >> $GITHUB_PATH
-      - name: Build
-        run: swift build
+      #- name: Build
+      #  run: swift build
       - name: Test
         run: swift test --enable-code-coverage
       - uses: sersoft-gmbh/swift-coverage-action@v3
