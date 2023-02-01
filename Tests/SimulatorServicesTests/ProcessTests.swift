@@ -6,7 +6,7 @@ public class ProcessTests: XCTestCase {
     let timeout: DispatchTime = .now() + 1.0
     let output: Data = .random()
     let error: Data = .random()
-    let termination: TerminationResult = .init(reason: .exit, status: 0)
+    let termination: TerminationResult = .init(reason: 1, status: 0)
 
     let process = MockAsyncableProcess(outputData: output, errorData: error, terminationResult: termination, willTimeout: false)
     let actualOutput = try await process.run(timeout: timeout)

@@ -4,7 +4,7 @@ import XCTest
 public class SubcommandTests: XCTestCase {
   func testRecover() {
     let expectedError = ProcessError.uncaughtSignal(
-      .init(reason: Process.TerminationReason.uncaughtSignal, status: 2, standardError: FileHandle.nullDevice, output: nil)!
+      .init(reason: Process.TerminationReason.uncaughtSignal.rawValue, status: 2, standardError: FileHandle.nullDevice, output: nil)!
     )
     let subcommand = MockSubcommand { _ in
 
