@@ -28,6 +28,10 @@
       }
       return semaphore
     }
+
+    public func run(till timeout: DispatchTime) async throws -> Data? {
+      try await run(timeout: timeout)
+    }
   }
 
 #endif
