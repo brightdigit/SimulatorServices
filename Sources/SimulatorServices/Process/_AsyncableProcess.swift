@@ -1,6 +1,5 @@
 import Foundation
 
-@available(macOS 10.15.4, *)
 internal protocol _AsyncableProcess: AnyObject {
   func run() throws
   func promise() -> ProcessCompletionPromise
@@ -8,7 +7,7 @@ internal protocol _AsyncableProcess: AnyObject {
   func termintationResult() -> TerminationResult
 }
 
-@available(macOS 10.15.4, *)
+@available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4,*)
 extension _AsyncableProcess {
   internal func data(basedOn result: ProcessResult, from fileHandles: ProcessOutputHandleSet) throws -> Data? {
     switch result {

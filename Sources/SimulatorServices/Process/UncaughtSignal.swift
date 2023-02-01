@@ -2,7 +2,6 @@ import Foundation
 /// Reason for the termination.
 public typealias TerminationReason = Int
 
-@available(macOS 10.15.4, *)
 public struct UncaughtSignal: Equatable, CustomStringConvertible {
   private static let exitReason = 1
   public let reason: TerminationReason
@@ -19,18 +18,31 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible {
   }
 
   private init(
+    uncheckedReason: TerminationReason,
+    uncheckedStatus: Int,
+    data: Data?,
+    output: Data?
+  ) {
+    self.reason = uncheckedReason
+    self.status = uncheckedStatus
+    self.data = data
+    self.output = output
+  }
+  
+  internal init?(
     reason: TerminationReason,
     status: Int,
     data: Data?,
     output: Data?
   ) {
-    self.reason = reason
-    self.status = status
-    self.data = data
-    self.output = output
+    
+      if reason == UncaughtSignal.exitReason, status == 0 {
+        return nil
+      }
+    self.init(uncheckedReason: reason, uncheckedStatus: status, data: data, output: output)
   }
 
-  @available(iOS 13.4, *)
+  @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
   internal init?(
     reason: TerminationReason,
     status: Int,
@@ -44,9 +56,10 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible {
     let status = status
     let data = try? standardError.readToEnd()
 
-    self.init(reason: reason, status: Int(status), data: data, output: output)
+    self.init(uncheckedReason: reason, uncheckedStatus: Int(status), data: data, output: output)
   }
 
+  @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4,*)
   internal init?(
     termination: TerminationResult,
     standardError: FileHandle,

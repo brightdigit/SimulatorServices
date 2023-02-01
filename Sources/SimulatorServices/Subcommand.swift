@@ -1,8 +1,7 @@
 import Foundation
 
-#if !os(iOS) && !os(watchOS) && !os(tvOS)
+
   /// Subcommand to be run from `simctl`
-  @available(macOS 10.15.4, *)
   public protocol Subcommand {
     /// The output type of the subcommand
     associatedtype OutputType
@@ -20,7 +19,6 @@ import Foundation
     func parse(_ data: Data?) throws -> OutputType
   }
 
-  @available(macOS 10.15.4, *)
   extension Subcommand {
     /// Optional function for recovering from a process error.
     /// - Parameter error: ``ProcessError/UncaughtSignalError`` received.
@@ -29,4 +27,3 @@ import Foundation
       throw error
     }
   }
-#endif

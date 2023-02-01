@@ -1,8 +1,7 @@
-#if !os(iOS) && !os(watchOS) && !os(tvOS)
+
 
   import Foundation
 
-  @available(macOS 10.15.4, *)
   public struct GetAppContainer: Subcommand {
     public typealias OutputType = Path
 
@@ -71,4 +70,3 @@
     }
   }
 
-#endif

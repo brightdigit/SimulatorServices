@@ -71,11 +71,19 @@ public class GetAppContainerTests: XCTestCase {
     let simulator = SimulatorID.id(.init())
     let appContainer = GetAppContainer(appBundleIdentifier: appBundleIdentifier, container: container, simulator: simulator)
 
-    let tmpPath = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    try "No such file or directory".write(to: tmpPath, atomically: true, encoding: .utf8)
-    let standardError = try FileHandle(forReadingFrom: tmpPath)
 
-    let error = UncaughtSignal(reason: Process.TerminationReason.uncaughtSignal, status: 2, standardError: standardError, output: nil).map(ProcessError.uncaughtSignal)
+    let error : ProcessError?
+    if #available(iOS 13.4, *) {
+      
+      let tmpPath = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+      try "No such file or directory".write(to: tmpPath, atomically: true, encoding: .utf8)
+      let standardError = try FileHandle(forReadingFrom: tmpPath)
+      error = UncaughtSignal(reason: 2, status: 2, standardError: standardError, output: nil).map(ProcessError.uncaughtSignal)
+    }
+      else {
+        error = UncaughtSignal(reason: 2, status: 2, data: "No such file or directory".data(using: .utf8), output: nil).map(ProcessError.uncaughtSignal)
+      }
+    
 
     guard let error else {
       XCTAssertNotNil(error)

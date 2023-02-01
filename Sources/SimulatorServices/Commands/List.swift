@@ -1,9 +1,9 @@
-#if !os(iOS) && !os(watchOS) && !os(tvOS)
-  import Foundation
 
-  internal protocol _ListDecoder {
-    func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
-  }
+import Foundation
+
+internal protocol _ListDecoder {
+  func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
+}
 
   public struct List: Subcommand {
     public typealias OutputType = SimulatorList
@@ -50,4 +50,3 @@
 
   extension JSONDecoder: _ListDecoder {}
 
-#endif

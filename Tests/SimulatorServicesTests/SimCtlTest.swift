@@ -4,7 +4,7 @@ import XCTest
 public class SimCtlTests: XCTestCase {
   func testInit() {
     let expectedXcRunURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-    let simctl = SimCtl(xcRunURL: expectedXcRunURL)
+    let simctl = SimCtl(xcRunURL: expectedXcRunURL, processFactory: MockSimCtlProcess(result: .success(nil)))
     XCTAssertEqual(expectedXcRunURL, simctl.xcRunURL)
   }
 

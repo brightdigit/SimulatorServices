@@ -1,6 +1,5 @@
 import Foundation
 
-@available(macOS 10.15.4, *)
 public enum ProcessError: Error, LocalizedError, Equatable {
   case timeout(DispatchTime)
   case uncaughtSignal(UncaughtSignal)
