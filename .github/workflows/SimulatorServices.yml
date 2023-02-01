@@ -85,7 +85,7 @@ jobs:
           - runs-on: macos-12
             xcode: "/Applications/Xcode_13.4.1.app"
             iOSVersion: 15.5
-            watchOSVersion: 8.5  
+            watchOSVersion: 8.5
             watchName: "Apple Watch Series 7 - 41mm"
           - runs-on: macos-12
             xcode: "/Applications/Xcode_14.0.1.app"
@@ -134,7 +134,7 @@ jobs:
           brew update
           brew install mint
       - name: Build
-        run: swift build        
+        run: swift build
       - name: Test
         run: swift test --enable-code-coverage
       - uses: sersoft-gmbh/swift-coverage-action@v3
@@ -147,7 +147,7 @@ jobs:
           flags: spm,swift-${{ matrix.swift-version }}
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Lint
-        run: ./scripts/lint.sh 
+        run: ./scripts/lint.sh
         if: startsWith(matrix.xcode,'/Applications/Xcode_14.1')
       - name: Dump PIF
         if: startsWith(matrix.xcode,'/Applications/Xcode_14')
@@ -169,7 +169,7 @@ jobs:
         with:
           fail_ci_if_error: true
           flags: iOS,iOS-${{ matrix.iOSVersion }}
-          token: ${{ secrets.CODECOV_TOKEN }}     
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Run watchOS target tests
         run: xcodebuild build -scheme SimulatorServices -sdk watchsimulator -destination 'platform=watchOS Simulator,name=${{ matrix.watchName }},OS=${{ matrix.watchOSVersion }}'
       - uses: sersoft-gmbh/swift-coverage-action@v3

@@ -9,5 +9,5 @@ aggregateTargets:
     buildScripts:
       - path: Scripts/lint.sh
         name: Lint
-        basedOnDependencyAnalysis: false 
+        basedOnDependencyAnalysis: false
     schemes: {}

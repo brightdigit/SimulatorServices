@@ -1,7 +1,7 @@
 @testable import SimulatorServices
 import XCTest
 
-public class SimCtlTests: XCTestCase {  
+public class SimCtlTests: XCTestCase {
   private struct SubcommandTest {
     fileprivate init(from testCase: XCTestCase) {
       let expectedUUID = UUID()
@@ -32,7 +32,7 @@ public class SimCtlTests: XCTestCase {
     fileprivate let expectedData: Data
     fileprivate let simctl: SimCtl
   }
-  
+
   func testInit() {
     let expectedXcRunURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
     let simctl = SimCtl(xcRunURL: expectedXcRunURL, processFactory: MockSimCtlProcess(result: .success(nil)))
