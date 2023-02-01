@@ -1,48 +1,13 @@
-<p align="center">
-    <img alt="SimulatorServices" title="SimulatorServices" src="Assets/logo.svg" height="200">
-</p>
-<h1 align="center"> SimulatorServices </h1>
+# ``SimulatorServices``
 
-Control the simulator... in Swift
+Control the simulator... in Swift.
 
-[![SwiftPM](https://img.shields.io/badge/SPM-Linux%20%7C%20iOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS-success?logo=swift)](https://swift.org)
-[![Twitter](https://img.shields.io/badge/twitter-@brightdigit-blue.svg?style=flat)](http://twitter.com/brightdigit)
-![GitHub](https://img.shields.io/github/license/brightdigit/SimulatorServices)
-![GitHub issues](https://img.shields.io/github/issues/brightdigit/SimulatorServices)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/brightdigit/SimulatorServices/SimulatorServices.yml?label=actions&logo=github&?branch=main)
-
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FSimulatorServices%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/brightdigit/SimulatorServices)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FSimulatorServices%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/brightdigit/SimulatorServices)
-
-
-[![Codecov](https://img.shields.io/codecov/c/github/brightdigit/SimulatorServices)](https://codecov.io/gh/brightdigit/SimulatorServices)
-[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/brightdigit/SimulatorServices)](https://www.codefactor.io/repository/github/brightdigit/SimulatorServices)
-[![codebeat badge](https://codebeat.co/badges/54695d4b-98c8-4f0f-855e-215500163094)](https://codebeat.co/projects/github-com-brightdigit-SimulatorServices-main)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/brightdigit/SimulatorServices)](https://codeclimate.com/github/brightdigit/SimulatorServices)
-[![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/brightdigit/SimulatorServices?label=debt)](https://codeclimate.com/github/brightdigit/SimulatorServices)
-[![Code Climate issues](https://img.shields.io/codeclimate/issues/brightdigit/SimulatorServices)](https://codeclimate.com/github/brightdigit/SimulatorServices)
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
-
-# Table of Contents
-
-* [Introduction](#introduction)
-   * [Requirements](#requirements)
-   * [Installation](#installation)
-   * [What does Simulator Services provide?](#what-does-simulator-services-provide)
-* [Usage](#usage)
-   * [Listing Simulators](#listing-simulators)
-   * [Getting App Containers](#getting-app-containers)
-* [Yeah but where's...?](#yeah-but-wheres)
-* [Learn more about simctl](#learn-more-about-simctl)
-* [Great Simulator Apps](#great-simulator-apps)
-* [License](#license)
-
-# Introduction
+## Overview
 
 **SimulatorServices** O caput hospite reliquit *adiecit undas*; facesque
 tellure praetendat genitoris unda terram, moneo munus.
 
-## Requirements 
+### Requirements 
 
 **Apple Platforms**
 
@@ -55,7 +20,7 @@ tellure praetendat genitoris unda terram, moneo munus.
 - Ubuntu 18.04 or later
 - Swift 5.5.2 or later
 
-## Installation
+### Installation
 
 Use the Swift Package Manager to install this library via the repository url:
 
@@ -65,7 +30,7 @@ https://github.com/brightdigit/SimulatorServices.git
 
 Use version up to `1.0`.
 
-## What does Simulator Services provide?
+### What does Simulator Services provide?
 
 Prohibent saepe verba: dederat *natura victor in* putes da? Praesagia nec
 carere, **lauro comitata** domus. Causa es medio. Iovis eodem; abest fores, in
@@ -96,11 +61,11 @@ reddere](http://lacrimis-erant.io/ferarum.html) paternas lacertis rursus;
 subiecit monstri! Quod potuit locum apta in longis sudore antraque, sub aera,
 quem venit.
 
-# Usage
+### Usage
 
 **SimulatorServices** enables the encoding and decoding data in _Base32Crockford_ as well as creation of unique identifiers. There are a variety of options available for encoding and decoding.
 
-## Listing Simulators
+### Listing Simulators
 
 Factum cineres, serta, sub restant natorumque ictus crinis in *insurgens*.
 Iuvenis [dulce](http://spectantur.com/induiturque.aspx), valens multis
@@ -127,7 +92,7 @@ satiatur](http://www.sed.net/ancora.aspx) postquam, meae. Enim nec, in flores
 dixit altera dederunt, o eiaculatur tamen auxilium Egeriae levavit taurus ursae,
 facta.
 
-## Getting App Containers
+### Getting App Containers
 
 Ego quos Agyrtes? Contigit in gente urbes oves dextrae flores **quam
 coniectos**, sed est formamque scelerisque corporis potestas tenebrisque quas;
@@ -159,8 +124,9 @@ dis illae.
 - Damno ager et frustraque notas perterrita
 - Suum requiro
 
-# Yeah but where's...?
-## Ut sit vacantem miratur parentum moriens monitae
+## Yeah but where's...?
+
+### Ut sit vacantem miratur parentum moriens monitae
 
 Lorem markdownum harenam rapit gratata bracchia ille. Exstitit tamen, innumerae
 tractus, mortes amnem lapis revocare victor. Optavit recepta, ore annis cursus
@@ -172,7 +138,7 @@ natus venerantur multo; licet.
 - Melius licet amor plusque longo ferula dedisse
 - Tura pater et abit cum creator quoque
 
-## Neque fortibus
+### Neque fortibus
 
 Ubi ut placat vulnus sui [caeli quoque](http://illis.io/non) loquentes prosunt?
 Sponte figura [pabula dissimulat](http://solorbem.com/etmors) ille. Virgas
@@ -185,7 +151,7 @@ Pindo: exerces non plebe: meminisse huc moenia unde aequore mora iussum tura!
 - Tura qui fugit Aesaris qui vina qui
 - Felices pedis sit
 
-## Formamque laticem spicula simul temone dum sorores
+### Formamque laticem spicula simul temone dum sorores
 
 *Maduisse* antrum neque **regnumque**, responsaque quarto victa etiam patrium
 quoque, [sua adeo inque](http://erat-noctis.org/temporeposte.php) precatur dabat
@@ -200,7 +166,7 @@ ferro inducit vidi passis dum.
 > traxerunt, mora admovit visa.
 
 
-# Learn more about `simctl`
+## Learn more about `simctl`
 
 Lorem markdownum fateri, praestantissima quorum accessit, capi hanc: rectior
 sic. Satis *peteret in* tibi tibi dederitis operis at ad deusve regni; *inclusum
@@ -211,7 +177,7 @@ adflati indignatus perque; pennis venit, et.
 - Erat clamavit cancro
 - Non nec inductum exilium
 
-# Great Simulator Apps
+## Great Simulator Apps
 
 Legit fidemque modo, ante quam decorum violatus elisa. Tamen nec dolens erat
 lumen, pavidam aperire lacrimas ut exsangue cognovit nepotis heros.
@@ -219,6 +185,50 @@ lumen, pavidam aperire lacrimas ut exsangue cognovit nepotis heros.
 * dataTile
 * RocketSim
 
-# License 
+## License 
 
 This code is distributed under the MIT license. See the [LICENSE](https://github.com/brightdigit/SimulatorServices/LICENSE) file for more info.
+
+## Topics
+
+### Getting Started
+
+- ``SimCtl``
+
+### Subcommands for `simctl`
+
+- ``List``
+- ``GetAppContainer``
+
+### Command Arguments
+
+- ``ContainerID``
+- ``SimulatorID``
+
+### Simulator List Data
+
+- ``SimulatorList``
+- ``Device``
+- ``DevicePair``
+- ``DeviceType``
+- ``Path``
+- ``Runtime``
+
+- ``Identifier``
+- ``DeviceState``
+- ``PairState``
+- ``ProductFamily``
+- ``Platform``
+- ``Version``
+- ``ModelID``
+- ``DeviceTypeID``
+- ``RuntimeID``
+- ``Path``
+
+
+### Creating your own subcommands
+
+- ``Subcommand``
+- ``ProcessError``
+- ``UncaughtSignal``
+- ``TerminationReason``

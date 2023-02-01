@@ -3,6 +3,7 @@ on:
   push:
     branches-ignore:
       - '*WIP'
+      - documentation
 jobs:
   build-ubuntu:
     name: Build on Ubuntu
