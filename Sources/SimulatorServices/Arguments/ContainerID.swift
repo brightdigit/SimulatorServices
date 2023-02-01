@@ -1,4 +1,4 @@
-public enum ContainerID: CustomStringConvertible {
+public enum ContainerID: CustomStringConvertible, Equatable {
   case app //            The .app bundle
   case data //              The application's data container
   case groups //          The App Group containers

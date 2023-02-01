@@ -1,5 +1,5 @@
 import Foundation
-public enum SimulatorID: CustomStringConvertible {
+public enum SimulatorID: CustomStringConvertible, Equatable {
   case id(UUID)
   case booted
   public var description: String {
