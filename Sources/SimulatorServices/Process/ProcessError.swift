@@ -1,7 +1,10 @@
 import Foundation
 
+// TODO: add documentation
 public enum ProcessError: Error, LocalizedError, Equatable {
+  // TODO: add documentation
   case timeout(DispatchTime)
+  // TODO: add documentation
   case uncaughtSignal(UncaughtSignal)
 
   public var errorDescription: String? {

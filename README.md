@@ -39,8 +39,7 @@ Control the simulator... in Swift
 
 # Introduction
 
-**SimulatorServices** O caput hospite reliquit *adiecit undas*; facesque
-tellure praetendat genitoris unda terram, moneo munus.
+**SimulatorServices** provides an easy to use API for managing, querying, and accessing simulators on your Mac.
 
 ## Requirements 
 
@@ -67,157 +66,84 @@ Use version up to `1.0`.
 
 ## What does Simulator Services provide?
 
-Prohibent saepe verba: dederat *natura victor in* putes da? Praesagia nec
-carere, **lauro comitata** domus. Causa es medio. Iovis eodem; abest fores, in
-pereo superorum verumtamen fertur patrem, meruisse sum subito **et femur
-tempus** rebus.
-
-    gigo_zettabyte_error = megabytePage.aix.thunderbolt_blob(ios(metaNas(
-            cache_ppm_telnet), listserv(runtimeCpuFreeware, atm_supercomputer,
-            toslink), data_keywords_floating), restoreFilename + website);
-    if (teraflops(alu_vlog, 2, hitInstallDebug) + torrentPrinterDhcp +
-            prebindingBackupCard) {
-        truncate_disk = pim_brouter_code(cdn, 206685);
-        baud_e(17, wddm_sprite_bluetooth(pushSkuEmoticon), 1);
-        document.expression(character_recycle, basic(2, load, agp_optical));
-    }
-    sourceMirroredParameter = 66;
-
-Illa aut miserabilis dicit et *arbor mercede*, secto humi sed Timores orbam.
-Ulixes calcitrat; Halesi vates, forte ipsos probat vitiorum ambos. Temptanti
-[Veneris perfundere](http://turgida.net/liliaagros.php) modo necetur miserabilis
-fictos vocat adeunt vigilans. Concolor auctor mandata liquidis bis. Cresce
-optabile, naribus pedibusve silvas deos pedes *traxisse* arvo.
-
-Non habet cum repagula, magno nec baculo sisto, disceditis negat secessit fontis
-auditaque. Potest exstinctos factum **artus** Stymphalide muneris peperisse
-accepta genetrix fecit. Quid sacri [invictumque tororum
-reddere](http://lacrimis-erant.io/ferarum.html) paternas lacertis rursus;
-subiecit monstri! Quod potuit locum apta in longis sudore antraque, sub aera,
-quem venit.
+**SimulatorServices** allows you to execute subcommands to `simctl` directly in Swift while offering an easy to use API for parsing and passing arguments.  
 
 # Usage
 
-**SimulatorServices** enables the encoding and decoding data in _Base32Crockford_ as well as creation of unique identifiers. There are a variety of options available for encoding and decoding.
+**SimulatorServices** uses the `SimCtl` object to pass subcommands. Each subcommand objects takes custom arguments or property and can parse the standard output into an easy to use Swift object. There are currently two supported subcommands: `GetAppContainers` and `List`.
 
 ## Listing Simulators
 
-Factum cineres, serta, sub restant natorumque ictus crinis in *insurgens*.
-Iuvenis [dulce](http://spectantur.com/induiturque.aspx), valens multis
-Amphitryoniadae promissa in vasta an solitaque! Peraguntque frustraque amplexa
-una *abdita origine Ida* tellure cuncti.
+The `List` subcommand gives you the ability pull the list of devices, device types, runtimes, and device pairs. For instances let's say you want to pull all your available devices which are booted:
 
-    if (wi <= 3) {
-        cyberspace.room_supercomputer_fsb(vdu, hardBluetoothMp(and_flood_wan, 4,
-                707985), ipvPpiDrive);
-        contextualLeopard.serial_cloud.namespace_ipod(72);
-    }
-    var archive_unit = xp.volume_website.domainJoystick(fileJsp(fpuPram *
-            tagVdsl));
-    var uml = output(-5, multi(3, sram.vaporware.raidHdmi(d)));
-    barFont = menuViralInterlaced;
-    drive += 3 + laptop + databaseVolume(faq, external_outbox.isp_core(dpiAnd),
-            telnet_stick);
+```swift
+let simctl = SimCtl()
+let list = try await self.run(List())
+let devices = list.devices.values
+    .flatMap { $0  }
+    .filter{$0.state == "Booted"}
+```
 
-Suae facit trepidans, talia pudor [postes implevit de](http://uberacaute.com/)
-inter dimissis? Vagantem columbas simulacra manifestaque ensem, Caenea caeruleos
-adsueto. Surgit iam conversa tu posito paucaque agitant sum sub: fronti cantibus
-*eodem lacrimasque*. Movit inpleverunt, sed aratri [fatum
-satiatur](http://www.sed.net/ancora.aspx) postquam, meae. Enim nec, in flores
-dixit altera dederunt, o eiaculatur tamen auxilium Egeriae levavit taurus ursae,
-facta.
+For more details on the properties available, check out the documentation on `SimulatorList`.
+
+In this instance, we can take this a step further and find app container directories for these different simulator devices.
 
 ## Getting App Containers
 
-Ego quos Agyrtes? Contigit in gente urbes oves dextrae flores **quam
-coniectos**, sed est formamque scelerisque corporis potestas tenebrisque quas;
-vis. Usum vivere ille. Veniebat [cupidine te](http://probat-tamen.net/ipse.php)
-nitidum lacrimisque; non enim constitit, more.
+With our list of device simulators, we can use the `GetAppContainer` subcommand to find specific paths. In this case, let's find the _data_ directory of our app `com.BrightDigit.Jojo.watchkitapp`:
 
-    insertion_oop_log = bare;
-    if (ethicsCompiler + card) {
-        view_card_flatbed(hubUserHard, cad_heap);
-        capacity_on(lan + programOverclocking, wimax_design_system);
+```swift
+for device in devices {
+  taskGroup.addTask {
+    do {
+      return try await self.run(
+        GetAppContainer(
+          appBundleIdentifier: "com.BrightDigit.Jojo.watchkitapp", 
+          container: "data", 
+          // use the udid of the device to indicate which simulator to pull from
+          simulator: .id(device.udid)
+        )
+      )
+    // if the data is missing that means that device does not contain that app container
+    } catch GetAppContainer.Error.missingData {
+      return nil
     }
-    odbcOopMemory.defaultDot = ctp_proxy_standby.dvd_inbox_vector(ring_koffice,
-            xslt);
-    if (edi / fiMinimizeOsi(definitionHypertext + 74,
-            mirror.toolbarTutorialDelete(4, megabit_install_traceroute), 1)) {
-        ugc_default.bare += 5 + 3 + prebindingCron;
-        volume_and = graymail_edutainment_file;
-        array_export.crmStandalone.apache_vrml(13);
-    }
-    programmingPptp += ivrRwCard;
+  }
+}
 
-Caelo ille monte raptis Noctis terque [audierat](http://nonsonitu.io/nutrix)
-harundine, miserere Nil praevalidusque puerpera, deum ipse. Nullus tangunt
-plenoque collegit longa, plaga ut Nessoque postes, Boeotiaque moenia, mixtaque
-dis illae.
+let jojoSimulatorDataDirPaths = try await taskGroup.reduce(into: [Path]()) { paths, path in
+  // essential this does a compactMap on results
+  if let path {
+    paths.append(path)
+  }
+}
+```
 
-- Sanguine opus ille natus
-- Disque tempore mutat
-- Damno ager et frustraque notas perterrita
-- Suum requiro
+For more details on arguments available, check out the documentation on `List`.
 
 # Yeah but where's...?
-## Ut sit vacantem miratur parentum moriens monitae
 
-Lorem markdownum harenam rapit gratata bracchia ille. Exstitit tamen, innumerae
-tractus, mortes amnem lapis revocare victor. Optavit recepta, ore annis cursus
-colle, gravitate, inveniunt! Et verebor temeraria, est ignibus et tanta flores
-natus venerantur multo; licet.
+While now this package only supports two subcommands, **however** there are two ways more subcommands can be supported:
 
-- Prona mare remittat
-- Haut sentite natorum Dorylas
-- Melius licet amor plusque longo ferula dedisse
-- Tura pater et abit cum creator quoque
 
-## Neque fortibus
+* [add an issue](https://github.com/brightdigit/SimulatorServices/issues/new) and it will be implemented in the future by the organizers
+* [add an issue](https://github.com/brightdigit/SimulatorServices/issues/new) and a [pull request](https://github.com/brightdigit/SimulatorServices/compare) which implements that `Subcommand`
 
-Ubi ut placat vulnus sui [caeli quoque](http://illis.io/non) loquentes prosunt?
-Sponte figura [pabula dissimulat](http://solorbem.com/etmors) ille. Virgas
-Pindo: exerces non plebe: meminisse huc moenia unde aequore mora iussum tura!
-
-- Lata contigerant oppida inmedicabile frondente puerilibus tacito
-- Gravitate ipsum aves quid aeris
-- Bene atque latebra recentem suoque posito
-- Pennis terrasque mihi pondere domini nostri sit
-- Tura qui fugit Aesaris qui vina qui
-- Felices pedis sit
-
-## Formamque laticem spicula simul temone dum sorores
-
-*Maduisse* antrum neque **regnumque**, responsaque quarto victa etiam patrium
-quoque, [sua adeo inque](http://erat-noctis.org/temporeposte.php) precatur dabat
-in. Se arces et lecto laesit suis aera secuta pro causaque lucem adesset spinea
-aurumque accingere sibi malis in? Harundinibus et omnia per anima nisi ait in
-nostri iuris venientique nomen ab **vitae**. Tenderet desubito quae sed quamquam
-premunt guttas laceranda novitate. Vos evehor quaerit, parenti tela plebemque
-ferro inducit vidi passis dum.
-
-> **Effecisse auras** mirabile placat. Pars venerat nocte formosi parata; ruit
-> ignes operosa, suspicor venisset dubitavit thymo. Motu amnes *partem*,
-> traxerunt, mora admovit visa.
-
+For details on how to implement a new `Subcommand`, check out the code on the existing commands and take a look at the documentation of the `Subcommand` protocol.
 
 # Learn more about `simctl`
 
-Lorem markdownum fateri, praestantissima quorum accessit, capi hanc: rectior
-sic. Satis *peteret in* tibi tibi dederitis operis at ad deusve regni; *inclusum
-herboso gratia* capacibus. Docta teneat *in rogantem* magnique evincitque
-adflati indignatus perque; pennis venit, et.
+There are some great articles out there regarding the intracacies of `simctl`. I highly recommend these articles which helped me in building this package:
 
-- Tollere tori concurrere mirabere
-- Erat clamavit cancro
-- Non nec inductum exilium
+* [simctl - NSHipster by @mattt](https://nshipster.com/simctl/)
+* [Getting to Know the Simulator Better by @AndyIbanez](https://www.andyibanez.com/posts/getting-to-know-the-simulator-better/)
 
 # Great Simulator Apps
 
-Legit fidemque modo, ante quam decorum violatus elisa. Tamen nec dolens erat
-lumen, pavidam aperire lacrimas ut exsangue cognovit nepotis heros.
+Also take a look at these great app which take advantage of what `simctl` can do:
 
-* dataTile
-* RocketSim
+* [dataTile by @icanzlib](https://underplot.com/dataTile/)
+* [RocketSim by @AvdLee](https://github.com/AvdLee/RocketSimApp)
 
 # License 
 

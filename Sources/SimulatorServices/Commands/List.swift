@@ -4,11 +4,17 @@ internal protocol _ListDecoder {
   func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
 }
 
+// TODO: add documentation
+/// <#Description#>
 public struct List: Subcommand {
+  // TODO: add documentation
   public typealias OutputType = SimulatorList
 
+  // TODO: add documentation
   public enum Error: Swift.Error {
+    // TODO: add documentation
     case missingData
+    // TODO: add documentation
     case deocdingError(DecodingError)
   }
 
@@ -20,10 +26,12 @@ public struct List: Subcommand {
 
   private let decoder: _ListDecoder
 
+  // TODO: add documentation
   public var arguments: [String] {
     ["list", "-j"]
   }
 
+  // TODO: add documentation
   public init() {
     self.init(decoder: Self.decoder)
   }
@@ -32,6 +40,7 @@ public struct List: Subcommand {
     self.decoder = decoder
   }
 
+  // TODO: add documentation
   public func parse(_ data: Data?) throws -> SimulatorList {
     guard let data = data else {
       throw Error.missingData

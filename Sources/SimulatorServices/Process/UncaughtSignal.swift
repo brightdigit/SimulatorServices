@@ -2,11 +2,16 @@ import Foundation
 /// Reason for the termination.
 public typealias TerminationReason = Int
 
+// TODO: add documentation
 public struct UncaughtSignal: Equatable, CustomStringConvertible {
   private static let exitReason = 1
+  // TODO: add documentation
   public let reason: TerminationReason
+  // TODO: add documentation
   public let status: Int
+  // TODO: add documentation
   public let data: Data?
+  // TODO: add documentation
   public let output: Data?
 
   public var description: String {

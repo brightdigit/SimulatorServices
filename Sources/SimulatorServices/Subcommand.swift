@@ -9,7 +9,7 @@ public protocol Subcommand {
   var arguments: [String] { get }
 
   /// Optional function for recovering from a process error.
-  /// - Parameter error: ``ProcessError/UncaughtSignal`` received.
+  /// - Parameter error: ``UncaughtSignal`` received.
   /// - SeeAlso: ``GetAppContainer/recover(_:)``
   func recover(_ error: ProcessError) throws
 
@@ -20,7 +20,7 @@ public protocol Subcommand {
 
 extension Subcommand {
   /// Optional function for recovering from a process error.
-  /// - Parameter error: ``ProcessError/UncaughtSignalError`` received.
+  /// - Parameter error: ``UncaughtSignal`` received.
   /// - SeeAlso: ``GetAppContainer/recover(_:)``
   public func recover(_ error: ProcessError) throws {
     throw error

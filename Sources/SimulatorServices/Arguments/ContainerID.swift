@@ -1,8 +1,13 @@
+// TODO: add documentation
 public enum ContainerID: CustomStringConvertible, Equatable {
-  case app //            The .app bundle
-  case data //              The application's data container
-  case groups //          The App Group containers
-  case appGroup(String) // A specific App Group container
+  /// The .app bundle
+  case app
+  /// The application's data container
+  case data
+  /// The App Group containers
+  case groups
+  /// A specific App Group container
+  case appGroup(String)
 
   public var description: String {
     switch self {
