@@ -4,11 +4,16 @@ internal protocol _ListDecoder {
   func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
 }
 
+/// Lists  devices, device types, runtimes, and device pairs from `simctl`.
 public struct List: Subcommand {
+  /// Structure for the list of  devices, device types, runtimes, and device pairs.
   public typealias OutputType = SimulatorList
 
+  /// Errors thrown
   public enum Error: Swift.Error {
+    /// No standard output data.
     case missingData
+    /// Unable to decode the JSON returned by `simctl`
     case deocdingError(DecodingError)
   }
 
@@ -20,10 +25,12 @@ public struct List: Subcommand {
 
   private let decoder: _ListDecoder
 
+  /// Arguments to pass to `simctl`
   public var arguments: [String] {
     ["list", "-j"]
   }
 
+  /// Creates the List subcommand.
   public init() {
     self.init(decoder: Self.decoder)
   }
@@ -32,6 +39,11 @@ public struct List: Subcommand {
     self.decoder = decoder
   }
 
+  /// Parses the JSON returned from `simctl`.
+  /// - Parameter data: Stanard output from the `simctl` call.
+  /// - Returns: A ``SimulatorList`` object containing all the information.
+  /// - Throws: ``Error`` if the standard output data is nil
+  ///           or the JSON could not be decoded.
   public func parse(_ data: Data?) throws -> SimulatorList {
     guard let data = data else {
       throw Error.missingData
