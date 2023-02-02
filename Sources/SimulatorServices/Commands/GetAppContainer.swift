@@ -1,25 +1,26 @@
 import Foundation
 
-// TODO: add documentation
+/// Get an app container directory based on the bundle identifier.
 public struct GetAppContainer: Subcommand {
-  // TODO: add documentation
+  /// Path type.
   public typealias OutputType = Path
 
-  // TODO: add documentation
+  /// Error type thrown by this ``Subcommand``
   public enum Error: Swift.Error, Equatable {
+    /// Nothing was returned. Likely the simulator specified does not contain this app.
     case missingData
+    /// Data returned by the call is invalid.
     case invalidData(Data)
-    case invalidPath(String)
   }
 
-  // TODO: add documentation
+  /// Bundle identifier of the app container.
   public let appBundleIdentifier: String
-  // TODO: add documentation
+  /// ``ContainerID`` directory path to fetch.
   public let container: ContainerID
-  // TODO: add documentation
+  /// ``SimulatorID`` of the device to query.
   public let simulator: SimulatorID
 
-  // TODO: add documentation
+  /// Arguments to pass to `simctl`
   public var arguments: [String] {
     [
       "get_app_container",
@@ -29,7 +30,11 @@ public struct GetAppContainer: Subcommand {
     ]
   }
 
-  // TODO: add documentation
+  /// Create a call to `simctl` for fetching the app container directory.
+  /// - Parameters:
+  ///   - appBundleIdentifier: Bundle identiifier of the app.
+  ///   - container: The ``ContainerID`` of the type of directory to fetch.
+  ///   - simulator: The ``SimulatorID`` of the simulator device you are querying.
   public init(
     appBundleIdentifier: String,
     container: ContainerID = .app,
@@ -40,7 +45,10 @@ public struct GetAppContainer: Subcommand {
     self.simulator = simulator
   }
 
-  // TODO: add documentation
+  /// Parse the data from the call to `simctl`
+  /// - Parameter data: Stanard output from the `simctl` call.
+  /// - Returns: ``Path`` to the directory queried.
+  /// - Throws: ``Error`` if the standard output data is nil or invalid.
   public func parse(_ data: Data?) throws -> Path {
     guard let data = data else {
       throw Error.missingData
@@ -53,7 +61,8 @@ public struct GetAppContainer: Subcommand {
     return text.trimmingCharacters(in: .whitespacesAndNewlines)
   }
 
-  // TODO: add documentation
+  /// Recovers from the error state thrown by the command line call.
+  /// - Parameter error: ``ProcessError`` from an uncaught signal or a timeout.
   public func recover(_ error: ProcessError) throws {
     guard case let .uncaughtSignal(signal) = error else {
       throw error

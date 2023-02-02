@@ -1,4 +1,4 @@
-// TODO: add documentation
+/// Specification for the directory type from the app container.
 public enum ContainerID: CustomStringConvertible, Equatable {
   /// The .app bundle
   case app

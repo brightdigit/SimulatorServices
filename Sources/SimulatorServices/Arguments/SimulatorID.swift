@@ -1,9 +1,10 @@
 import Foundation
-// TODO: add documentation
+
+/// Identifier for specifying a simulator device.
 public enum SimulatorID: CustomStringConvertible, Equatable {
-  // TODO: add documentation
+  /// Specify particular device by its ``Device/udid``.
   case id(UUID)
-  // TODO: add documentation
+  /// Specify any booted device.
   case booted
   public var description: String {
     switch self {
