@@ -4,6 +4,8 @@ Control the simulator... in Swift.
 
 ## Overview
 
+![SimulatorServices Logo](logo.png)
+
 **SimulatorServices** provides an easy to use API for managing, querying, and accessing simulators on your Mac.
 
 ### Requirements 

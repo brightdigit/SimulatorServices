@@ -2,15 +2,20 @@ import Foundation
 /// Reason for the termination.
 public typealias TerminationReason = Int
 
+/// Details of a process error when it exists with an error code.
 public struct UncaughtSignal: Equatable, CustomStringConvertible {
   private static let exitReason = 1
 
+  /// The reason code of the process termination.
   public let reason: TerminationReason
 
+  /// The status code of the process.
   public let status: Int
 
+  /// Data returned from standard error.
   public let data: Data?
 
+  /// Data returned from standard output.
   public let output: Data?
 
   public var description: String {
