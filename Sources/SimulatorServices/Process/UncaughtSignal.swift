@@ -80,13 +80,13 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible {
   @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
   internal init?(
     termination: TerminationResult,
-    standardError: FileHandle,
+    data: Data?,
     output: Data?
   ) {
     self.init(
       reason: termination.reason,
       status: termination.status,
-      standardError: standardError,
+      data: data,
       output: output
     )
   }

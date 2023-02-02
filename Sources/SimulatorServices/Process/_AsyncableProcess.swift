@@ -1,5 +1,6 @@
 import Foundation
 
+@available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
 internal protocol _AsyncableProcess: AnyObject {
   func run() throws
   func promise() -> ProcessCompletionPromise
@@ -15,15 +16,14 @@ extension _AsyncableProcess {
   ) throws -> Data? {
     switch result {
     case let .success(termination):
-      let outputResult = Result { try fileHandles.output.readToEnd() }
       if let uncaught = UncaughtSignal(
         termination: termination,
-        standardError: fileHandles.error,
-        output: try? outputResult.get()
+        data: fileHandles.errorData,
+        output: try? fileHandles.outputResult.get()
       ) {
         throw ProcessError.uncaughtSignal(uncaught)
       } else {
-        return try outputResult.get()
+        return try fileHandles.outputResult.get()
       }
 
     case let .timedOut(timeout):
@@ -35,9 +35,10 @@ extension _AsyncableProcess {
   /// - Parameter timeout: Timeout for the process to be done.
   /// - Returns: Data if there anything output from the process.
   internal func run(timeout: DispatchTime) async throws -> Data? {
-    let handles = fileHandles()
+    var handles = fileHandles()
     let semaphore = promise()
     try run()
+    handles.readToEnd()
     return try await withCheckedThrowingContinuation { continuation in
       let semaphoreResult = semaphore.waitForCompletion(
         for: timeout,
