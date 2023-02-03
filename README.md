@@ -62,7 +62,7 @@ Use the Swift Package Manager to install this library via the repository url:
 https://github.com/brightdigit/SimulatorServices.git
 ```
 
-Use version up to `1.0`.
+Use version up to `1.0.1`.
 
 ## What does Simulator Services provide?
 
