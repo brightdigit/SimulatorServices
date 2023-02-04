@@ -45,9 +45,9 @@ The ``List`` subcommand gives you the ability pull the list of devices, device t
 
 ```swift
 let simctl = SimCtl()
-let list = try await self.run(List())
+let list = try await simctl.run(List())
 let devices = list.devices.values
-    .flatMap { $0  }
+    .flatMap { $0 }
     .filter{$0.state == "Booted"}
 ```
 
@@ -60,28 +60,32 @@ In this instance, we can take this a step further and find app container directo
 With our list of device simulators, we can use the ``GetAppContainer`` subcommand to find specific paths. In this case, let's find the _data_ directory of our app `com.BrightDigit.Jojo.watchkitapp`:
 
 ```swift
-for device in devices {
-  taskGroup.addTask {
-    do {
-      return try await self.run(
-        GetAppContainer(
-          appBundleIdentifier: "com.BrightDigit.Jojo.watchkitapp", 
-          container: "data", 
-          // use the udid of the device to indicate which simulator to pull from
-          simulator: .id(device.udid)
+let jojoSimulatorDataDirPaths: [Path] = await withTaskGroup(of: Path?.self) { taskGroup in
+  for device in devices {
+    taskGroup.addTask {
+      do {
+        return try await simctl.run(
+          GetAppContainer(
+            appBundleIdentifier: "com.BrightDigit.Jojo.watchkitapp",
+            container: .data,
+            // use the udid of the device to indicate which simulator to pull from
+            simulator: .id(device.udid)
+          )
         )
-      )
-    // if the data is missing that means that device does not contain that app container
-    } catch GetAppContainer.Error.missingData {
-      return nil
+      // if the data is missing that means that device does not contain that app container
+      } catch GetAppContainer.Error.missingData {
+        return nil
+      } catch {
+        return nil
+      }
     }
   }
-}
 
-let jojoSimulatorDataDirPaths = try await taskGroup.reduce(into: [Path]()) { paths, path in
-  // essential this does a compactMap on results
-  if let path {
-    paths.append(path)
+  return await taskGroup.reduce(into: [Path]()) { paths, path in
+    // essential this does a compactMap on results
+    if let path {
+      paths.append(path)
+    }
   }
 }
 ```
