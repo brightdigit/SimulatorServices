@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Device: Decodable, Equatable {
+public struct Device: Decodable, Equatable, Sendable {
   public let dataPath: Path // URL?
   public let dataPathSize: Int?
   public let logPath: Path // URL?

@@ -1,10 +1,10 @@
-public struct DeviceType: Decodable, Equatable {
-  public let productFamily: ProductFamily // deviceType
-  public let bundlePath: Path // URL?
+public struct DeviceType: Decodable, Equatable, Sendable {
+  public let productFamily: ProductFamily
+  public let bundlePath: Path
   public let maxRuntimeVersion: Int
   public let maxRuntimeVersionString: Version
-  public let identifier: DeviceTypeID // identifier
-  public let modelIdentifier: ModelID // model
+  public let identifier: DeviceTypeID
+  public let modelIdentifier: ModelID
   public let minRuntimeVersionString: Version
   public let minRuntimeVersion: Int
   public let name: String

@@ -1,5 +1,5 @@
 /// Specification for the directory type from the app container.
-public enum ContainerID: CustomStringConvertible, Equatable {
+public enum ContainerID: CustomStringConvertible, Equatable, Sendable {
   /// The .app bundle
   case app
   /// The application's data container

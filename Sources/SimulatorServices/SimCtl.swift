@@ -1,7 +1,7 @@
 import Foundation
 
 /// Interface for running `simctl`.
-public struct SimCtl {
+public struct SimCtl : Sendable {
   /// URL Path to `xcrun`
   public let xcRunURL: URL
 
