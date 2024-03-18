@@ -50,7 +50,7 @@ public struct GetAppContainer: Subcommand {
   /// - Returns: ``Path`` to the directory queried.
   /// - Throws: ``Error`` if the standard output data is nil or invalid.
   public func parse(_ data: Data?) throws -> Path {
-    guard let data = data else {
+    guard let data else {
       throw Error.missingData
     }
 

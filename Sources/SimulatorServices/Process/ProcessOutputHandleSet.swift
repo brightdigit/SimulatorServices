@@ -31,7 +31,7 @@ internal struct ProcessOutputHandleSet {
   }
 
   internal mutating func readToEnd() {
-    _outputResult = Result { try self.output.readToEnd() }
-    _errorResult = Result { try self.error.readToEnd() }
+    _outputResult = Result { try output.readToEnd() }
+    _errorResult = Result { try error.readToEnd() }
   }
 }

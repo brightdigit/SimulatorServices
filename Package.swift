@@ -6,17 +6,20 @@ import PackageDescription
 
 let package = Package(
   name: "SimulatorServices",
-  platforms: [.iOS(.v13), .macOS(.v10_15), .watchOS(.v6)],
+  platforms: [.iOS(.v13), .macOS(.v13), .watchOS(.v6)],
   products: [
     .library(
       name: "SimulatorServices",
       targets: ["SimulatorServices"]
     )
   ],
+  dependencies: [
+    .package(url: "https://github.com/brightdigit/OperatingSystemVersion.git", from: "1.0.0-beta.1")
+  ],
   targets: [
     .target(
       name: "SimulatorServices",
-      dependencies: [],
+      dependencies: ["OperatingSystemVersion"],
       swiftSettings: [
         SwiftSetting.enableUpcomingFeature("BareSlashRegexLiterals"),
         SwiftSetting.enableUpcomingFeature("ConciseMagicFile"),

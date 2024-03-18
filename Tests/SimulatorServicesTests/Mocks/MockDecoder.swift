@@ -4,7 +4,7 @@ import XCTest
 struct MockDecoder<U>: _ListDecoder {
   struct MismatchError: Error {
     let typeName: String
-    init<U>(_ type: U.Type) {
+    init(_ type: (some Any).Type) {
       typeName = String(describing: type)
     }
   }

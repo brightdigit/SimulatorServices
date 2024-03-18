@@ -21,7 +21,7 @@ class MockAsyncableProcess: _AsyncableProcess, ProcessCompletionPromise {
   }
 
   func run() throws {
-    guard let runError = runError else {
+    guard let runError else {
       return
     }
 

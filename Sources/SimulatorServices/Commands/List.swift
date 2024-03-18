@@ -1,6 +1,6 @@
 import Foundation
 
-internal protocol _ListDecoder : Sendable {
+internal protocol _ListDecoder: Sendable {
   func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
 }
 
@@ -47,7 +47,7 @@ public struct List: Subcommand {
   /// - Throws: ``Error`` if the standard output data is nil
   ///           or the JSON could not be decoded.
   public func parse(_ data: Data?) throws -> SimulatorList {
-    guard let data = data else {
+    guard let data else {
       throw Error.missingData
     }
 
