@@ -1,4 +1,4 @@
-// swift-tools-version: 5.5
+// swift-tools-version: 5.9
 
 // swiftlint:disable explicit_acl explicit_top_level_acl
 
@@ -16,7 +16,18 @@ let package = Package(
   targets: [
     .target(
       name: "SimulatorServices",
-      dependencies: []
+      dependencies: [],
+      swiftSettings: [
+        SwiftSetting.enableUpcomingFeature("BareSlashRegexLiterals"),
+        SwiftSetting.enableUpcomingFeature("ConciseMagicFile"),
+        SwiftSetting.enableUpcomingFeature("ExistentialAny"),
+        SwiftSetting.enableUpcomingFeature("ForwardTrailingClosures"),
+        SwiftSetting.enableUpcomingFeature("ImplicitOpenExistentials"),
+        SwiftSetting.enableUpcomingFeature("StrictConcurrency"),
+        SwiftSetting.enableUpcomingFeature("DisableOutwardActorInference"),
+        SwiftSetting.enableExperimentalFeature("StrictConcurrency"),
+        SwiftSetting.unsafeFlags(["-warn-concurrency", "-enable-actor-data-race-checks"])
+      ]
     ),
     .testTarget(
       name: "SimulatorServicesTests",

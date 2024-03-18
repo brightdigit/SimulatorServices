@@ -3,7 +3,7 @@ import Foundation
 public typealias TerminationReason = Int
 
 /// Details of a process error when it exists with an error code.
-public struct UncaughtSignal: Equatable, CustomStringConvertible {
+public struct UncaughtSignal: Equatable, CustomStringConvertible, Sendable {
   private static let exitReason = 1
 
   /// The reason code of the process termination.

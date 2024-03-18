@@ -3,7 +3,7 @@ import Foundation
 @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
 internal protocol _AsyncableProcess: AnyObject {
   func run() throws
-  func promise() -> ProcessCompletionPromise
+  func promise() -> any ProcessCompletionPromise
   func fileHandles() -> ProcessOutputHandleSet
   func termintationResult() -> TerminationResult
 }

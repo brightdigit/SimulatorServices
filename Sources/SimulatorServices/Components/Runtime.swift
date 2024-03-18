@@ -1,5 +1,5 @@
-public struct Runtime: Decodable, Equatable {
-  public struct SupportedDeviceType: Decodable, Equatable {
+public struct Runtime: Decodable, Equatable, Sendable {
+  public struct SupportedDeviceType: Decodable, Equatable, Sendable {
     public let bundlePath: Path // URL?
     public let name: String
     public let identifier: DeviceTypeID // identifier

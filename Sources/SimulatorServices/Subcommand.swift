@@ -1,7 +1,7 @@
 import Foundation
 
 /// Subcommand to be run from `simctl`
-public protocol Subcommand : Sendable {
+public protocol Subcommand: Sendable {
   /// The output type of the subcommand
   associatedtype OutputType
 

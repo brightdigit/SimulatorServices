@@ -1,6 +1,6 @@
 import Foundation
 
-internal protocol _ListDecoder {
+internal protocol _ListDecoder : Sendable {
   func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable
 }
 
@@ -17,13 +17,14 @@ public struct List: Subcommand {
     case deocdingError(DecodingError)
   }
 
-  private static let decoder: _ListDecoder = {
+  @available(macOS 13.0, *)
+  private static let decoder: any _ListDecoder = {
     let decoder = JSONDecoder()
     decoder.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.iso8601
     return decoder
   }()
 
-  private let decoder: _ListDecoder
+  private let decoder: any _ListDecoder
 
   /// Arguments to pass to `simctl`
   public var arguments: [String] {
@@ -31,11 +32,12 @@ public struct List: Subcommand {
   }
 
   /// Creates the List subcommand.
+  @available(macOS 13.0, *)
   public init() {
     self.init(decoder: Self.decoder)
   }
 
-  internal init(decoder: _ListDecoder) {
+  internal init(decoder: any _ListDecoder) {
     self.decoder = decoder
   }
 
@@ -59,4 +61,5 @@ public struct List: Subcommand {
   }
 }
 
+@available(macOS 13.0, *)
 extension JSONDecoder: _ListDecoder {}

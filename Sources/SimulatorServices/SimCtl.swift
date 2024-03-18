@@ -1,21 +1,21 @@
 import Foundation
 
 /// Interface for running `simctl`.
-public struct SimCtl : Sendable {
+public struct SimCtl: Sendable {
   /// URL Path to `xcrun`
   public let xcRunURL: URL
 
-  private let processFactory: () -> _SimCtlProcess
+  private let processFactory: @Sendable () -> any _SimCtlProcess
 
   internal init(
     xcRunURL: URL,
-    processFactory: @escaping @autoclosure () -> _SimCtlProcess
+    processFactory: @escaping @autoclosure @Sendable () -> any _SimCtlProcess
   ) {
     self.xcRunURL = xcRunURL
     self.processFactory = processFactory
   }
 
-  #if !os(iOS) && !os(watchOS) && !os(tvOS)
+  #if os(macOS)
     /// Create an interface to `simctl`
     /// - Parameter xcRunURL: URL path to `xcrun`.
     @available(macOS 10.15.4, *)

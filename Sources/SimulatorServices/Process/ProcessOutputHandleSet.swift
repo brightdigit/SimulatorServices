@@ -5,10 +5,10 @@ internal struct ProcessOutputHandleSet {
   private let output: FileHandle
   private let error: FileHandle
 
-  private var _outputResult: Result<Data?, Error>?
-  private var _errorResult: Result<Data?, Error>?
+  private var _outputResult: Result<Data?, any Error>?
+  private var _errorResult: Result<Data?, any Error>?
 
-  internal var outputResult: Result<Data?, Error> {
+  internal var outputResult: Result<Data?, any Error> {
     guard let outputResult = _outputResult else {
       preconditionFailure("Must call readToEnd first.")
     }

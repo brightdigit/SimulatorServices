@@ -1,4 +1,4 @@
-#if !os(iOS) && !os(watchOS) && !os(tvOS)
+#if os(macOS)
   import Foundation
 
   @available(macOS 10.15.4, *)
@@ -20,7 +20,7 @@
       )
     }
 
-    internal func promise() -> ProcessCompletionPromise {
+    internal func promise() -> any ProcessCompletionPromise {
       let semaphore = DispatchSemaphore(value: 0)
 
       terminationHandler = { _ in
