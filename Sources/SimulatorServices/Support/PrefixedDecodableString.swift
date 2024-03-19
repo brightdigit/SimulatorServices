@@ -27,12 +27,16 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+public struct PrefixMismatchError: Error {
+  public let singleStringValue: String
+}
+
 public protocol PrefixedDecodableString: Decodable, LosslessStringConvertible {
-  init(suffix: any StringProtocol) throws
   static var decodableStringPrefix: String {
     get
   }
-  var suffix : String { get }
+  var suffix: String { get }
+  init(suffix: any StringProtocol) throws
 }
 
 extension PrefixedDecodableString {
@@ -47,27 +51,26 @@ extension PrefixedDecodableString {
       )
     )
   }
-}
 
-extension PrefixedDecodableString {
   public init(from decoder: any Decoder) throws {
     let suffixValue = try decoder.decodeSuffix(for: Self.self)
     try self.init(suffix: suffixValue)
   }
+
   public init?(_ description: String) {
     guard let suffix = try? Self.suffix(forString: description) else {
       return nil
     }
     try? self.init(suffix: suffix)
   }
+
   public var description: String {
-    Self.decodableStringPrefix + self.suffix
+    Self.decodableStringPrefix + suffix
   }
 }
 
-extension PrefixedDecodableString where Self: RawDefined, Self.RawAvailableOptions.RawValue == String {
-  
-  
+extension PrefixedDecodableString where
+  Self: RawDefined, Self.RawAvailableOptions.RawValue == String {
   public init(suffix: any StringProtocol) throws {
     self.init(rawValue: .init(suffix))
   }
@@ -83,9 +86,13 @@ extension PrefixedDecodableString where Self: RawDefined, Self.RawAvailableOptio
   }
 }
 
-extension PrefixedDecodableString where Self: RawDefined, Self.RawAvailableOptions.RawValue == String, Self.RawAvailableOptions : RawReversable, Self.RawAvailableOptions.OptionType == Self {
-  public var suffix : String {
-    if let unknownValue = self.unknownValue() {
+extension PrefixedDecodableString where
+  Self: RawDefined,
+  Self.RawAvailableOptions.RawValue == String,
+  Self.RawAvailableOptions: RawReversable,
+  Self.RawAvailableOptions.OptionType == Self {
+  public var suffix: String {
+    if let unknownValue = unknownValue() {
       return unknownValue
     } else if let option = RawAvailableOptions(option: self) {
       return option.rawValue
@@ -96,7 +103,9 @@ extension PrefixedDecodableString where Self: RawDefined, Self.RawAvailableOptio
 }
 
 extension Decoder {
-  func decodeSuffix(for decodable: (some PrefixedDecodableString).Type) throws -> any StringProtocol {
+  internal func decodeSuffix(
+    for decodable: (some PrefixedDecodableString).Type
+  ) throws -> any StringProtocol {
     let stringValue = try singleValueContainer().decode(String.self)
     do {
       return try decodable.suffix(forString: stringValue)
@@ -113,7 +122,7 @@ extension Decoder {
 }
 
 extension DecodingError {
-  var context: DecodingError.Context? {
+  internal var context: DecodingError.Context? {
     switch self {
     case let .typeMismatch(_, context):
       return context
@@ -128,15 +137,11 @@ extension DecodingError {
     }
   }
 
-  func prefixMismatchStringValue() throws -> String {
+  internal func prefixMismatchStringValue() throws -> String {
     guard let prefixMismatchError = context?.underlyingError as? PrefixMismatchError else {
       throw self
     }
 
     return prefixMismatchError.singleStringValue
   }
-}
-
-struct PrefixMismatchError: Error {
-  let singleStringValue: String
 }

@@ -1,5 +1,5 @@
 //
-//  _AsyncableProcess.swift
+//  InternalAsyncableProcess.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -30,7 +30,7 @@
 import Foundation
 
 @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-protocol _AsyncableProcess: AnyObject {
+internal protocol InternalAsyncableProcess: AnyObject {
   func run() throws
   func promise() -> any ProcessCompletionPromise
   func fileHandles() -> ProcessOutputHandleSet
@@ -38,8 +38,8 @@ protocol _AsyncableProcess: AnyObject {
 }
 
 @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-extension _AsyncableProcess {
-  func data(
+extension InternalAsyncableProcess {
+  internal func data(
     basedOn result: ProcessResult,
     from fileHandles: ProcessOutputHandleSet
   ) throws -> Data? {
@@ -63,7 +63,7 @@ extension _AsyncableProcess {
   /// Run the process asyncronously and returns the output as data.
   /// - Parameter timeout: Timeout for the process to be done.
   /// - Returns: Data if there anything output from the process.
-  func run(timeout: DispatchTime) async throws -> Data? {
+  internal func run(timeout: DispatchTime) async throws -> Data? {
     var handles = fileHandles()
     let semaphore = promise()
     try run()

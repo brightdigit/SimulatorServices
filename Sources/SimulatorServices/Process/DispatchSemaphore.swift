@@ -30,7 +30,7 @@
 import Foundation
 
 extension DispatchSemaphore: ProcessCompletionPromise {
-  func waitForCompletion(
+  internal func waitForCompletion(
     for timeout: DispatchTime,
     with result: @autoclosure @escaping () -> TerminationResult
   ) -> ProcessResult {

@@ -31,12 +31,12 @@
   import Foundation
 
   @available(macOS 10.15.4, *)
-  extension Process: _SimCtlProcess, _AsyncableProcess {
-    func termintationResult() -> TerminationResult {
+  extension Process: InternalSimCtlProcess, InternalAsyncableProcess {
+    internal func termintationResult() -> TerminationResult {
       .init(reason: terminationReason.rawValue, status: Int(terminationStatus))
     }
 
-    func fileHandles() -> ProcessOutputHandleSet {
+    internal func fileHandles() -> ProcessOutputHandleSet {
       let standardError = Pipe()
       let standardOutput = Pipe()
 
@@ -49,7 +49,7 @@
       )
     }
 
-    func promise() -> any ProcessCompletionPromise {
+    internal func promise() -> any ProcessCompletionPromise {
       let semaphore = DispatchSemaphore(value: 0)
 
       terminationHandler = { _ in

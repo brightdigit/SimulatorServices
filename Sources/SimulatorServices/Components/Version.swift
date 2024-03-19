@@ -34,7 +34,7 @@ import OperatingSystemVersion
 public typealias Version = OperatingSystemVersion
 
 extension Version {
-  static func random() -> Version {
+  internal static func random() -> Version {
     self.init(
       majorVersion: .random(in: 7 ... 20),
       minorVersion: .random(in: 0 ... 5),

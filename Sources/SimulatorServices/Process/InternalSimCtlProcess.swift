@@ -1,5 +1,5 @@
 //
-//  _SimCtlProcess.swift
+//  InternalSimCtlProcess.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,7 +29,7 @@
 
 import Foundation
 
-protocol _SimCtlProcess: AnyObject {
+internal protocol InternalSimCtlProcess: AnyObject {
   var executableURL: URL? { get set }
   var arguments: [String]? { get set }
   func run(timeout: DispatchTime) async throws -> Data?

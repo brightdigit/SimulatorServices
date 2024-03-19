@@ -34,11 +34,11 @@ public struct SimCtl: Sendable {
   /// URL Path to `xcrun`
   public let xcRunURL: URL
 
-  private let processFactory: @Sendable () -> any _SimCtlProcess
+  private let processFactory: @Sendable () -> any InternalSimCtlProcess
 
-  init(
+  internal init(
     xcRunURL: URL,
-    processFactory: @escaping @autoclosure @Sendable () -> any _SimCtlProcess
+    processFactory: @escaping @autoclosure @Sendable () -> any InternalSimCtlProcess
   ) {
     self.xcRunURL = xcRunURL
     self.processFactory = processFactory

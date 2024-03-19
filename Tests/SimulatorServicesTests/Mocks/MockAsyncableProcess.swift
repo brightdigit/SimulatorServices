@@ -31,7 +31,7 @@ import Foundation
 @testable import SimulatorServices
 
 @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-class MockAsyncableProcess: _AsyncableProcess, ProcessCompletionPromise {
+class MockAsyncableProcess: InternalAsyncableProcess, ProcessCompletionPromise {
   init(outputData: Data, errorData: Data, terminationResult: TerminationResult, runError: Error? = nil, willTimeout: Bool) {
     self.outputData = outputData
     self.errorData = errorData

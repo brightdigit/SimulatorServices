@@ -34,13 +34,12 @@ public struct RuntimeID:
   PrefixedDecodableString,
   Equatable,
   Sendable {
-  
   public static let decodableStringPrefix = "com.apple.CoreSimulator.SimRuntime."
 
   public let platform: Platform
   public let version: Version
 
-  public var suffix : String {
+  public var suffix: String {
     let values: [any CustomStringConvertible] = [
       platform,
       version.majorVersion,

@@ -27,38 +27,34 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import Foundation
+@testable import SimulatorServices
 import XCTest
 
 extension Array {
   static func random(withCountIn countRange: ClosedRange<Int>, using closure: @escaping @Sendable () -> Element) -> Self {
-    
-    let count : Int = .random(in: countRange)
-    return (0..<count).map{_ in closure()}
+    let count: Int = .random(in: countRange)
+    return (0 ..< count).map { _ in closure() }
   }
 }
 
 final class RuntimeIDTests: XCTestCase {
-  
-  func random (_ : Int) -> RuntimeID {
-    return .init(platform: .random(), version: .random())
+  func random(_: Int) -> RuntimeID {
+    .init(platform: .random(), version: .random())
   }
 
   func testInitDescription() throws {
-    
-    let count : Int = .random(in: (20...50))
-    let runtimes = (0..<count).map(self.random)
-    
+    let count: Int = .random(in: 20 ... 50)
+    let runtimes = (0 ..< count).map(random)
+
     for runtime in runtimes {
       let suffix = runtime.suffix
       let actualWSuffix = try RuntimeID(suffix: suffix)
       XCTAssertEqual(runtime, actualWSuffix)
-      
-        let description = runtime.description
-        let actualWDesc = RuntimeID(description)
-        XCTAssertEqual(runtime, actualWDesc)
+
+      let description = runtime.description
+      let actualWDesc = RuntimeID(description)
+      XCTAssertEqual(runtime, actualWDesc)
     }
   }
-
 }

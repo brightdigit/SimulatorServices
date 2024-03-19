@@ -1,12 +1,11 @@
 /// Device platform
-public enum Platform: 
+public enum Platform:
   RawDefined,
   Equatable,
   Decodable,
   Sendable,
   RandomEnum,
   CustomStringConvertible {
-  
   case iOS
   case tvOS
   case watchOS
@@ -38,7 +37,7 @@ public enum Platform:
     case .xrOS: self = .xrOS
     }
   }
-  
+
   public func unknownValue() -> String? {
     guard case let .unknown(string) = self else {
       return nil

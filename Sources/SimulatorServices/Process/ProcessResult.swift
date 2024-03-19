@@ -29,7 +29,7 @@
 
 import Foundation
 
-enum ProcessResult {
+internal enum ProcessResult {
   case success(TerminationResult)
   case timedOut(DispatchTime)
 }

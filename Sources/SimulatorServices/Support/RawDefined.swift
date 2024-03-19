@@ -27,12 +27,10 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public protocol RawDefined {
-  associatedtype RawAvailableOptions: RawRepresentable
+public protocol RawReversable {
+  associatedtype OptionType: RawDefined
 
-  init(rawOption: RawAvailableOptions)
-  static func unknown(_ rawValue: RawAvailableOptions.RawValue) -> Self
-  func unknownValue() -> RawAvailableOptions.RawValue?
+  init?(option: OptionType)
 }
 
 extension RawDefined where Self: Decodable, Self.RawAvailableOptions.RawValue: Decodable {
@@ -55,13 +53,8 @@ extension RawDefined where Self: CaseIterable, Self.RawAvailableOptions: CaseIte
   }
 }
 
-public protocol RawReversable {
-  associatedtype OptionType: RawDefined
-
-  init?(option: OptionType)
-}
-
-extension RawDefined where Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self {
+extension RawDefined where
+  Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self {
   public var underlyingValue: RawAvailableOptions.RawValue {
     switch (RawAvailableOptions(option: self), unknownValue()) {
     case let (.some(value), _):
@@ -76,16 +69,24 @@ extension RawDefined where Self.RawAvailableOptions: RawReversable, Self.RawAvai
   }
 }
 
-extension RawDefined where Self: CustomStringConvertible, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
+extension RawDefined where
+  Self: CustomStringConvertible, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
   public var description: String {
     underlyingValue.description
   }
 }
 
-
-extension PrefixedDecodableString where Self: CustomStringConvertible, Self: RawDefined, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
-
+extension PrefixedDecodableString where
+  Self: CustomStringConvertible, Self: RawDefined, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
   public var description: String {
-    Self.decodableStringPrefix + self.suffix
+    Self.decodableStringPrefix + suffix
   }
+}
+
+public protocol RawDefined {
+  associatedtype RawAvailableOptions: RawRepresentable
+
+  init(rawOption: RawAvailableOptions)
+  static func unknown(_ rawValue: RawAvailableOptions.RawValue) -> Self
+  func unknownValue() -> RawAvailableOptions.RawValue?
 }

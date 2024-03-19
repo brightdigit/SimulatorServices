@@ -30,7 +30,7 @@
 import Foundation
 @testable import SimulatorServices
 
-class MockSimCtlProcess: _SimCtlProcess {
+class MockSimCtlProcess: InternalSimCtlProcess {
   init(result: Result<Data?, Error>, executableURL: URL? = nil, arguments: [String]? = nil) {
     self.result = result
     self.executableURL = executableURL

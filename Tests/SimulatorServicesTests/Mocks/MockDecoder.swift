@@ -30,7 +30,7 @@
 @testable import SimulatorServices
 import XCTest
 
-struct MockDecoder<U: Sendable>: _ListDecoder {
+struct MockDecoder<U: Sendable>: InternalListDecoder {
   struct MismatchError: Error {
     let typeName: String
     init(_ type: (some Any).Type) {
