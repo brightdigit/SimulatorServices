@@ -6,7 +6,14 @@ import PackageDescription
 
 let package = Package(
   name: "SimulatorServices",
-  platforms: [.iOS(.v13), .macOS(.v13), .watchOS(.v6)],
+  platforms: [
+    .iOS(.v16),
+    .macOS(.v13),
+    .watchOS(.v9),
+    .macCatalyst(.v16),
+    .tvOS(.v16),
+    .visionOS(.v1)
+  ],
   products: [
     .library(
       name: "SimulatorServices",
@@ -14,7 +21,10 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(url: "https://github.com/brightdigit/OperatingSystemVersion.git", from: "1.0.0-beta.1")
+    .package(
+      url: "https://github.com/brightdigit/OperatingSystemVersion.git",
+      from: "1.0.0-beta.1"
+    )
   ],
   targets: [
     .target(
@@ -34,6 +44,10 @@ let package = Package(
     ),
     .testTarget(
       name: "SimulatorServicesTests",
+      dependencies: ["SimulatorServices"]
+    ),
+    .testTarget(
+      name: "SimulatorServicesIntegrationTests",
       dependencies: ["SimulatorServices"]
     )
   ]

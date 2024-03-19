@@ -39,27 +39,16 @@ public class SimCtlTests: XCTestCase {
     XCTAssertEqual(expectedXcRunURL, simctl.xcRunURL)
   }
 
-  #if os(Linux)
-    func testRunSubcommandParse() throws {
-      let details = SubcommandTest(from: self)
-      let runExpectation = expectation(description: "run")
-      Task {
-        let actualUUID = try await details.simctl.run(details.command)
-        XCTAssertEqual(actualUUID, details.expectedUUID)
-        runExpectation.fulfill()
-      }
-      waitForExpectations(timeout: 1.0) { error in
-        XCTAssertNil(error)
-      }
-    }
-  #else
-    func testRunSubcommandParse() async throws {
-      let details = SubcommandTest(from: self)
+  func testRunSubcommandParse() throws {
+    let details = SubcommandTest(from: self)
+    let runExpectation = expectation(description: "run")
+    Task {
       let actualUUID = try await details.simctl.run(details.command)
-      await waitForExpectations(timeout: 1.0) { error in
-        XCTAssertNil(error)
-        XCTAssertEqual(actualUUID, details.expectedUUID)
-      }
+      XCTAssertEqual(actualUUID, details.expectedUUID)
+      runExpectation.fulfill()
     }
-  #endif
+    waitForExpectations(timeout: 1.0) { error in
+      XCTAssertNil(error)
+    }
+  }
 }

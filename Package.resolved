@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "operatingsystemversion",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/brightdigit/OperatingSystemVersion.git",
+      "state" : {
+        "revision" : "bd3c70eb38da109ec6be9958e80ee495125d3232",
+        "version" : "1.0.0-beta.1"
+      }
+    }
+  ],
+  "version" : 2
+}

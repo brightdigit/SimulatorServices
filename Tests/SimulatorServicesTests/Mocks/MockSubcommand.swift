@@ -12,5 +12,5 @@ final class MockSubcommand<OutputType>: Subcommand {
     try callback(data)
   }
 
-  let arguments : [String]
+  let arguments: [String]
 }
