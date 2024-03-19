@@ -29,16 +29,18 @@
 
 import OperatingSystemVersion
 
-/// Runtime ID
-public struct RuntimeID:
-  PrefixedDecodableString,
-  Equatable,
-  Sendable {
+/// A structure representing a runtime ID.
+public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable {
+  /// The prefix used for decoding strings.
   public static let decodableStringPrefix = "com.apple.CoreSimulator.SimRuntime."
 
+  /// The platform of the runtime.
   public let platform: Platform
+
+  /// The version of the runtime.
   public let version: Version
 
+  /// The suffix part of the runtime ID.
   public var suffix: String {
     let values: [any CustomStringConvertible] = [
       platform,
@@ -48,11 +50,20 @@ public struct RuntimeID:
     return values.map(\.description).joined(separator: "-")
   }
 
+  /// Initializes a runtime ID with the given platform and version.
+  ///
+  /// - Parameters:
+  ///   - platform: The platform of the runtime.
+  ///   - version: The version of the runtime.
   public init(platform: Platform, version: Version) {
     self.platform = platform
     self.version = version
   }
 
+  /// Initializes a runtime ID with the given suffix.
+  ///
+  /// - Parameter suffix: The suffix part of the runtime ID.
+  /// - Throws: An error if initialization fails.
   public init(suffix: any StringProtocol) throws {
     let values = suffix.components(separatedBy: "-")
     guard values.count == 3 else {

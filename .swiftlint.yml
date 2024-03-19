@@ -78,7 +78,6 @@ opt_in_rules:
   - static_operator
   - strict_fileprivate
   - strong_iboutlet
-  - switch_case_on_newline
   - toggle_bool
   - trailing_closure
   - type_contents_order
@@ -87,7 +86,6 @@ opt_in_rules:
   - unowned_variable_capture
   - untyped_error_in_catch
   - vertical_parameter_alignment_on_call
-  - vertical_whitespace_between_cases
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
   - xct_specific_matcher
@@ -96,9 +94,6 @@ analyzer_rules:
   - explicit_self
   - unused_declaration
   - unused_import  
-cyclomatic_complexity:
-  - 4
-  - 8
 type_body_length:
   - 100
   - 200
@@ -106,8 +101,8 @@ file_length:
   - 200
   - 300
 function_body_length:
-  - 15
-  - 25
+  - 18
+  - 40
 function_parameter_count: 8
 line_length:
   - 90

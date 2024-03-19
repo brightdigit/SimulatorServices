@@ -79,24 +79,6 @@ extension PrefixedDecodableString {
     Self.decodableStringPrefix + suffix
   }
 
-  /// Retrieves the suffix from a given string by removing the prefix.
-  ///
-  /// - Parameters:
-  ///   - value: The string from which to retrieve the suffix.
-  /// - Returns: The suffix part of the string.
-  /// - Throws: A `PrefixMismatchError` if the prefix does not match.
-  public static func suffix(forString value: String) throws -> any StringProtocol {
-    guard value.starts(with: decodableStringPrefix) else {
-      throw PrefixMismatchError(singleStringValue: value)
-    }
-    return value.suffix(
-      from: value.index(
-        value.startIndex,
-        offsetBy: decodableStringPrefix.count
-      )
-    )
-  }
-
   /// Initializes an instance by decoding from the given decoder.
   ///
   /// - Parameters:
@@ -117,6 +99,24 @@ extension PrefixedDecodableString {
       return nil
     }
     try? self.init(suffix: suffix)
+  }
+
+  /// Retrieves the suffix from a given string by removing the prefix.
+  ///
+  /// - Parameters:
+  ///   - value: The string from which to retrieve the suffix.
+  /// - Returns: The suffix part of the string.
+  /// - Throws: A `PrefixMismatchError` if the prefix does not match.
+  public static func suffix(forString value: String) throws -> any StringProtocol {
+    guard value.starts(with: decodableStringPrefix) else {
+      throw PrefixMismatchError(singleStringValue: value)
+    }
+    return value.suffix(
+      from: value.index(
+        value.startIndex,
+        offsetBy: decodableStringPrefix.count
+      )
+    )
   }
 }
 
@@ -161,59 +161,5 @@ extension PrefixedDecodableString where
     } else {
       fatalError("Invalid State")
     }
-  }
-}
-
-extension Decoder {
-  /// Decode the suffix for a `PrefixedDecodableString` type.
-  ///
-  /// - Parameters:
-  ///   - decodable: The type of `PrefixedDecodableString`.
-  /// - Throws: A `DecodingError` if decoding fails.
-  /// - Returns: The suffix part of the string after removing the prefix.
-  internal func decodeSuffix(
-    for decodable: (some PrefixedDecodableString).Type
-  ) throws -> any StringProtocol {
-    let stringValue = try singleValueContainer().decode(String.self)
-    do {
-      return try decodable.suffix(forString: stringValue)
-    } catch let error as PrefixMismatchError {
-      throw DecodingError.dataCorrupted(
-        .init(
-          codingPath: [],
-          debugDescription: "Invalid Value: \(error.singleStringValue)",
-          underlyingError: error
-        )
-      )
-    }
-  }
-}
-
-extension DecodingError {
-  internal var context: DecodingError.Context? {
-    switch self {
-    case let .typeMismatch(_, context):
-      return context
-    case let .valueNotFound(_, context):
-      return context
-    case let .keyNotFound(_, context):
-      return context
-    case let .dataCorrupted(context):
-      return context
-    @unknown default:
-      return nil
-    }
-  }
-
-  /// Retrieve the prefix mismatch string value from the decoding error.
-  ///
-  /// - Throws: The original error if the underlying error is not a `PrefixMismatchError`.
-  /// - Returns: The single string value causing the prefix mismatch.
-  internal func prefixMismatchStringValue() throws -> String {
-    guard let prefixMismatchError = context?.underlyingError as? PrefixMismatchError else {
-      throw self
-    }
-
-    return prefixMismatchError.singleStringValue
   }
 }

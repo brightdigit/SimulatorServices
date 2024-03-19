@@ -27,12 +27,12 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-protocol RandomEnum: CaseIterable {
+internal protocol RandomEnum: CaseIterable {
   static func random() -> Self
 }
 
 extension RandomEnum {
-  static func random() -> Self {
+  internal static func random() -> Self {
     // swiftlint:disable:next force_unwrapping
     allCases.randomElement()!
   }

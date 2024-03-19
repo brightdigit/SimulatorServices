@@ -68,7 +68,7 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible, Sendable {
     self.output = output
   }
 
-  init?(
+  internal init?(
     reason: TerminationReason,
     status: Int,
     data: Data?,
@@ -86,7 +86,7 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible, Sendable {
   }
 
   @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-  init?(
+  internal init?(
     reason: TerminationReason,
     status: Int,
     standardError: FileHandle,
@@ -108,7 +108,7 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible, Sendable {
   }
 
   @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-  init?(
+  internal init?(
     termination: TerminationResult,
     data: Data?,
     output: Data?

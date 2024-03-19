@@ -26,11 +26,10 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
+
 /// An enumeration representing different platforms.
-///
-/// This enumeration conforms to RawDefined, Equatable, Decodable, Sendable, RandomEnum, and CustomStringConvertible protocols.
-///
-/// Use this enumeration to represent various platforms such as iOS, tvOS, watchOS, xrOS, or an unknown platform with a custom string.
+/// Use this enumeration to represent various platforms such as iOS, tvOS, watchOS, xrOS,
+/// or an unknown platform with a custom string.
 ///
 /// Example usage:
 /// ```
@@ -38,21 +37,28 @@
 /// print(platform) // Output: iOS
 /// ```
 ///
-/// - Note: If a platform is unknown, it can be represented using the `.unknown` case with a custom string.
-public enum Platform: RawDefined, Equatable, Decodable, Sendable, RandomEnum, CustomStringConvertible {
-  
+/// - Note: If a platform is unknown,
+/// it can be represented using the `.unknown` case with a custom string.
+public enum Platform:
+  RawDefined,
+  Equatable,
+  Decodable,
+  Sendable,
+  RandomEnum,
+  Hashable,
+  CustomStringConvertible {
   /// Represents the iOS platform.
   case iOS
-  
+
   /// Represents the tvOS platform.
   case tvOS
-  
+
   /// Represents the watchOS platform.
   case watchOS
-  
+
   /// Represents the xrOS platform.
   case xrOS
-  
+
   /// Represents an unknown platform with a custom string.
   case unknown(String)
 
@@ -102,7 +108,8 @@ public enum Platform: RawDefined, Equatable, Decodable, Sendable, RandomEnum, Cu
 
   /// Retrieves the custom string for an unknown platform.
   ///
-  /// - Returns: The custom string representing the unknown platform if applicable, otherwise nil.
+  /// - Returns: The custom string representing the unknown platform if applicable,
+  ///  otherwise nil.
   public func unknownValue() -> String? {
     guard case let .unknown(string) = self else {
       return nil

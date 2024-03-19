@@ -27,9 +27,54 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+import Foundation
+
+/// Result from a call to the ``List`` subcommand.
 public struct SimulatorList: Decodable, Equatable, Sendable {
+  public enum CodingKeys: CodingKey {
+    case devicetypes
+    case runtimes
+    case devices
+    case pairs
+  }
+
+  /// DeviceTypes
   public let devicetypes: [DeviceType]
+  /// Runtimes
   public let runtimes: [Runtime]
-  public let devices: [String: [Device]]
-  public let pairs: [String: DevicePair]
+  /// Devices and their RuntimeIDs
+  public let devices: [RuntimeID: [Device]]
+  /// DevicePairs and thier IDs
+  public let pairs: [UUID: DevicePair]
+
+  // swiftlint:disable:next function_body_length
+  public init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    devicetypes = try container.decode([DeviceType].self, forKey: .devicetypes)
+    runtimes = try container.decode([Runtime].self, forKey: .runtimes)
+    let devices = try container.decode([String: [Device]].self, forKey: .devices)
+    let pairs = try container.decode([String: DevicePair].self, forKey: .pairs)
+
+    self.devices = try devices.reduce(
+      into: [RuntimeID: [Device]]()
+    ) { partialResult, pair in
+      let (runtimeString, devices) = pair
+      let suffix = try RuntimeID.suffix(forString: runtimeString)
+      try partialResult[.init(suffix: suffix)] = devices
+    }
+
+    self.pairs = try pairs.reduce(
+      into: [UUID: DevicePair]()
+    ) { partialResult, pair in
+      guard let id = UUID(uuidString: pair.key) else {
+        throw DecodingError.dataCorrupted(
+          .init(
+            codingPath: [],
+            debugDescription: "Invalid DevicePair ID: \(pair.key)"
+          )
+        )
+      }
+      partialResult[id] = pair.value
+    }
+  }
 }
