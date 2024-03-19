@@ -1,5 +1,5 @@
 //
-//  Subcommand.swift
+//  RandomEnum.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,31 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
-
-/// Subcommand to be run from `simctl`
-public protocol Subcommand: Sendable {
-  /// The output type of the subcommand
-  associatedtype OutputType
-
-  /// Arguments to be passed to `simctl`
-  var arguments: [String] { get }
-
-  /// Optional function for recovering from a process error.
-  /// - Parameter error: ``UncaughtSignal`` received.
-  /// - SeeAlso: ``GetAppContainer/recover(_:)``
-  func recover(_ error: ProcessError) throws
-
-  /// Convert the data into the desiginated ``OutputType``.
-  /// - Parameter data: Data received from the `simctl`
-  func parse(_ data: Data?) throws -> OutputType
+internal protocol RandomEnum: CaseIterable {
+  static func random() -> Self
 }
 
-extension Subcommand {
-  /// Optional function for recovering from a process error.
-  /// - Parameter error: ``UncaughtSignal`` received.
-  /// - SeeAlso: ``GetAppContainer/recover(_:)``
-  public func recover(_ error: ProcessError) throws {
-    throw error
+extension RandomEnum {
+  internal static func random() -> Self {
+    // swiftlint:disable:next force_unwrapping
+    allCases.randomElement()!
   }
 }

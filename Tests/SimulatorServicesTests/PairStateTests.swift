@@ -1,5 +1,5 @@
 //
-//  Subcommand.swift
+//  PairStateTests.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,31 +27,21 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+@testable import SimulatorServices
+import XCTest
 
-/// Subcommand to be run from `simctl`
-public protocol Subcommand: Sendable {
-  /// The output type of the subcommand
-  associatedtype OutputType
+final class PairStateTests: XCTestCase {
+  func testExample() throws {
+    let pairStates: [PairState] = Array.random(withCountIn: 20 ... 50) {
+      Bool.random() ? PairState.random() : .unknown(UUID().uuidString)
+    }
 
-  /// Arguments to be passed to `simctl`
-  var arguments: [String] { get }
-
-  /// Optional function for recovering from a process error.
-  /// - Parameter error: ``UncaughtSignal`` received.
-  /// - SeeAlso: ``GetAppContainer/recover(_:)``
-  func recover(_ error: ProcessError) throws
-
-  /// Convert the data into the desiginated ``OutputType``.
-  /// - Parameter data: Data received from the `simctl`
-  func parse(_ data: Data?) throws -> OutputType
-}
-
-extension Subcommand {
-  /// Optional function for recovering from a process error.
-  /// - Parameter error: ``UncaughtSignal`` received.
-  /// - SeeAlso: ``GetAppContainer/recover(_:)``
-  public func recover(_ error: ProcessError) throws {
-    throw error
+    for pairState in pairStates {
+      if case let .unknown(string) = pairState {
+        XCTAssertEqual(string, pairState.unknownValue())
+      } else {
+        XCTAssertNil(pairState.unknownValue())
+      }
+    }
   }
 }

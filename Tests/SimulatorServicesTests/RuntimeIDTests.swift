@@ -1,5 +1,5 @@
 //
-//  Subcommand.swift
+//  RuntimeIDTests.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,30 +28,33 @@
 //
 
 import Foundation
+@testable import SimulatorServices
+import XCTest
 
-/// Subcommand to be run from `simctl`
-public protocol Subcommand: Sendable {
-  /// The output type of the subcommand
-  associatedtype OutputType
-
-  /// Arguments to be passed to `simctl`
-  var arguments: [String] { get }
-
-  /// Optional function for recovering from a process error.
-  /// - Parameter error: ``UncaughtSignal`` received.
-  /// - SeeAlso: ``GetAppContainer/recover(_:)``
-  func recover(_ error: ProcessError) throws
-
-  /// Convert the data into the desiginated ``OutputType``.
-  /// - Parameter data: Data received from the `simctl`
-  func parse(_ data: Data?) throws -> OutputType
+extension Array {
+  static func random(withCountIn countRange: ClosedRange<Int>, using closure: @escaping @Sendable () -> Element) -> Self {
+    let count: Int = .random(in: countRange)
+    return (0 ..< count).map { _ in closure() }
+  }
 }
 
-extension Subcommand {
-  /// Optional function for recovering from a process error.
-  /// - Parameter error: ``UncaughtSignal`` received.
-  /// - SeeAlso: ``GetAppContainer/recover(_:)``
-  public func recover(_ error: ProcessError) throws {
-    throw error
+final class RuntimeIDTests: XCTestCase {
+  func random(_: Int) -> RuntimeID {
+    .init(platform: .random(), version: .random())
+  }
+
+  func testInitDescription() throws {
+    let count: Int = .random(in: 20 ... 50)
+    let runtimes = (0 ..< count).map(random)
+
+    for runtime in runtimes {
+      let suffix = runtime.suffix
+      let actualWSuffix = try RuntimeID(suffix: suffix)
+      XCTAssertEqual(runtime, actualWSuffix)
+
+      let description = runtime.description
+      let actualWDesc = RuntimeID(description)
+      XCTAssertEqual(runtime, actualWDesc)
+    }
   }
 }
