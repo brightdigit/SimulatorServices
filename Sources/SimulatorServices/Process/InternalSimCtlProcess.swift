@@ -29,8 +29,17 @@
 
 import Foundation
 
+/// A protocol representing an internal simulator control process.
 internal protocol InternalSimCtlProcess: AnyObject {
+  /// The URL of the executable.
   var executableURL: URL? { get set }
+
+  /// The arguments to be passed to the process.
   var arguments: [String]? { get set }
+
+  /// Runs the process with a specified timeout.
+  /// - Parameters:
+  ///   - timeout: The time until the process times out.
+  /// - Returns: The data output of the process.
   func run(timeout: DispatchTime) async throws -> Data?
 }

@@ -29,15 +29,35 @@
 
 import Foundation
 
+/// Represents a device used in simulation.
 public struct Device: Decodable, Equatable, Sendable {
+  /// The path to the data directory.
   public let dataPath: Path // URL?
+
+  /// The size of the data directory.
   public let dataPathSize: Int?
+
+  /// The path to the log directory.
   public let logPath: Path // URL?
+
+  /// The unique identifier for the device.
   public let udid: UUID
+
+  /// Indicates if the device is available.
   public let isAvailable: Bool
+
+  /// The size of the log directory.
   public let logPathSize: Int?
+
+  /// The timestamp when the device was last booted.
   public let lastBootedAt: Date?
+
+  /// The identifier for the device type.
   public let deviceTypeIdentifier: DeviceTypeID // Identifier (Device)
+
+  /// The current state of the device.
   public let state: DeviceState // DeviceState
+
+  /// The name of the device.
   public let name: String
 }

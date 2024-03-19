@@ -29,18 +29,19 @@
 
 import Foundation
 
-/// An error which occured while running a process.
+/// An error that occurred while running a process.
 public enum ProcessError: Error, LocalizedError, Equatable {
-  /// A timeout from running a process asnycronously
+  /// Represents a timeout from running a process asynchronously.
   case timeout(DispatchTime)
 
-  /// The process existed with an error exit code.
+  /// Represents a process that exited with an error exit code.
   case uncaughtSignal(UncaughtSignal)
 
+  /// A description of the error.
   public var errorDescription: String? {
     switch self {
     case let .timeout(timeout):
-      return "Process did not completed with timeout: \(timeout)"
+      return "Process did not complete within the specified timeout: \(timeout)"
     case let .uncaughtSignal(signal):
       return signal.description
     }

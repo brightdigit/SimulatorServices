@@ -27,14 +27,32 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+/// A type representing a specific device configuration.
 public struct DeviceType: Decodable, Equatable, Sendable {
+  /// The family of products the device belongs to.
   public let productFamily: ProductFamily // deviceType
+
+  /// The path to the bundle.
   public let bundlePath: Path // URL?
+
+  /// The maximum runtime version supported by the device.
   public let maxRuntimeVersion: Int
+
+  /// The maximum runtime version as a string.
   public let maxRuntimeVersionString: Version
+
+  /// The unique identifier of the device.
   public let identifier: DeviceTypeID // identifier
+
+  /// The model identifier of the device.
   public let modelIdentifier: ModelID // model
+
+  /// The minimum runtime version as a string.
   public let minRuntimeVersionString: Version
+
+  /// The minimum runtime version supported by the device.
   public let minRuntimeVersion: Int
+
+  /// The name of the device.
   public let name: String
 }

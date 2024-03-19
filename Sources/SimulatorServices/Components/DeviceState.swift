@@ -4,6 +4,7 @@ public enum DeviceState: Equatable, Decodable, Sendable, RawDefined {
   case creating
   case shutdown
   case unknown(String)
+
   public enum RawAvailableOptions: String {
     case booted = "Booted"
     case creating = "Creating"

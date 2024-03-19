@@ -29,14 +29,26 @@
 
 import Foundation
 
+/// A structure representing a pair of devices.
 public struct DevicePair: Decodable, Equatable, Sendable {
+  /// A structure representing an individual device.
   public struct Device: Decodable, Equatable, Sendable {
+    /// The name of the device.
     public let name: String
+
+    /// The unique identifier of the device.
     public let udid: UUID
+
+    /// The state of the device.
     public let state: DeviceState // Device.State
   }
 
+  /// The watch device in the pair.
   public let watch: Device
+
+  /// The phone device in the pair.
   public let phone: Device
+
+  /// The state of the device pair.
   public let state: PairState // Pair.State
 }

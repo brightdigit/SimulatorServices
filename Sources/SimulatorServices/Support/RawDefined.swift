@@ -27,13 +27,41 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
+/// A protocol for types that support reverse mapping from raw values to options.
 public protocol RawReversable {
+  /// The associated type representing the option type.
   associatedtype OptionType: RawDefined
 
+  /// Initializes an instance with a provided option.
   init?(option: OptionType)
 }
 
+/// A protocol for types with raw options.
+public protocol RawDefined {
+  /// The associated type representing the raw options.
+  associatedtype RawAvailableOptions: RawRepresentable
+
+  /// Initializes an instance with a raw option.
+  ///
+  /// - Parameter rawOption: The raw option to initialize from.
+  init(rawOption: RawAvailableOptions)
+
+  /// Creates an instance representing an unknown raw value.
+  ///
+  /// - Parameter rawValue: The unknown raw value.
+  /// - Returns: An instance representing the unknown value.
+  static func unknown(_ rawValue: RawAvailableOptions.RawValue) -> Self
+
+  /// Retrieves the unknown value associated with the instance.
+  ///
+  /// - Returns: The unknown value if applicable, otherwise nil.
+  func unknownValue() -> RawAvailableOptions.RawValue?
+}
+
 extension RawDefined where Self: Decodable, Self.RawAvailableOptions.RawValue: Decodable {
+  /// Initializes an instance with a raw value.
+  ///
+  /// - Parameter rawValue: The raw value to initialize from.
   public init(rawValue: RawAvailableOptions.RawValue) {
     if let rawValueOption = RawAvailableOptions(rawValue: rawValue) {
       self.init(rawOption: rawValueOption)
@@ -42,6 +70,10 @@ extension RawDefined where Self: Decodable, Self.RawAvailableOptions.RawValue: D
     }
   }
 
+  /// Initializes an instance by decoding from the given decoder.
+  ///
+  /// - Parameter decoder: The decoder to read data from.
+  /// - Throws: Any errors encountered during decoding.
   public init(from decoder: any Decoder) throws {
     let rawValueString = try decoder.singleValueContainer().decode(RawAvailableOptions.RawValue.self)
     self.init(rawValue: rawValueString)
@@ -49,12 +81,14 @@ extension RawDefined where Self: Decodable, Self.RawAvailableOptions.RawValue: D
 }
 
 extension RawDefined where Self: CaseIterable, Self.RawAvailableOptions: CaseIterable {
-  public static var allCases: [Self] { RawAvailableOptions.allCases.map(Self.init(rawOption:))
+  /// Retrieves all cases of the conforming type.
+  public static var allCases: [Self] {
+    RawAvailableOptions.allCases.map(Self.init(rawOption:))
   }
 }
 
-extension RawDefined where
-  Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self {
+extension RawDefined where Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self {
+  /// Retrieves the underlying raw value.
   public var underlyingValue: RawAvailableOptions.RawValue {
     switch (RawAvailableOptions(option: self), unknownValue()) {
     case let (.some(value), _):
@@ -69,24 +103,16 @@ extension RawDefined where
   }
 }
 
-extension RawDefined where
-  Self: CustomStringConvertible, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
+extension RawDefined where Self: CustomStringConvertible, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
+  /// A textual representation of the instance.
   public var description: String {
     underlyingValue.description
   }
 }
 
-extension PrefixedDecodableString where
-  Self: CustomStringConvertible, Self: RawDefined, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
+extension RawDefined where Self: CustomStringConvertible, Self: PrefixedDecodableString, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
+  /// A textual representation of the instance with the prefix and suffix.
   public var description: String {
     Self.decodableStringPrefix + suffix
   }
-}
-
-public protocol RawDefined {
-  associatedtype RawAvailableOptions: RawRepresentable
-
-  init(rawOption: RawAvailableOptions)
-  static func unknown(_ rawValue: RawAvailableOptions.RawValue) -> Self
-  func unknownValue() -> RawAvailableOptions.RawValue?
 }
