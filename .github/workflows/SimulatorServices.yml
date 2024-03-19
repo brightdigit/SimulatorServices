@@ -162,3 +162,10 @@ jobs:
       #     flags: watchOS,watchOS${{ matrix.watchOSVersion }},macOS,${{ env.XCODE_NAME }}
       # - name: Test Again
       #   run: swift test
+  build-self:
+      name: Build on Self-Hosting macOS
+      runs-on: [self-hosted, macOS]
+      if: github.event.repository.owner.login == github.event.organization.login && !contains(github.event.head_commit.message, 'ci skip')
+      steps:
+        - name: test
+          run: echo "Hello World"
