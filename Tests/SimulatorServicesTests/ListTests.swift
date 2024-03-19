@@ -37,7 +37,24 @@ public class ListTests: XCTestCase {
   }
 
   func testParse() throws {
-    let actualList = SimulatorList(devicetypes: [.init(productFamily: .random(), bundlePath: .random(), maxRuntimeVersion: 1, maxRuntimeVersionString: .random(), identifier: .random(), modelIdentifier: .random(), minRuntimeVersionString: .random(), minRuntimeVersion: 2, name: .random())], runtimes: [], devices: [:], pairs: [:])
+    let actualList = SimulatorList(
+      devicetypes: [
+        .init(
+          productFamily: .random(),
+          bundlePath: .random(),
+          maxRuntimeVersion: 1,
+          maxRuntimeVersionString: .random(),
+          identifier: .random(),
+          modelIdentifier: .random(),
+          minRuntimeVersionString: .random(),
+          minRuntimeVersion: 2,
+          name: .random()
+        )
+      ],
+      runtimes: [],
+      devices: [:],
+      pairs: [:]
+    )
     let expectation = expectation(description: "decoder called")
     let expectedData: Data = .random()
     let decoder = MockDecoder { actualData -> SimulatorList in

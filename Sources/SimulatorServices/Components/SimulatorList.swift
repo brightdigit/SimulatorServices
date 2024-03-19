@@ -47,15 +47,27 @@ public struct SimulatorList: Decodable, Equatable, Sendable {
   /// DevicePairs and thier IDs
   public let pairs: [UUID: DevicePair]
 
+  internal init(
+    devicetypes: [DeviceType],
+    runtimes: [Runtime],
+    devices: [RuntimeID: [Device]],
+    pairs: [UUID: DevicePair]
+  ) {
+    self.devicetypes = devicetypes
+    self.runtimes = runtimes
+    self.devices = devices
+    self.pairs = pairs
+  }
+
   // swiftlint:disable:next function_body_length
   public init(from decoder: any Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    devicetypes = try container.decode([DeviceType].self, forKey: .devicetypes)
-    runtimes = try container.decode([Runtime].self, forKey: .runtimes)
-    let devices = try container.decode([String: [Device]].self, forKey: .devices)
-    let pairs = try container.decode([String: DevicePair].self, forKey: .pairs)
+    let devicetypes = try container.decode([DeviceType].self, forKey: .devicetypes)
+    let runtimes = try container.decode([Runtime].self, forKey: .runtimes)
+    let unparsedDevices = try container.decode([String: [Device]].self, forKey: .devices)
+    let unparsedPairs = try container.decode([String: DevicePair].self, forKey: .pairs)
 
-    self.devices = try devices.reduce(
+    let devices = try unparsedDevices.reduce(
       into: [RuntimeID: [Device]]()
     ) { partialResult, pair in
       let (runtimeString, devices) = pair
@@ -63,7 +75,7 @@ public struct SimulatorList: Decodable, Equatable, Sendable {
       try partialResult[.init(suffix: suffix)] = devices
     }
 
-    self.pairs = try pairs.reduce(
+    let pairs = try unparsedPairs.reduce(
       into: [UUID: DevicePair]()
     ) { partialResult, pair in
       guard let id = UUID(uuidString: pair.key) else {
@@ -76,5 +88,12 @@ public struct SimulatorList: Decodable, Equatable, Sendable {
       }
       partialResult[id] = pair.value
     }
+
+    self.init(
+      devicetypes: devicetypes,
+      runtimes: runtimes,
+      devices: devices,
+      pairs: pairs
+    )
   }
 }
