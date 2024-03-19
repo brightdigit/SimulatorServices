@@ -16,7 +16,7 @@ Control the simulator... in Swift
 
 
 [![Codecov](https://img.shields.io/codecov/c/github/brightdigit/SimulatorServices)](https://codecov.io/gh/brightdigit/SimulatorServices)
-[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/brightdigit/SimulatorServices/release/0.0.1)](https://www.codefactor.io/repository/github/brightdigit/SimulatorServices)
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/brightdigit/SimulatorServices)](https://www.codefactor.io/repository/github/brightdigit/SimulatorServices)
 [![codebeat badge](https://codebeat.co/badges/9b0cb8e0-7ad2-4dcc-a418-18fde060c601)](https://codebeat.co/projects/github-com-brightdigit-sublimation-main)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/brightdigit/SimulatorServices)](https://codeclimate.com/github/brightdigit/SimulatorServices)
 [![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/brightdigit/SimulatorServices?label=debt)](https://codeclimate.com/github/brightdigit/SimulatorServices)
