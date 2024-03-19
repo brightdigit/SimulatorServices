@@ -158,3 +158,5 @@ jobs:
           fail_ci_if_error: true
           flags: watchOS,watchOS${{ matrix.watchOSVersion }}
           token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Test Again
+        run: swift test --enable-code-coverage

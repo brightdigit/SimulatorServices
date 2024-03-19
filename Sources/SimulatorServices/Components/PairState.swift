@@ -2,16 +2,21 @@
 public enum PairState: Equatable, Decodable, Sendable, RawDefined {
   case activeConnected
   case activeDisconnected
+  case unavailable
   case unknown(String)
   public enum RawAvailableOptions: String {
     case activeConnected = "(active, disconnected)"
     case activeDisconnected = "(active, connected)"
+    case unavailable = "(unavailable)"
   }
 
   public init(rawOption: RawAvailableOptions) {
     switch rawOption {
     case .activeConnected:
       self = .activeConnected
+
+    case .unavailable:
+      self = .unavailable
 
     case .activeDisconnected:
       self = .activeDisconnected

@@ -12,7 +12,6 @@ public func XCTAssertEmpty(_ expression: @autoclosure () throws -> [Any], _ mess
 }
 
 final class DeviceTests: XCTestCase {
-  
   func testSimCtlList() async throws {
     #if os(macOS)
       let simctl = SimCtl()
