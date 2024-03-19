@@ -167,5 +167,46 @@ jobs:
       runs-on: [self-hosted, macOS]
       if: github.event.repository.owner.login == github.event.organization.login && !contains(github.event.head_commit.message, 'ci skip')
       steps:
-        - name: test
-          run: echo "Hello World"
+      - uses: actions/checkout@v4
+      - name: Cache swift package modules
+        id: cache-spm-macos
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-spm
+        with:
+          path: .build
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Cache mint
+        id: cache-mint
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-mint
+        with:
+          path: .mint
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Mintfile') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-      
+      - name: Build
+        run: swift build
+      - name: Run Swift Package tests
+        run: swift test --enable-code-coverage
+      - uses: sersoft-gmbh/swift-coverage-action@v4
+        with:
+          fail-on-empty-output: true
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4        
+        env:
+          token: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: macOS,${{ env.XCODE_NAME }}
+      - name: Clean up spm build directory
+        run: rm -rf .build
+      - name: Lint
+        run: ./scripts/lint.sh
