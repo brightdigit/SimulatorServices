@@ -1,10 +1,10 @@
 /// State for an Apple Watch and iPhone pair
-public enum PairState: Equatable, Decodable, Sendable, RawDefined {
+public enum PairState: Equatable, Decodable, Sendable, RawDefined, RandomEnum {
   case activeConnected
   case activeDisconnected
   case unavailable
   case unknown(String)
-  public enum RawAvailableOptions: String {
+  public enum RawAvailableOptions: String, CaseIterable {
     case activeConnected = "(active, disconnected)"
     case activeDisconnected = "(active, connected)"
     case unavailable = "(unavailable)"

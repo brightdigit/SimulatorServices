@@ -121,6 +121,7 @@ public enum DeviceTypeID: PrefixedDecodableString, Equatable, Sendable, RandomEn
   case iPhoneXSMax
   case iPodtouch7thgeneration
   case unknown(String)
+
   public init(rawOption: RawAvailableOptions) {
     switch rawOption {
     case .AppleTV1080p: self = .AppleTV1080p
@@ -223,7 +224,9 @@ public enum DeviceTypeID: PrefixedDecodableString, Equatable, Sendable, RandomEn
     return string
   }
 
-  public enum RawAvailableOptions: String, CaseIterable {
+  public enum RawAvailableOptions: String, CaseIterable, RawReversable {
+    public typealias OptionType = DeviceTypeID
+    
     case AppleTV1080p = "Apple-TV-1080p"
     case AppleTV4K1080p = "Apple-TV-4K-1080p"
     case AppleTV4K2ndgeneration1080p = "Apple-TV-4K-2nd-generation-1080p"
@@ -314,5 +317,101 @@ public enum DeviceTypeID: PrefixedDecodableString, Equatable, Sendable, RandomEn
     case iPhoneXS = "iPhone-XS"
     case iPhoneXSMax = "iPhone-XS-Max"
     case iPodtouch7thgeneration = "iPod-touch--7th-generation-"
+    
+    public init?(option rawOption: OptionType) {
+      switch rawOption {
+      case .AppleTV1080p: self = .AppleTV1080p
+      case .AppleTV4K1080p: self = .AppleTV4K1080p
+      case .AppleTV4K2ndgeneration1080p: self = .AppleTV4K2ndgeneration1080p
+      case .AppleTV4K2ndgeneration4K: self = .AppleTV4K2ndgeneration4K
+      case .AppleTV4K3rdgeneration1080p: self = .AppleTV4K3rdgeneration1080p
+      case .AppleTV4K3rdgeneration4K: self = .AppleTV4K3rdgeneration4K
+      case .AppleTV4K4K: self = .AppleTV4K4K
+      case .AppleVisionPro: self = .AppleVisionPro
+      case .AppleWatchSE40mm: self = .AppleWatchSE40mm
+      case .AppleWatchSE40mm2ndgeneration: self = .AppleWatchSE40mm2ndgeneration
+      case .AppleWatchSE44mm: self = .AppleWatchSE44mm
+      case .AppleWatchSE44mm2ndgeneration: self = .AppleWatchSE44mm2ndgeneration
+      case .AppleWatchSeries238mm: self = .AppleWatchSeries238mm
+      case .AppleWatchSeries242mm: self = .AppleWatchSeries242mm
+      case .AppleWatchSeries338mm: self = .AppleWatchSeries338mm
+      case .AppleWatchSeries342mm: self = .AppleWatchSeries342mm
+      case .AppleWatchSeries440mm: self = .AppleWatchSeries440mm
+      case .AppleWatchSeries444mm: self = .AppleWatchSeries444mm
+      case .AppleWatchSeries540mm: self = .AppleWatchSeries540mm
+      case .AppleWatchSeries544mm: self = .AppleWatchSeries544mm
+      case .AppleWatchSeries640mm: self = .AppleWatchSeries640mm
+      case .AppleWatchSeries644mm: self = .AppleWatchSeries644mm
+      case .AppleWatchSeries741mm: self = .AppleWatchSeries741mm
+      case .AppleWatchSeries745mm: self = .AppleWatchSeries745mm
+      case .AppleWatchSeries841mm: self = .AppleWatchSeries841mm
+      case .AppleWatchSeries845mm: self = .AppleWatchSeries845mm
+      case .AppleWatchSeries941mm: self = .AppleWatchSeries941mm
+      case .AppleWatchSeries945mm: self = .AppleWatchSeries945mm
+      case .AppleWatchUltra249mm: self = .AppleWatchUltra249mm
+      case .AppleWatchUltra49mm: self = .AppleWatchUltra49mm
+      case .iPad5thgeneration: self = .iPad5thgeneration
+      case .iPad6thgeneration: self = .iPad6thgeneration
+      case .iPad7thgeneration: self = .iPad7thgeneration
+      case .iPad8thgeneration: self = .iPad8thgeneration
+      case .iPad10thgeneration: self = .iPad10thgeneration
+      case .iPad9thgeneration: self = .iPad9thgeneration
+      case .iPadAir3rdgeneration: self = .iPadAir3rdgeneration
+      case .iPadAir4thgeneration: self = .iPadAir4thgeneration
+      case .iPadAir2: self = .iPadAir2
+      case .iPadAir5thgeneration: self = .iPadAir5thgeneration
+      case .iPadPro: self = .iPadPro
+      case .iPadPro105inch: self = .iPadPro105inch
+      case .iPadPro11inch: self = .iPadPro11inch
+      case .iPadPro11inch2ndgeneration: self = .iPadPro11inch2ndgeneration
+      case .iPadPro129inch2ndgeneration: self = .iPadPro129inch2ndgeneration
+      case .iPadPro129inch3rdgeneration: self = .iPadPro129inch3rdgeneration
+      case .iPadPro129inch4thgeneration: self = .iPadPro129inch4thgeneration
+      case .iPadPro97inch: self = .iPadPro97inch
+      case .iPadPro11inch3rdgeneration: self = .iPadPro11inch3rdgeneration
+      case .iPadPro11inch4thgeneration16GB: self = .iPadPro11inch4thgeneration16GB
+      case .iPadPro11inch4thgeneration8GB: self = .iPadPro11inch4thgeneration8GB
+      case .iPadPro129inch5thgeneration: self = .iPadPro129inch5thgeneration
+      case .iPadPro129inch6thgeneration16GB: self = .iPadPro129inch6thgeneration16GB
+      case .iPadPro129inch6thgeneration8GB: self = .iPadPro129inch6thgeneration8GB
+      case .iPadmini5thgeneration: self = .iPadmini5thgeneration
+      case .iPadmini4: self = .iPadmini4
+      case .iPadmini6thgeneration: self = .iPadmini6thgeneration
+      case .iPhone11: self = .iPhone11
+      case .iPhone11Pro: self = .iPhone11Pro
+      case .iPhone11ProMax: self = .iPhone11ProMax
+      case .iPhone12: self = .iPhone12
+      case .iPhone12Pro: self = .iPhone12Pro
+      case .iPhone12ProMax: self = .iPhone12ProMax
+      case .iPhone12mini: self = .iPhone12mini
+      case .iPhone13: self = .iPhone13
+      case .iPhone13Pro: self = .iPhone13Pro
+      case .iPhone13ProMax: self = .iPhone13ProMax
+      case .iPhone13mini: self = .iPhone13mini
+      case .iPhone14: self = .iPhone14
+      case .iPhone14Plus: self = .iPhone14Plus
+      case .iPhone14Pro: self = .iPhone14Pro
+      case .iPhone14ProMax: self = .iPhone14ProMax
+      case .iPhone15: self = .iPhone15
+      case .iPhone15Plus: self = .iPhone15Plus
+      case .iPhone15Pro: self = .iPhone15Pro
+      case .iPhone15ProMax: self = .iPhone15ProMax
+      case .iPhone6s: self = .iPhone6s
+      case .iPhone6sPlus: self = .iPhone6sPlus
+      case .iPhone7: self = .iPhone7
+      case .iPhone7Plus: self = .iPhone7Plus
+      case .iPhone8: self = .iPhone8
+      case .iPhone8Plus: self = .iPhone8Plus
+      case .iPhoneSE: self = .iPhoneSE
+      case .iPhoneSE2ndgeneration: self = .iPhoneSE2ndgeneration
+      case .iPhoneSE3rdgeneration: self = .iPhoneSE3rdgeneration
+      case .iPhoneX: self = .iPhoneX
+      case .iPhoneXR: self = .iPhoneXR
+      case .iPhoneXS: self = .iPhoneXS
+      case .iPhoneXSMax: self = .iPhoneXSMax
+      case .iPodtouch7thgeneration: self = .iPodtouch7thgeneration
+      case .unknown(_): return nil
+      }
+    }
   }
 }

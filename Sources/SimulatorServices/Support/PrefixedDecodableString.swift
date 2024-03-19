@@ -27,11 +27,12 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-public protocol PrefixedDecodableString: Decodable {
+public protocol PrefixedDecodableString: Decodable, LosslessStringConvertible {
   init(suffix: any StringProtocol) throws
   static var decodableStringPrefix: String {
     get
   }
+  var suffix : String { get }
 }
 
 extension PrefixedDecodableString {
@@ -53,9 +54,20 @@ extension PrefixedDecodableString {
     let suffixValue = try decoder.decodeSuffix(for: Self.self)
     try self.init(suffix: suffixValue)
   }
+  public init?(_ description: String) {
+    guard let suffix = try? Self.suffix(forString: description) else {
+      return nil
+    }
+    try? self.init(suffix: suffix)
+  }
+  public var description: String {
+    Self.decodableStringPrefix + self.suffix
+  }
 }
 
 extension PrefixedDecodableString where Self: RawDefined, Self.RawAvailableOptions.RawValue == String {
+  
+  
   public init(suffix: any StringProtocol) throws {
     self.init(rawValue: .init(suffix))
   }
@@ -67,6 +79,18 @@ extension PrefixedDecodableString where Self: RawDefined, Self.RawAvailableOptio
       try self.init(suffix: suffix)
     } catch let error as PrefixMismatchError {
       self.init(rawValue: error.singleStringValue)
+    }
+  }
+}
+
+extension PrefixedDecodableString where Self: RawDefined, Self.RawAvailableOptions.RawValue == String, Self.RawAvailableOptions : RawReversable, Self.RawAvailableOptions.OptionType == Self {
+  public var suffix : String {
+    if let unknownValue = self.unknownValue() {
+      return unknownValue
+    } else if let option = RawAvailableOptions(option: self) {
+      return option.rawValue
+    } else {
+      fatalError("Invalid State")
     }
   }
 }

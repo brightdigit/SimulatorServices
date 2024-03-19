@@ -81,3 +81,11 @@ extension RawDefined where Self: CustomStringConvertible, Self.RawAvailableOptio
     underlyingValue.description
   }
 }
+
+
+extension PrefixedDecodableString where Self: CustomStringConvertible, Self: RawDefined, Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self, Self.RawAvailableOptions.RawValue: CustomStringConvertible {
+
+  public var description: String {
+    Self.decodableStringPrefix + self.suffix
+  }
+}

@@ -1,16 +1,19 @@
 /// Device platform
-public enum Platform: RawDefined,
+public enum Platform: 
+  RawDefined,
   Equatable,
   Decodable,
   Sendable,
+  RandomEnum,
   CustomStringConvertible {
+  
   case iOS
   case tvOS
   case watchOS
   case xrOS
   case unknown(String)
 
-  public enum RawAvailableOptions: String, Sendable, RawReversable {
+  public enum RawAvailableOptions: String, Sendable, RawReversable, CaseIterable {
     case iOS
     case tvOS
     case watchOS
@@ -27,13 +30,6 @@ public enum Platform: RawDefined,
     }
   }
 
-  public func unknownValue() -> String? {
-    guard case let .unknown(string) = self else {
-      return nil
-    }
-    return string
-  }
-
   public init(rawOption: RawAvailableOptions) {
     switch rawOption {
     case .iOS: self = .iOS
@@ -41,5 +37,12 @@ public enum Platform: RawDefined,
     case .watchOS: self = .watchOS
     case .xrOS: self = .xrOS
     }
+  }
+  
+  public func unknownValue() -> String? {
+    guard case let .unknown(string) = self else {
+      return nil
+    }
+    return string
   }
 }

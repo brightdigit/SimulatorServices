@@ -1,5 +1,5 @@
 //
-//  RuntimeID.swift
+//  RuntimeIDTests.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,43 +27,38 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import OperatingSystemVersion
+@testable import SimulatorServices
+import Foundation
+import XCTest
 
-/// Runtime ID
-public struct RuntimeID:
-  PrefixedDecodableString,
-  Equatable,
-  Sendable {
+extension Array {
+  static func random(withCountIn countRange: ClosedRange<Int>, using closure: @escaping @Sendable () -> Element) -> Self {
+    
+    let count : Int = .random(in: countRange)
+    return (0..<count).map{_ in closure()}
+  }
+}
+
+final class RuntimeIDTests: XCTestCase {
   
-  public static let decodableStringPrefix = "com.apple.CoreSimulator.SimRuntime."
-
-  public let platform: Platform
-  public let version: Version
-
-  public var suffix : String {
-    let values: [any CustomStringConvertible] = [
-      platform,
-      version.majorVersion,
-      version.minorVersion
-    ]
-    return values.map(\.description).joined(separator: "-")
+  func random (_ : Int) -> RuntimeID {
+    return .init(platform: .random(), version: .random())
   }
 
-  public init(platform: Platform, version: Version) {
-    self.platform = platform
-    self.version = version
-  }
-
-  public init(suffix: any StringProtocol) throws {
-    let values = suffix.components(separatedBy: "-")
-    guard values.count == 3 else {
-      throw DecodingError.dataCorrupted(
-        .init(codingPath: [], debugDescription: "Invalid value: \"\(suffix)\"")
-      )
+  func testInitDescription() throws {
+    
+    let count : Int = .random(in: (20...50))
+    let runtimes = (0..<count).map(self.random)
+    
+    for runtime in runtimes {
+      let suffix = runtime.suffix
+      let actualWSuffix = try RuntimeID(suffix: suffix)
+      XCTAssertEqual(runtime, actualWSuffix)
+      
+        let description = runtime.description
+        let actualWDesc = RuntimeID(description)
+        XCTAssertEqual(runtime, actualWDesc)
     }
-    let platform = Platform(rawValue: values[0])
-    let versionValues = values[1...].compactMap(Int.init)
-    let version = try Version(components: versionValues)
-    self.init(platform: platform, version: version)
   }
+
 }
