@@ -12,14 +12,14 @@ Control the simulator... in Swift.
 
 **Apple Platforms**
 
-- Xcode 13.3 or later
-- Swift 5.5.2 or later
-- iOS 14 / watchOS 6 / tvOS 14 / macOS 12 or later deployment targets
+- Xcode 15.0 or later
+- Swift 5.9 or later
+- iOS 16 / watchOS 9 / tvOS 16 / macOS 13 / visionOS 1 / macCatalyst 9 or later deployment targets
 
 **Linux**
 
-- Ubuntu 18.04 or later
-- Swift 5.5.2 or later
+- Ubuntu 20.04 or later
+- Swift 5.9 or later
 
 ### Installation
 
@@ -29,7 +29,7 @@ Use the Swift Package Manager to install this library via the repository url:
 https://github.com/brightdigit/SimulatorServices.git
 ```
 
-Use version up to `1.0.1`.
+Use version up to `1.1.0`.
 
 ### What does Simulator Services provide?
 
@@ -143,8 +143,6 @@ This code is distributed under the MIT license. See the [LICENSE](https://github
 - ``DeviceType``
 - ``Path``
 - ``Runtime``
-
-- ``Identifier``
 - ``DeviceState``
 - ``PairState``
 - ``ProductFamily``
@@ -162,3 +160,11 @@ This code is distributed under the MIT license. See the [LICENSE](https://github
 - ``ProcessError``
 - ``UncaughtSignal``
 - ``TerminationReason``
+
+### Helpers and Utlities
+
+- ``PrefixedDecodableString``
+- ``RawDefined``
+- ``RawReversable``
+- ``PrefixMismatchError``
+
