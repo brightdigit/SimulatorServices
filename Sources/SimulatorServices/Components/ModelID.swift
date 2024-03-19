@@ -3,11 +3,11 @@
 /// Device Model ID
 @available(macOS 13.0, *)
 public struct ModelID: Decodable, Equatable, Sendable, CustomStringConvertible {
-  internal static func random() -> ModelID {
+  static func random() -> ModelID {
     .init(name: .allCases.randomElement()!, version: .random())
   }
 
-  internal init(name: ModelID.Name, version: ModelID.Version) {
+  init(name: ModelID.Name, version: ModelID.Version) {
     self.name = name
     self.version = version
   }
@@ -34,7 +34,7 @@ public struct ModelID: Decodable, Equatable, Sendable, CustomStringConvertible {
   public let version: Version
 
   public struct Version: Equatable, Sendable {
-    internal init(major: Int, minor: Int) {
+    init(major: Int, minor: Int) {
       self.major = major
       self.minor = minor
     }
@@ -42,7 +42,7 @@ public struct ModelID: Decodable, Equatable, Sendable, CustomStringConvertible {
     public let major: Int
     public let minor: Int
 
-    internal static func random() -> Version {
+    static func random() -> Version {
       .init(major: .random(in: 2 ... 25), minor: .random(in: 1 ... 9))
     }
   }
