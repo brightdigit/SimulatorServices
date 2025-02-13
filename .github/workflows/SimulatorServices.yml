@@ -65,68 +65,68 @@ jobs:
             os: macos-14
             xcode: "/Applications/Xcode_15.0.1.app"
             deviceName: "iPhone 15"
-            SimulatorServicession: "17.0.1"
+            osVersion: "17.0.1"
           - type: ios
             os: macos-14
             xcode: "/Applications/Xcode_15.1.app"
             deviceName: "iPhone 15 Pro"
-            SimulatorServicession: "17.2"
+            osVersion: "17.2"
           - type: ios
             os: macos-14
             xcode: "/Applications/Xcode_15.2.app"
             deviceName: "iPhone 15 Pro Max"
-            SimulatorServicession: "17.2"
+            osVersion: "17.2"
           - type: ios
             os: macos-15
             xcode: "/Applications/Xcode_16.1.app"
             deviceName: "iPhone 16"
-            SimulatorServicession: "18.1"
+            osVersion: "18.1"
           - type: ios
             os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "iPhone 16 Pro"
-            SimulatorServicession: "18.2"
+            osVersion: "18.2"
   
           # watchOS Build Matrix
           - type: watchos
             os: macos-14
             xcode: "/Applications/Xcode_15.0.1.app"
             deviceName: "Apple Watch Series 9 (41mm)"
-            SimulatorServicession: "10.0"
+            osVersion: "10.0"
           - type: watchos
             os: macos-14
             xcode: "/Applications/Xcode_15.1.app"
             deviceName: "Apple Watch Series 9 (45mm)"
-            SimulatorServicession: "10.2"
+            osVersion: "10.2"
           - type: watchos
             os: macos-14
             xcode: "/Applications/Xcode_15.2.app"
             deviceName: "Apple Watch Ultra 2 (49mm)"
-            SimulatorServicession: "10.2"
+            osVersion: "10.2"
           - type: watchos
             os: macos-15
             xcode: "/Applications/Xcode_16.1.app"
             deviceName: "Apple Watch Ultra 2 (49mm)"
-            SimulatorServicession: "11.1"
+            osVersion: "11.1"
           - type: watchos
             os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "Apple Watch Ultra 2 (49mm)"
-            SimulatorServicession: "11.2"
+            osVersion: "11.2"
     
           # visionOS Build Matrix
           - type: visionos
             os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "Apple Vision Pro"
-            SimulatorServicession: "2.1"
+            osVersion: "2.1"
     
           # tvOS Build Matrix
           - type: tvos
             os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "Apple TV 4K (3rd generation)"
-            SimulatorServicession: "18.2"
+            osVersion: "18.2"
     
     steps:
       - uses: actions/checkout@v4
@@ -192,7 +192,7 @@ jobs:
           xcodebuild test
           -scheme ${{ github.workflow }}
           -sdk ${{ env.SDK }}
-          -destination 'platform=${{ env.PLATFORM }},name=${{ matrix.deviceName }},OS=${{ matrix.SimulatorServicession }}'
+          -destination 'platform=${{ env.PLATFORM }},name=${{ matrix.deviceName }},OS=${{ matrix.osVersion }}'
           -enableCodeCoverage YES
   
       # Common Coverage Steps
@@ -205,7 +205,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ matrix.type && format('{0}{1}', matrix.type, matrix.SimulatorServicession) || 'spm' }}
+          flags: ${{ matrix.type && format('{0}{1}', matrix.type, matrix.osVersion) || 'spm' }}
   lint:
     name: Linting
     if: "!contains(github.event.head_commit.message, 'ci skip')"  
