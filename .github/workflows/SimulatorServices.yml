@@ -8,12 +8,15 @@ jobs:
   build-ubuntu:
     name: Build on Ubuntu
     runs-on: ubuntu-latest
-    container: swift:${{ matrix.swift-version }}-${{ matrix.runs-on }}
+    container: swift:${{ matrix.swift-version }}-${{ matrix.os }}
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       matrix:
-        runs-on: ["noble"]
-        swift-version: ["6.0"]
+        os: ["noble", "jammy", "focal"]
+        swift-version: ["6.0", "5.10", "5.9"]
+        exclude:
+          - os: "noble"
+            swift-version: "5.9"
     steps:
       - uses: actions/checkout@v4
       - name: Cache swift package modules
@@ -23,9 +26,9 @@ jobs:
           cache-name: SPM
         with:
           path: .build
-          key: ${{ env.cache-name }}-${{ matrix.runs-on }}-${{ matrix.swift-version }}-${{ hashFiles('Package.resolved') }}
+          key: ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.swift-version }}-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            ${{ env.cache-name }}-${{ matrix.runs-on }}-${{ matrix.swift-version }}
+            ${{ env.cache-name }}-${{ matrix.os }}-${{ matrix.swift-version }}
       - name: Build
         run: swift build
       - name: Run tests
@@ -36,93 +39,91 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: spm,${{ matrix.runs-on }},${{ matrix.swift-version }}
+          flags: spm,${{ matrix.os }},${{ matrix.swift-version }}
   build-macos:
     name: Build on macOS
-    env:
-      PACKAGE_NAME: SimulatorServices
-    runs-on: ${{ matrix.runs-on }}
+    runs-on: ${{ matrix.os }}
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       fail-fast: false
       matrix:
         include:
           # SPM Build Matrix
-          - runs-on: macos-14
+          - os: macos-14
             xcode: "/Applications/Xcode_15.0.1.app"
-          - runs-on: macos-14
+          - os: macos-14
             xcode: "/Applications/Xcode_15.1.app"
-          - runs-on: macos-14
+          - os: macos-14
             xcode: "/Applications/Xcode_15.2.app"
-          - runs-on: macos-15
+          - os: macos-15
             xcode: "/Applications/Xcode_16.1.app"
-          - runs-on: macos-15
+          - os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
           
           # iOS Build Matrix
           - type: ios
-            runs-on: macos-14
+            os: macos-14
             xcode: "/Applications/Xcode_15.0.1.app"
             deviceName: "iPhone 15"
             SimulatorServicession: "17.0.1"
           - type: ios
-            runs-on: macos-14
+            os: macos-14
             xcode: "/Applications/Xcode_15.1.app"
             deviceName: "iPhone 15 Pro"
             SimulatorServicession: "17.2"
           - type: ios
-            runs-on: macos-14
+            os: macos-14
             xcode: "/Applications/Xcode_15.2.app"
             deviceName: "iPhone 15 Pro Max"
             SimulatorServicession: "17.2"
           - type: ios
-            runs-on: macos-15
+            os: macos-15
             xcode: "/Applications/Xcode_16.1.app"
             deviceName: "iPhone 16"
             SimulatorServicession: "18.1"
           - type: ios
-            runs-on: macos-15
+            os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "iPhone 16 Pro"
             SimulatorServicession: "18.2"
   
           # watchOS Build Matrix
           - type: watchos
-            runs-on: macos-14
+            os: macos-14
             xcode: "/Applications/Xcode_15.0.1.app"
             deviceName: "Apple Watch Series 9 (41mm)"
             SimulatorServicession: "10.0"
           - type: watchos
-            runs-on: macos-14
+            os: macos-14
             xcode: "/Applications/Xcode_15.1.app"
             deviceName: "Apple Watch Series 9 (45mm)"
             SimulatorServicession: "10.2"
           - type: watchos
-            runs-on: macos-14
+            os: macos-14
             xcode: "/Applications/Xcode_15.2.app"
             deviceName: "Apple Watch Ultra 2 (49mm)"
             SimulatorServicession: "10.2"
           - type: watchos
-            runs-on: macos-15
+            os: macos-15
             xcode: "/Applications/Xcode_16.1.app"
             deviceName: "Apple Watch Ultra 2 (49mm)"
             SimulatorServicession: "11.1"
           - type: watchos
-            runs-on: macos-15
+            os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "Apple Watch Ultra 2 (49mm)"
             SimulatorServicession: "11.2"
     
           # visionOS Build Matrix
           - type: visionos
-            runs-on: macos-15
+            os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "Apple Vision Pro"
             SimulatorServicession: "2.1"
     
           # tvOS Build Matrix
           - type: tvos
-            runs-on: macos-15
+            os: macos-15
             xcode: "/Applications/Xcode_16.2.app"
             deviceName: "Apple TV 4K (3rd generation)"
             SimulatorServicession: "18.2"
@@ -160,10 +161,10 @@ jobs:
       - uses: irgaly/xcode-cache@v1
         if: matrix.type
         with:
-          key: xcode-${{ runner.os }}-${{ matrix.runs-on }}-${{ env.XCODE_NAME }}-${{ hashFiles('Package.resolved') }}-${{ github.sha }}
+          key: xcode-${{ runner.os }}-${{ matrix.os }}-${{ env.XCODE_NAME }}-${{ hashFiles('Package.resolved') }}-${{ github.sha }}
           restore-keys: |
-            xcode-${{ runner.os }}-${{ matrix.runs-on }}-${{ env.XCODE_NAME }}-${{ hashFiles('Package.resolved') }}-                        
-            xcode-${{ runner.os }}-${{ matrix.runs-on }}-${{ env.XCODE_NAME }}-          
+            xcode-${{ runner.os }}-${{ matrix.os }}-${{ env.XCODE_NAME }}-${{ hashFiles('Package.resolved') }}-                        
+            xcode-${{ runner.os }}-${{ matrix.os }}-${{ env.XCODE_NAME }}-          
       - name: Cache swift package modules
         id: cache-spm-macos
         if: "!matrix.type"
@@ -172,9 +173,9 @@ jobs:
           cache-name: cache-spm
         with:
           path: .build
-          key: spm-${{ runner.os }}-${{ matrix.runs-on }}-${{ env.XCODE_NAME }}-${{ hashFiles('Package.resolved') }}
+          key: spm-${{ runner.os }}-${{ matrix.os }}-${{ env.XCODE_NAME }}-${{ hashFiles('Package.resolved') }}
           restore-keys: |
-            spm-${{ runner.os }}-${{ matrix.runs-on }}-${{ env.XCODE_NAME }}-
+            spm-${{ runner.os }}-${{ matrix.os }}-${{ env.XCODE_NAME }}-
   
       - name: Build SPM
         if: "!matrix.type"
