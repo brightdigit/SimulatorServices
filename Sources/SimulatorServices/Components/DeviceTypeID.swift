@@ -124,6 +124,19 @@ public enum DeviceTypeID:
   case iPhoneXS
   case iPhoneXSMax
   case iPodtouch7thgeneration
+  case iPhone16
+  case iPhone16Plus
+  case iPhone16Pro
+  case iPhone16ProMax
+  case iPadPro11inchM4_16GB
+  case iPadPro11inchM4_8GB
+  case iPadPro13inchM4_16GB
+  case iPadPro13inchM4_8GB
+  case iPadAir11inchM2
+  case iPadAir13inchM2
+  case iPadminiA17Pro
+  case appleWatchSeries1042mm
+  case appleWatchSeries1046mm
   case unknown(String)
 
   public enum RawAvailableOptions: String, CaseIterable, RawReversable {
@@ -219,6 +232,19 @@ public enum DeviceTypeID:
     case iPhoneXS = "iPhone-XS"
     case iPhoneXSMax = "iPhone-XS-Max"
     case iPodtouch7thgeneration = "iPod-touch--7th-generation-"
+    case iPhone16 = "iPhone-16"
+    case iPhone16Plus = "iPhone-16-Plus"
+    case iPhone16Pro = "iPhone-16-Pro"
+    case iPhone16ProMax = "iPhone-16-Pro-Max"
+    case iPadPro11inchM4_16GB = "iPad-Pro-11-inch-M4-16GB"
+    case iPadPro11inchM4_8GB = "iPad-Pro-11-inch-M4-8GB"
+    case iPadPro13inchM4_16GB = "iPad-Pro-13-inch-M4-16GB"
+    case iPadPro13inchM4_8GB = "iPad-Pro-13-inch-M4-8GB"
+    case iPadAir11inchM2 = "iPad-Air-11-inch-M2"
+    case iPadAir13inchM2 = "iPad-Air-13-inch-M2"
+    case iPadminiA17Pro = "iPad-mini-A17-Pro"
+    case appleWatchSeries1042mm = "Apple-Watch-Series-10-42mm"
+    case appleWatchSeries1046mm = "Apple-Watch-Series-10-46mm"
 
     public init?(option rawOption: OptionType) {
       switch rawOption {
@@ -312,6 +338,19 @@ public enum DeviceTypeID:
       case .iPhoneXS: self = .iPhoneXS
       case .iPhoneXSMax: self = .iPhoneXSMax
       case .iPodtouch7thgeneration: self = .iPodtouch7thgeneration
+      case .iPhone16: self = .iPhone16
+      case .iPhone16Plus: self = .iPhone16Plus
+      case .iPhone16Pro: self = .iPhone16Pro
+      case .iPhone16ProMax: self = .iPhone16ProMax
+      case .iPadPro11inchM4_16GB: self = .iPadPro11inchM4_16GB
+      case .iPadPro11inchM4_8GB: self = .iPadPro11inchM4_8GB
+      case .iPadPro13inchM4_16GB: self = .iPadPro13inchM4_16GB
+      case .iPadPro13inchM4_8GB: self = .iPadPro13inchM4_8GB
+      case .iPadAir11inchM2: self = .iPadAir11inchM2
+      case .iPadAir13inchM2: self = .iPadAir13inchM2
+      case .iPadminiA17Pro: self = .iPadminiA17Pro
+      case .appleWatchSeries1042mm: self = .appleWatchSeries1042mm
+      case .appleWatchSeries1046mm: self = .appleWatchSeries1046mm
       case .unknown: return nil
       }
     }
@@ -412,6 +451,19 @@ public enum DeviceTypeID:
     case .iPhoneXS: self = .iPhoneXS
     case .iPhoneXSMax: self = .iPhoneXSMax
     case .iPodtouch7thgeneration: self = .iPodtouch7thgeneration
+    case .iPhone16: self = .iPhone16
+    case .iPhone16Plus: self = .iPhone16Plus
+    case .iPhone16Pro: self = .iPhone16Pro
+    case .iPhone16ProMax: self = .iPhone16ProMax
+    case .iPadPro11inchM4_16GB: self = .iPadPro11inchM4_16GB
+    case .iPadPro11inchM4_8GB: self = .iPadPro11inchM4_8GB
+    case .iPadPro13inchM4_16GB: self = .iPadPro13inchM4_16GB
+    case .iPadPro13inchM4_8GB: self = .iPadPro13inchM4_8GB
+    case .iPadAir11inchM2: self = .iPadAir11inchM2
+    case .iPadAir13inchM2: self = .iPadAir13inchM2
+    case .iPadminiA17Pro: self = .iPadminiA17Pro
+    case .appleWatchSeries1042mm: self = .appleWatchSeries1042mm
+    case .appleWatchSeries1046mm: self = .appleWatchSeries1046mm
     }
   }
 
