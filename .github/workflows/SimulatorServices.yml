@@ -117,7 +117,7 @@ jobs:
     
     steps:
       - name: Build and Test
-        uses: ./.github/workflows/macos-build.yml
+        uses: ./.github/actions/macos-build
         with:
           type: ${{ matrix.type }}
           os: ${{ matrix.os }}
