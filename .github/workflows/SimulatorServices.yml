@@ -20,23 +20,23 @@ jobs:
     #     swift-version: [5.9, "5.10", "6.0"]
     steps:
       - uses: actions/checkout@v4
-      - name: Cache swift package modules
-        id: cache-spm-linux
-        uses: actions/cache@v4
-        env:
-          cache-name: SPM
-        with:
-          path: .build
-          key: ${{ env.cache-name }}-${{ runner.os }}-${{ env.SWIFT_VER }}-${{ hashFiles('Package.resolved') }}-${{ env.RELEASE_DOT }}
-          restore-keys: |
-            ${{ env.cache-name }}-${{ runner.os }}-${{ env.SWIFT_VER }}-${{ hashFiles('Package.resolved') }}
-            ${{ env.cache-name }}-${{ runner.os }}-${{ env.SWIFT_VER }}
-      - name: Set Ubuntu Release DOT
-        run: echo "RELEASE_DOT=$(lsb_release -sr)" >> $GITHUB_ENV
-      - name: Set Ubuntu Release NUM
-        run: echo "RELEASE_NUM=${RELEASE_DOT//[-._]/}"  >> $GITHUB_ENV
-      - name: Set Ubuntu Codename
-        run: echo "RELEASE_NAME=$(lsb_release -sc)"  >> $GITHUB_ENV
+      # - name: Cache swift package modules
+      #   id: cache-spm-linux
+      #   uses: actions/cache@v4
+      #   env:
+      #     cache-name: SPM
+      #   with:
+      #     path: .build
+      #     key: ${{ env.cache-name }}-${{ runner.os }}-${{ env.SWIFT_VER }}-${{ hashFiles('Package.resolved') }}-${{ env.RELEASE_DOT }}
+      #     restore-keys: |
+      #       ${{ env.cache-name }}-${{ runner.os }}-${{ env.SWIFT_VER }}-${{ hashFiles('Package.resolved') }}
+      #       ${{ env.cache-name }}-${{ runner.os }}-${{ env.SWIFT_VER }}
+      # - name: Set Ubuntu Release DOT
+      #   run: echo "RELEASE_DOT=$(lsb_release -sr)" >> $GITHUB_ENV
+      # - name: Set Ubuntu Release NUM
+      #   run: echo "RELEASE_NUM=${RELEASE_DOT//[-._]/}"  >> $GITHUB_ENV
+      # - name: Set Ubuntu Codename
+      #   run: echo "RELEASE_NAME=$(lsb_release -sc)"  >> $GITHUB_ENV
       # - name: Cache swift
       #   id: cache-swift-linux
       #   uses: actions/cache@v4
@@ -63,7 +63,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: spm,${{ env.RELEASE_NAME }},${{ env.SWIFT_VER }} 
+          #flags: spm,${{ env.RELEASE_NAME }},${{ env.SWIFT_VER }} 
   build-macos:
     name: Build on macOS
     env:
