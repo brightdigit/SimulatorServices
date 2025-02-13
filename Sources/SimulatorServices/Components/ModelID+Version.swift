@@ -1,5 +1,5 @@
 //
-//  ContainerID.swift
+//  ModelID+Version.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,27 +27,27 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// Represents different types of directories within the app container.
-public enum ContainerID: CustomStringConvertible, Equatable, Sendable {
-  /// The directory for the app's bundle.
-  case app
+extension ModelID {
+  /// A structure representing the version of the model.
+  public struct Version: Equatable, Sendable {
+    /// The major version number.
+    public let major: Int
 
-  /// The directory for the application's data.
-  case data
+    /// The minor version number.
+    public let minor: Int
 
-  /// The directory for App Group containers.
-  case groups
+    /// Initializes a version with the given major and minor numbers.
+    ///
+    /// - Parameters:
+    ///   - major: The major version number.
+    ///   - minor: The minor version number.
+    public init(major: Int, minor: Int) {
+      self.major = major
+      self.minor = minor
+    }
 
-  /// A specific directory within an App Group container.
-  case appGroup(String)
-
-  /// A textual representation of the directory type.
-  public var description: String {
-    switch self {
-    case .data: return "data"
-    case .groups: return "groups"
-    case .app: return "app"
-    case let .appGroup(group): return group
+    internal static func random() -> Version {
+      .init(major: .random(in: 2...25), minor: .random(in: 1...9))
     }
   }
 }

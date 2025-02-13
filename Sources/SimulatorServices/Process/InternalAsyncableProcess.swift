@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -46,8 +46,7 @@ extension InternalAsyncableProcess {
     switch result {
     case let .success(termination):
       if let uncaught = UncaughtSignal(
-        termination: termination,
-        data: fileHandles.errorData,
+        termination: termination, data: fileHandles.errorData,
         output: try? fileHandles.outputResult.get()
       ) {
         throw ProcessError.uncaughtSignal(uncaught)
@@ -55,14 +54,14 @@ extension InternalAsyncableProcess {
         return try fileHandles.outputResult.get()
       }
 
-    case let .timedOut(timeout):
-      throw ProcessError.timeout(timeout)
+    case let .timedOut(timeout): throw ProcessError.timeout(timeout)
     }
   }
 
   /// Run the process asyncronously and returns the output as data.
   /// - Parameter timeout: Timeout for the process to be done.
   /// - Returns: Data if there anything output from the process.
+  /// - Throws: The `error` either from failure to complete or from the data returned.
   internal func run(timeout: DispatchTime) async throws -> Data? {
     var handles = fileHandles()
     let semaphore = promise()
@@ -73,9 +72,7 @@ extension InternalAsyncableProcess {
         for: timeout,
         with: self.termintationResult()
       )
-      let result = Result {
-        try self.data(basedOn: semaphoreResult, from: handles)
-      }
+      let result = Result { try self.data(basedOn: semaphoreResult, from: handles) }
       continuation.resume(with: result)
     }
   }

@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,17 +27,38 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
-public class ListTests: XCTestCase {
-  func testArguments() {
+@testable import SimulatorServices
+
+internal class ListTests: XCTestCase {
+  internal func testArguments() {
     let listCommand = List()
     XCTAssertEqual(listCommand.arguments, ["list", "-j"])
   }
 
-  func testParse() throws {
-    let actualList = SimulatorList(
+  internal func testParse() throws {
+    let actualList: SimulatorList = .random()
+    let expectation = expectation(description: "decoder called")
+    let expectedData: Data = .random()
+    let decoder = MockDecoder { actualData -> SimulatorList in
+      XCTAssertEqual(expectedData, actualData)
+      defer { expectation.fulfill() }
+      return actualList
+    }
+    let listCommand = List(decoder: decoder)
+    let expectedList = try listCommand.parse(expectedData)
+    waitForExpectations(timeout: 1.0) { error in
+      XCTAssertNil(error)
+      XCTAssertEqual(expectedList, actualList)
+    }
+  }
+}
+
+extension SimulatorList {
+  // swiftlint:disable:next strict_fileprivate
+  fileprivate static func random() -> SimulatorList {
+    SimulatorList(
       devicetypes: [
         .init(
           productFamily: .random(),
@@ -55,20 +76,5 @@ public class ListTests: XCTestCase {
       devices: [:],
       pairs: [:]
     )
-    let expectation = expectation(description: "decoder called")
-    let expectedData: Data = .random()
-    let decoder = MockDecoder { actualData -> SimulatorList in
-      XCTAssertEqual(expectedData, actualData)
-      defer {
-        expectation.fulfill()
-      }
-      return actualList
-    }
-    let listCommand = List(decoder: decoder)
-    let expectedList = try listCommand.parse(expectedData)
-    waitForExpectations(timeout: 1.0) { error in
-      XCTAssertNil(error)
-      XCTAssertEqual(expectedList, actualList)
-    }
   }
 }

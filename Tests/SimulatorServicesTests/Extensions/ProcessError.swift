@@ -1,5 +1,5 @@
 //
-//  ContainerID.swift
+//  ProcessError.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,27 +27,33 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// Represents different types of directories within the app container.
-public enum ContainerID: CustomStringConvertible, Equatable, Sendable {
-  /// The directory for the app's bundle.
-  case app
+import Foundation
 
-  /// The directory for the application's data.
-  case data
+@testable import SimulatorServices
 
-  /// The directory for App Group containers.
-  case groups
+@available(macOS 10.15, iOS 13.4, tvOS 13.4, watchOS 6.4, *)
+extension ProcessError {
+  internal init?(withMessage message: String) throws {
+    let tmpPath = FileManager.default.temporaryDirectory.appendingPathComponent(
+      UUID().uuidString
+    )
+    try message.write(
+      to: tmpPath,
+      atomically: true,
+      encoding: .utf8
+    )
+    let standardError = try FileHandle(forReadingFrom: tmpPath)
+    let signal = UncaughtSignal(
+      reason: 2,
+      status: 2,
+      standardError: standardError,
+      output: nil
+    )
 
-  /// A specific directory within an App Group container.
-  case appGroup(String)
-
-  /// A textual representation of the directory type.
-  public var description: String {
-    switch self {
-    case .data: return "data"
-    case .groups: return "groups"
-    case .app: return "app"
-    case let .appGroup(group): return group
+    guard let signal else {
+      return nil
     }
+
+    self = .uncaughtSignal(signal)
   }
 }

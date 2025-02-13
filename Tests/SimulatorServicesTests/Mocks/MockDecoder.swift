@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,20 +27,23 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
-struct MockDecoder<U: Sendable>: InternalListDecoder {
-  struct MismatchError: Error {
-    let typeName: String
-    init(_ type: (some Any).Type) {
-      typeName = String(describing: type)
-    }
+@testable import SimulatorServices
+
+internal struct MockDecoder<U: Sendable>: InternalListDecoder {
+  internal typealias CallbackType<V> = @Sendable (Data) throws -> V
+
+  internal struct MismatchError: Error {
+    internal let typeName: String
+    internal init(_ type: (some Any).Type) { typeName = String(describing: type) }
   }
 
-  typealias CallbackType<V> = @Sendable (Data) throws -> V
-  let callback: CallbackType<U>
-  func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
+  internal let callback: CallbackType<U>
+  internal func decode<T>(
+    _ type: T.Type,
+    from data: Data
+  ) throws -> T where T: Decodable {
     guard let result = try callback(data) as? T else {
       throw MismatchError(type)
     }

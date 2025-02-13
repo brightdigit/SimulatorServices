@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -43,9 +43,7 @@ public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable 
   /// The suffix part of the runtime ID.
   public var suffix: String {
     let values: [any CustomStringConvertible] = [
-      platform,
-      version.majorVersion,
-      version.minorVersion
+      platform, version.majorVersion, version.minorVersion,
     ]
     return values.map(\.description).joined(separator: "-")
   }

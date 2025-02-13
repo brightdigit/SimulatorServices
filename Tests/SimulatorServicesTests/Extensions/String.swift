@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -30,7 +30,5 @@
 import Foundation
 
 extension String {
-  static func random() -> String {
-    UUID().uuidString
-  }
+  internal static func random() -> String { UUID().uuidString }
 }

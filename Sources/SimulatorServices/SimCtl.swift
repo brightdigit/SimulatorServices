@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -56,6 +56,7 @@ public struct SimCtl: Sendable {
   /// Run a subcommand under `simctl`.
   /// - Parameter subcommand: subcommand to run.
   /// - Returns: Result of the subcommand.
+  /// - Throws: A  error if the command fails.
   public func run<SubcommandType: Subcommand>(
     _ subcommand: SubcommandType
   ) async throws -> SubcommandType.OutputType {

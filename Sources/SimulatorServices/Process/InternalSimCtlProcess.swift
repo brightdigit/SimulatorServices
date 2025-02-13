@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -38,8 +38,8 @@ internal protocol InternalSimCtlProcess: AnyObject {
   var arguments: [String]? { get set }
 
   /// Runs the process with a specified timeout.
-  /// - Parameters:
-  ///   - timeout: The time until the process times out.
+  /// - Parameter timeout: The time until the process times out.
   /// - Returns: The data output of the process.
+  /// - Throws: An error is the process fails.
   func run(timeout: DispatchTime) async throws -> Data?
 }

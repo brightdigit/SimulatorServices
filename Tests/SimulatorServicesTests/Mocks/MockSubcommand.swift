@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -28,18 +28,20 @@
 //
 
 import Foundation
+
 @testable import SimulatorServices
 
-final class MockSubcommand<OutputType>: Subcommand {
-  init(arguments: [String] = [String](), callback: @escaping @Sendable (Data?) throws -> OutputType) {
+internal final class MockSubcommand<OutputType>: Subcommand {
+  internal let arguments: [String]
+  private let callback: @Sendable (Data?) throws -> OutputType
+
+  internal init(
+    arguments: [String] = [String](),
+    callback: @escaping @Sendable (Data?) throws -> OutputType
+  ) {
     self.callback = callback
     self.arguments = arguments
   }
 
-  let callback: @Sendable (Data?) throws -> OutputType
-  func parse(_ data: Data?) throws -> OutputType {
-    try callback(data)
-  }
-
-  let arguments: [String]
+  internal func parse(_ data: Data?) throws -> OutputType { try callback(data) }
 }

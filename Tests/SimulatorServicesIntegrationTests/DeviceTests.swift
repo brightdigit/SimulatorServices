@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -30,18 +30,30 @@
 import SimulatorServices
 import XCTest
 
-public func XCTAssertEmpty(_ expression: @autoclosure () throws -> [Any], _ message: @autoclosure () -> String? = nil, file _: StaticString = #filePath, line _: UInt = #line) rethrows {
+// swift-format-ignore: AlwaysUseLowerCamelCase
+internal func XCTAssertEmpty(
+  _ expression: @autoclosure () throws -> [Any],
+  _ message: @autoclosure () -> String? = nil,
+  file: StaticString = #filePath,
+  line: UInt = #line
+) rethrows {
   if let message = message() {
-    try XCTAssert(expression().isEmpty, message)
+    try XCTAssert(expression().isEmpty, message, file: file, line: line)
     return
   }
 
   let value = try expression()
-  XCTAssert(value.isEmpty, "Array is not empty: \(value.map { "\($0)" }.joined(separator: ","))")
+  XCTAssert(
+    value.isEmpty,
+    "Array is not empty: \(value.map { "\($0)" }.joined(separator: ","))",
+    file: file,
+    line: line
+  )
 }
 
-final class DeviceTests: XCTestCase {
-  func testSimCtlList() async throws {
+internal final class DeviceTests: XCTestCase {
+  // swiftlint:disable:next function_body_length
+  internal func testSimCtlList() async throws {
     #if os(macOS)
       let simctl = SimCtl()
       let results = try await simctl.run(List())

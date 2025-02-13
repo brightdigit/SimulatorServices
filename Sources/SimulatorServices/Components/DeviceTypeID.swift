@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,13 +27,8 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// swiftlint:disable all
-public enum DeviceTypeID:
-  PrefixedDecodableString,
-  Equatable,
-  Sendable,
-  RandomEnum,
-  RawDefined {
+/// Simulator Model
+public enum DeviceTypeID {
   case appleTV1080p
   case appleTV4K1080p
   case appleTV4K2ndgeneration1080p
@@ -128,10 +123,10 @@ public enum DeviceTypeID:
   case iPhone16Plus
   case iPhone16Pro
   case iPhone16ProMax
-  case iPadPro11inchM4_16GB
-  case iPadPro11inchM4_8GB
-  case iPadPro13inchM4_16GB
-  case iPadPro13inchM4_8GB
+  case iPadPro11inchM416GB
+  case iPadPro11inchM48GB
+  case iPadPro13inchM416GB
+  case iPadPro13inchM48GB
   case iPadAir11inchM2
   case iPadAir13inchM2
   case iPadminiA17Pro
@@ -140,6 +135,7 @@ public enum DeviceTypeID:
   case unknown(String)
 
   public enum RawAvailableOptions: String, CaseIterable, RawReversable {
+    // swift-format-ignore: AllPublicDeclarationsHaveDocumentation
     public typealias OptionType = DeviceTypeID
 
     case appleTV1080p = "Apple-TV-1080p"
@@ -236,16 +232,17 @@ public enum DeviceTypeID:
     case iPhone16Plus = "iPhone-16-Plus"
     case iPhone16Pro = "iPhone-16-Pro"
     case iPhone16ProMax = "iPhone-16-Pro-Max"
-    case iPadPro11inchM4_16GB = "iPad-Pro-11-inch-M4-16GB"
-    case iPadPro11inchM4_8GB = "iPad-Pro-11-inch-M4-8GB"
-    case iPadPro13inchM4_16GB = "iPad-Pro-13-inch-M4-16GB"
-    case iPadPro13inchM4_8GB = "iPad-Pro-13-inch-M4-8GB"
+    case iPadPro11inchM416GB = "iPad-Pro-11-inch-M4-16GB"
+    case iPadPro11inchM48GB = "iPad-Pro-11-inch-M4-8GB"
+    case iPadPro13inchM416GB = "iPad-Pro-13-inch-M4-16GB"
+    case iPadPro13inchM48GB = "iPad-Pro-13-inch-M4-8GB"
     case iPadAir11inchM2 = "iPad-Air-11-inch-M2"
     case iPadAir13inchM2 = "iPad-Air-13-inch-M2"
     case iPadminiA17Pro = "iPad-mini-A17-Pro"
     case appleWatchSeries1042mm = "Apple-Watch-Series-10-42mm"
     case appleWatchSeries1046mm = "Apple-Watch-Series-10-46mm"
 
+    // swift-format-ignore: AllPublicDeclarationsHaveDocumentation
     public init?(option rawOption: OptionType) {
       switch rawOption {
       case .appleTV1080p: self = .appleTV1080p
@@ -342,10 +339,10 @@ public enum DeviceTypeID:
       case .iPhone16Plus: self = .iPhone16Plus
       case .iPhone16Pro: self = .iPhone16Pro
       case .iPhone16ProMax: self = .iPhone16ProMax
-      case .iPadPro11inchM4_16GB: self = .iPadPro11inchM4_16GB
-      case .iPadPro11inchM4_8GB: self = .iPadPro11inchM4_8GB
-      case .iPadPro13inchM4_16GB: self = .iPadPro13inchM4_16GB
-      case .iPadPro13inchM4_8GB: self = .iPadPro13inchM4_8GB
+      case .iPadPro11inchM416GB: self = .iPadPro11inchM416GB
+      case .iPadPro11inchM48GB: self = .iPadPro11inchM48GB
+      case .iPadPro13inchM416GB: self = .iPadPro13inchM416GB
+      case .iPadPro13inchM48GB: self = .iPadPro13inchM48GB
       case .iPadAir11inchM2: self = .iPadAir11inchM2
       case .iPadAir13inchM2: self = .iPadAir13inchM2
       case .iPadminiA17Pro: self = .iPadminiA17Pro
@@ -356,9 +353,10 @@ public enum DeviceTypeID:
     }
   }
 
-  public static let decodableStringPrefix: String =
-    "com.apple.CoreSimulator.SimDeviceType."
+  // swift-format-ignore: AllPublicDeclarationsHaveDocumentation
+  public static let decodableStringPrefix: String = "com.apple.CoreSimulator.SimDeviceType."
 
+  // swift-format-ignore: AllPublicDeclarationsHaveDocumentation
   public init(rawOption: RawAvailableOptions) {
     switch rawOption {
     case .appleTV1080p: self = .appleTV1080p
@@ -455,10 +453,10 @@ public enum DeviceTypeID:
     case .iPhone16Plus: self = .iPhone16Plus
     case .iPhone16Pro: self = .iPhone16Pro
     case .iPhone16ProMax: self = .iPhone16ProMax
-    case .iPadPro11inchM4_16GB: self = .iPadPro11inchM4_16GB
-    case .iPadPro11inchM4_8GB: self = .iPadPro11inchM4_8GB
-    case .iPadPro13inchM4_16GB: self = .iPadPro13inchM4_16GB
-    case .iPadPro13inchM4_8GB: self = .iPadPro13inchM4_8GB
+    case .iPadPro11inchM416GB: self = .iPadPro11inchM416GB
+    case .iPadPro11inchM48GB: self = .iPadPro11inchM48GB
+    case .iPadPro13inchM416GB: self = .iPadPro13inchM416GB
+    case .iPadPro13inchM48GB: self = .iPadPro13inchM48GB
     case .iPadAir11inchM2: self = .iPadAir11inchM2
     case .iPadAir13inchM2: self = .iPadAir13inchM2
     case .iPadminiA17Pro: self = .iPadminiA17Pro
@@ -467,12 +465,17 @@ public enum DeviceTypeID:
     }
   }
 
+  /// If the items is an unknown value, return the String.
   public func unknownValue() -> String? {
-    guard case let .unknown(string) = self else {
-      return nil
-    }
+    guard case let .unknown(string) = self else { return nil }
     return string
   }
 }
+
+extension DeviceTypeID: PrefixedDecodableString {}
+extension DeviceTypeID: Equatable {}
+extension DeviceTypeID: Sendable {}
+extension DeviceTypeID: RandomEnum {}
+extension DeviceTypeID: RawDefined {}
 
 // swiftlint:enable all

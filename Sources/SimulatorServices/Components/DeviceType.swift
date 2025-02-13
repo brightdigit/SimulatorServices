@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -30,10 +30,10 @@
 /// A type representing a specific device configuration.
 public struct DeviceType: Decodable, Equatable, Sendable {
   /// The family of products the device belongs to.
-  public let productFamily: ProductFamily // deviceType
+  public let productFamily: ProductFamily  // deviceType
 
   /// The path to the bundle.
-  public let bundlePath: Path // URL?
+  public let bundlePath: Path  // URL?
 
   /// The maximum runtime version supported by the device.
   public let maxRuntimeVersion: Int
@@ -42,10 +42,10 @@ public struct DeviceType: Decodable, Equatable, Sendable {
   public let maxRuntimeVersionString: Version
 
   /// The unique identifier of the device.
-  public let identifier: DeviceTypeID // identifier
+  public let identifier: DeviceTypeID  // identifier
 
   /// The model identifier of the device.
-  public let modelIdentifier: ModelID // model
+  public let modelIdentifier: ModelID  // model
 
   /// The minimum runtime version as a string.
   public let minRuntimeVersionString: Version

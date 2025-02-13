@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -28,11 +28,24 @@
 //
 
 import Foundation
+
 @testable import SimulatorServices
 
 @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-class MockAsyncableProcess: InternalAsyncableProcess, ProcessCompletionPromise {
-  init(outputData: Data, errorData: Data, terminationResult: TerminationResult, runError: Error? = nil, willTimeout: Bool) {
+internal class MockAsyncableProcess: InternalAsyncableProcess, ProcessCompletionPromise {
+  private let outputData: Data
+  private let errorData: Data
+  private let terminationResult: TerminationResult
+  private let runError: Error?
+  private let willTimeout: Bool
+
+  internal init(
+    outputData: Data,
+    errorData: Data,
+    terminationResult: TerminationResult,
+    willTimeout: Bool,
+    runError: Error? = nil
+  ) {
     self.outputData = outputData
     self.errorData = errorData
     self.terminationResult = terminationResult
@@ -40,7 +53,10 @@ class MockAsyncableProcess: InternalAsyncableProcess, ProcessCompletionPromise {
     self.willTimeout = willTimeout
   }
 
-  func waitForCompletion(for timeout: DispatchTime, with result: @autoclosure @escaping () -> SimulatorServices.TerminationResult) -> SimulatorServices.ProcessResult {
+  internal func waitForCompletion(
+    for timeout: DispatchTime,
+    with result: @autoclosure @escaping () -> SimulatorServices.TerminationResult
+  ) -> SimulatorServices.ProcessResult {
     sleep(1)
     if willTimeout {
       return .timedOut(timeout)
@@ -49,7 +65,7 @@ class MockAsyncableProcess: InternalAsyncableProcess, ProcessCompletionPromise {
     }
   }
 
-  func run() throws {
+  internal func run() throws {
     guard let runError else {
       return
     }
@@ -57,24 +73,17 @@ class MockAsyncableProcess: InternalAsyncableProcess, ProcessCompletionPromise {
     throw runError
   }
 
-  func promise() -> SimulatorServices.ProcessCompletionPromise {
-    self
-  }
+  internal func promise() -> SimulatorServices.ProcessCompletionPromise { self }
 
-  func fileHandles() -> SimulatorServices.ProcessOutputHandleSet {
+  internal func fileHandles() -> SimulatorServices.ProcessOutputHandleSet {
+    // swiftlint:disable:next force_try
     try! .init(
       output: .init(temporaryFromData: outputData),
       error: .init(temporaryFromData: errorData)
     )
   }
 
-  func termintationResult() -> SimulatorServices.TerminationResult {
+  internal func termintationResult() -> SimulatorServices.TerminationResult {
     terminationResult
   }
-
-  let outputData: Data
-  let errorData: Data
-  let terminationResult: TerminationResult
-  let runError: Error?
-  let willTimeout: Bool
 }

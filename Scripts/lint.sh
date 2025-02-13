@@ -44,6 +44,8 @@ $MINT_CMD bootstrap -m Mintfile || exit 1
 if [ -z "$CI" ]; then
     $MINT_RUN swift-format format --configuration .swift-format  --recursive --parallel --in-place Sources Tests || exit 1
     $MINT_RUN swiftlint --autocorrect || exit 1
+    $PACKAGE_DIR/scripts/header.sh -d  $PACKAGE_DIR/Sources -c "Leo Dion" -o "BrightDigit" -p "SimulatorServices"
+    $PACKAGE_DIR/scripts/header.sh -d  $PACKAGE_DIR/Tests -c "Leo Dion" -o "BrightDigit" -p "SimulatorServices"
 fi
 
 if [ -z "$FORMAT_ONLY" ]; then

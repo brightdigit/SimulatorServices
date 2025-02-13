@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -39,14 +39,7 @@
 ///
 /// - Note: If a platform is unknown,
 /// it can be represented using the `.unknown` case with a custom string.
-public enum Platform:
-  RawDefined,
-  Equatable,
-  Decodable,
-  Sendable,
-  RandomEnum,
-  Hashable,
-  CustomStringConvertible {
+public enum Platform {
   /// Represents the iOS platform.
   case iOS
 
@@ -81,8 +74,6 @@ public enum Platform:
     /// Initializes a raw option based on a platform.
     ///
     /// - Parameter option: The platform option to initialize the raw option from.
-    ///
-    /// - Returns: A raw option if available for the specified platform, otherwise nil.
     public init?(option: Platform) {
       switch option {
       case .iOS: self = .iOS
@@ -117,3 +108,11 @@ public enum Platform:
     return string
   }
 }
+
+extension Platform: RawDefined {}
+extension Platform: Equatable {}
+extension Platform: Decodable {}
+extension Platform: Sendable {}
+extension Platform: RandomEnum {}
+extension Platform: Hashable {}
+extension Platform: CustomStringConvertible {}

@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,51 +27,59 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
+@testable import SimulatorServices
+
+// swiftlint:disable all
+// swift-format-ignore
 internal enum MockRD: RawDefined, PrefixedDecodableString, RandomEnum, Equatable {
-  init(rawOption: Choice) {
+  internal init(rawOption: Choice) {
     switch rawOption {
     case .A:
       self = .A
+
     case .B:
       self = .B
+
     case .C:
       self = .C
     }
   }
 
-  func unknownValue() -> String? {
+  internal func unknownValue() -> String? {
     guard case let .unknown(string) = self else {
       return nil
     }
     return string
   }
 
-  typealias RawAvailableOptions = Choice
+  internal typealias RawAvailableOptions = Choice
 
-  static let decodableStringPrefix: String = UUID().uuidString
+  internal static let decodableStringPrefix: String = UUID().uuidString
   case A
   case B
   case C
   case unknown(String)
 
-  enum Choice: String, RawReversable, CaseIterable {
+  internal enum Choice: String, RawReversable, CaseIterable {
     init?(option: MockRD) {
       switch option {
       case .A:
         self = .A
+
       case .B:
         self = .B
+
       case .C:
         self = .C
+
       case .unknown:
         return nil
       }
     }
 
-    typealias OptionType = MockRD
+    internal typealias OptionType = MockRD
 
     case A
     case B
@@ -79,9 +87,9 @@ internal enum MockRD: RawDefined, PrefixedDecodableString, RandomEnum, Equatable
   }
 }
 
-final class RawDefinedTests: XCTestCase {
-  func testInit() throws {
-    let mockItems: [MockRD] = .random(withCountIn: 20 ... 50) {
+internal final class RawDefinedTests: XCTestCase {
+  internal func testInit() throws {
+    let mockItems: [MockRD] = .random(withCountIn: 20...50) {
       Bool.random() ? .random() : .unknown(UUID().uuidString)
     }
 
@@ -93,3 +101,4 @@ final class RawDefinedTests: XCTestCase {
     }
   }
 }
+// swiftlint:enable all

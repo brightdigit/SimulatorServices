@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -50,30 +50,6 @@ public struct ModelID: Decodable, Equatable, Sendable, CustomStringConvertible {
     case appleVision = "RealityDevice"
   }
 
-  /// A structure representing the version of the model.
-  public struct Version: Equatable, Sendable {
-    /// The major version number.
-    public let major: Int
-
-    /// The minor version number.
-    public let minor: Int
-
-    /// Initializes a version with the given major and minor numbers.
-    ///
-    /// - Parameters:
-    ///   - major: The major version number.
-    ///   - minor: The minor version number.
-    public init(major: Int, minor: Int) {
-      self.major = major
-      self.minor = minor
-    }
-
-    // swiftlint:disable:next strict_fileprivate
-    fileprivate static func random() -> Version {
-      .init(major: .random(in: 2 ... 25), minor: .random(in: 1 ... 9))
-    }
-  }
-
   /// The name of the model.
   public let name: Name
 
@@ -81,9 +57,7 @@ public struct ModelID: Decodable, Equatable, Sendable, CustomStringConvertible {
   public let version: Version
 
   /// A textual representation of the model ID.
-  public var description: String {
-    "\(name)\(version.major),\(version.minor)"
-  }
+  public var description: String { "\(name)\(version.major),\(version.minor)" }
 
   /// Initializes a model ID with the given name and version.
   ///
@@ -133,7 +107,8 @@ public struct ModelID: Decodable, Equatable, Sendable, CustomStringConvertible {
     guard let minor = Int(match.3) else {
       assertionFailure("Invalid minor value: \(match.3)")
       throw DecodingError.valueNotFound(
-        Int.self, .init(
+        Int.self,
+        .init(
           codingPath: [],
           debugDescription: "Invalid minor value: \(match.3)"
         )

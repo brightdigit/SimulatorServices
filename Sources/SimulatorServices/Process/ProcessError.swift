@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -42,8 +42,8 @@ public enum ProcessError: Error, LocalizedError, Equatable {
     switch self {
     case let .timeout(timeout):
       return "Process did not complete within the specified timeout: \(timeout)"
-    case let .uncaughtSignal(signal):
-      return signal.description
+
+    case let .uncaughtSignal(signal): return signal.description
     }
   }
 }

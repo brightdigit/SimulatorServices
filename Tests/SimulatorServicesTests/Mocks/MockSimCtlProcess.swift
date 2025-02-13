@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -28,21 +28,25 @@
 //
 
 import Foundation
+
 @testable import SimulatorServices
 
-class MockSimCtlProcess: InternalSimCtlProcess {
-  init(result: Result<Data?, Error>, executableURL: URL? = nil, arguments: [String]? = nil) {
+internal class MockSimCtlProcess: InternalSimCtlProcess {
+  private let result: Result<Data?, Error>
+  internal var executableURL: URL?
+  internal var arguments: [String]?
+
+  internal init(
+    result: Result<Data?, Error>,
+    executableURL: URL? = nil,
+    arguments: [String]? = nil
+  ) {
     self.result = result
     self.executableURL = executableURL
     self.arguments = arguments
   }
 
-  let result: Result<Data?, Error>
-  var executableURL: URL?
-
-  var arguments: [String]?
-
-  func run(timeout _: DispatchTime) async throws -> Data? {
+  internal func run(timeout _: DispatchTime) async throws -> Data? {
     try result.get()
   }
 }
