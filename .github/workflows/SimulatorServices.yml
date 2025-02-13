@@ -116,6 +116,7 @@ jobs:
             osVersion: "18.2"
     
     steps:
+      - uses: actions/checkout@v4
       - name: Build and Test
         uses: ./.github/actions/macos-build
         with:
