@@ -113,5 +113,7 @@ excluded:
   - DerivedData
   - .build
   - Sources/SimulatorServices/Components/DeviceTypeID.swift
+  - .swiftpm
+  - Mint
 indentation_width:
   indentation_width: 2
