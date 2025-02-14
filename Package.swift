@@ -22,14 +22,14 @@ let package = Package(
   ],
   dependencies: [
     .package(
-      url: "https://github.com/brightdigit/OperatingSystemVersion.git",
-      from: "1.0.0-beta.1"
+      url: "https://github.com/brightdigit/OSVer.git",
+      from: "1.0.0"
     )
   ],
   targets: [
     .target(
       name: "SimulatorServices",
-      dependencies: ["OperatingSystemVersion"],
+      dependencies: ["OSVer"],
       swiftSettings: [
         SwiftSetting.enableUpcomingFeature("BareSlashRegexLiterals"),
         SwiftSetting.enableUpcomingFeature("ConciseMagicFile"),

@@ -28,10 +28,10 @@
 //
 
 import Foundation
-import OperatingSystemVersion
+import OSVer
 
 /// Operating System Version
-public typealias Version = OperatingSystemVersion
+public typealias Version = OSVer
 
 extension Version {
   internal static func random() -> Version {
