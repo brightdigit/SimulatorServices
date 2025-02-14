@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,12 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
+@testable import SimulatorServices
+
 extension Data {
-  static func random() -> Data {
-    let bytes: [UInt8] = (0 ... 255).map { _ in UInt8.random(in: 0 ... 255) }
+  internal static func random() -> Data {
+    let bytes: [UInt8] = (0...255).map { _ in UInt8.random(in: 0...255) }
     return Data(bytes)
   }
 }

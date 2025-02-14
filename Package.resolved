@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "operatingsystemversion",
+      "identity" : "osver",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/brightdigit/OperatingSystemVersion.git",
+      "location" : "https://github.com/brightdigit/OSVer.git",
       "state" : {
-        "revision" : "bd3c70eb38da109ec6be9958e80ee495125d3232",
-        "version" : "1.0.0-beta.1"
+        "revision" : "448f170babc2f6c9897194a4b42719994639325d",
+        "version" : "1.0.0"
       }
     }
   ],

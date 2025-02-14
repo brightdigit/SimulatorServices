@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,8 +27,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import OperatingSystemVersion
-
 /// A structure representing a runtime ID.
 public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable {
   /// The prefix used for decoding strings.
@@ -43,9 +41,7 @@ public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable 
   /// The suffix part of the runtime ID.
   public var suffix: String {
     let values: [any CustomStringConvertible] = [
-      platform,
-      version.majorVersion,
-      version.minorVersion
+      platform, version.majorVersion, version.minorVersion,
     ]
     return values.map(\.description).joined(separator: "-")
   }
@@ -73,7 +69,7 @@ public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable 
     }
     let platform = Platform(rawValue: values[0])
     let versionValues = values[1...].compactMap(Int.init)
-    let version = try Version(components: versionValues)
+    let version = try Version(array: versionValues)
     self.init(platform: platform, version: version)
   }
 }

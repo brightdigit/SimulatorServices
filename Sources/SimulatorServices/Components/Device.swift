@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -32,13 +32,13 @@ import Foundation
 /// Represents a device used in simulation.
 public struct Device: Decodable, Equatable, Sendable {
   /// The path to the data directory.
-  public let dataPath: Path // URL?
+  public let dataPath: Path  // URL?
 
   /// The size of the data directory.
   public let dataPathSize: Int?
 
   /// The path to the log directory.
-  public let logPath: Path // URL?
+  public let logPath: Path  // URL?
 
   /// The unique identifier for the device.
   public let udid: UUID
@@ -53,10 +53,10 @@ public struct Device: Decodable, Equatable, Sendable {
   public let lastBootedAt: Date?
 
   /// The identifier for the device type.
-  public let deviceTypeIdentifier: DeviceTypeID // Identifier (Device)
+  public let deviceTypeIdentifier: DeviceTypeID  // Identifier (Device)
 
   /// The current state of the device.
-  public let state: DeviceState // DeviceState
+  public let state: DeviceState  // DeviceState
 
   /// The name of the device.
   public let name: String

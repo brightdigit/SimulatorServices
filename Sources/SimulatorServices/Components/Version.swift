@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -28,16 +28,16 @@
 //
 
 import Foundation
-import OperatingSystemVersion
+import OSVer
 
 /// Operating System Version
-public typealias Version = OperatingSystemVersion
+public typealias Version = OSVer
 
 extension Version {
   internal static func random() -> Version {
     self.init(
-      majorVersion: .random(in: 7 ... 20),
-      minorVersion: .random(in: 0 ... 5),
+      majorVersion: .random(in: 7...20),
+      minorVersion: .random(in: 0...5),
       patchVersion: 0
     )
   }

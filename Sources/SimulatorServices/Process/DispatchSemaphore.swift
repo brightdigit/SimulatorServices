@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -31,17 +31,14 @@ import Foundation
 
 extension DispatchSemaphore: ProcessCompletionPromise {
   internal func waitForCompletion(
-    for timeout: DispatchTime,
-    with result: @autoclosure @escaping () -> TerminationResult
+    for timeout: DispatchTime, with result: @autoclosure @escaping () -> TerminationResult
   ) -> ProcessResult {
     let processResult = wait(timeout: timeout)
 
     switch processResult {
-    case .success:
-      return .success(result())
+    case .success: return .success(result())
 
-    case .timedOut:
-      return .timedOut(timeout)
+    case .timedOut: return .timedOut(timeout)
     }
   }
 }

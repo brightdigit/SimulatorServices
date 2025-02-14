@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,27 +27,25 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
-internal struct MockPDS: PrefixedDecodableString, LosslessStringConvertible, Equatable {
-  let suffix: String
-  static let decodableStringPrefix: String = UUID().uuidString
+@testable import SimulatorServices
 
-  init(suffix: any StringProtocol) throws {
+internal struct MockPDS: PrefixedDecodableString, LosslessStringConvertible, Equatable {
+  internal static let decodableStringPrefix: String = UUID().uuidString
+
+  internal let suffix: String
+
+  internal init(suffix: any StringProtocol) throws {
     self.suffix = .init(suffix)
   }
 }
 
-final class PrefixedDecodableStringTests: XCTestCase {
-  func testSuffix() throws {
-    let mockSuffixes: [String] = .random(withCountIn: 20 ... 50) {
-      UUID().uuidString
-    }
+internal final class PrefixedDecodableStringTests: XCTestCase {
+  internal func testSuffix() throws {
+    let mockSuffixes: [String] = .random(withCountIn: 20...50) { UUID().uuidString }
 
-    let mockStrings = mockSuffixes.map {
-      MockPDS.decodableStringPrefix + $0
-    }
+    let mockStrings = mockSuffixes.map { MockPDS.decodableStringPrefix + $0 }
 
     for (suffix, description) in zip(mockSuffixes, mockStrings) {
       let actualWSuffix: MockPDS = try .init(suffix: suffix)
@@ -59,19 +57,15 @@ final class PrefixedDecodableStringTests: XCTestCase {
     }
   }
 
-  func testInvalidSuffix() throws {
-    let mockStrings: [String] = .random(withCountIn: 20 ... 50) {
-      UUID().uuidString
-    }
+  internal func testInvalidSuffix() throws {
+    let mockStrings: [String] = .random(withCountIn: 20...50) { UUID().uuidString }
 
     for string in mockStrings {
       let error: PrefixMismatchError?
       do {
         _ = try MockRD.suffix(forString: string)
         error = nil
-      } catch let caughtError as PrefixMismatchError {
-        error = caughtError
-      }
+      } catch let caughtError as PrefixMismatchError { error = caughtError }
       XCTAssertEqual(error?.singleStringValue, string)
     }
   }

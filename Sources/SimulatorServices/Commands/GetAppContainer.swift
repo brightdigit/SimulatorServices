@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -55,7 +55,7 @@ public struct GetAppContainer: Subcommand {
       "get_app_container",
       simulator.description,
       appBundleIdentifier,
-      container.description
+      container.description,
     ]
   }
 
@@ -79,9 +79,7 @@ public struct GetAppContainer: Subcommand {
   /// - Returns: ``Path`` to the directory queried.
   /// - Throws: ``Error`` if the standard output data is nil or invalid.
   public func parse(_ data: Data?) throws -> Path {
-    guard let data else {
-      throw Error.missingData
-    }
+    guard let data else { throw Error.missingData }
 
     guard let text = String(bytes: data, encoding: .utf8) else {
       throw Error.invalidData(data)
@@ -92,6 +90,7 @@ public struct GetAppContainer: Subcommand {
 
   /// Recovers from the error state thrown by the command line call.
   /// - Parameter error: ``ProcessError`` from an uncaught signal or a timeout.
+  /// - Throws: An error is parsing the error fails.
   public func recover(_ error: ProcessError) throws {
     guard case let .uncaughtSignal(signal) = error else {
       throw error
@@ -105,8 +104,10 @@ public struct GetAppContainer: Subcommand {
       .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
       .filter { !$0.isEmpty }
 
-    guard let errorString = lines.last?
-      .trimmingCharacters(in: .whitespacesAndNewlines) else {
+    guard
+      let errorString = lines.last?
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+    else {
       throw error
     }
 

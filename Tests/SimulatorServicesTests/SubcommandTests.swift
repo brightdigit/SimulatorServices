@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,32 +27,38 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
-public class SubcommandTests: XCTestCase {
-  func testRecover() {
+@testable import SimulatorServices
+
+internal class SubcommandTests: XCTestCase {
+  internal func testRecover() {
     let expectedError: ProcessError
     if #available(iOS 13.4, *) {
       expectedError = ProcessError.uncaughtSignal(
+        // swiftlint:disable:next force_unwrapping
         .init(reason: 2, status: 2, standardError: FileHandle.nullDevice, output: nil)!
       )
     } else {
       expectedError = ProcessError.uncaughtSignal(
+        // swiftlint:disable:next force_unwrapping
         .init(reason: 2, status: 2, data: nil, output: nil)!
       )
     }
 
-    let subcommand = MockSubcommand { _ in
-
-      throw expectedError
-    }
+    let subcommand = MockSubcommand { _ in throw expectedError }
 
     XCTAssertThrowsError(try subcommand.recover(expectedError)) { actualError in
       XCTAssertEqual(actualError as? ProcessError, expectedError)
     }
 
-    XCTAssertEqual(expectedError.localizedDescription, "Termination Reason: \(2) with status: 2")
-    XCTAssertEqual(expectedError.errorDescription, "Termination Reason: \(2) with status: 2")
+    XCTAssertEqual(
+      expectedError.localizedDescription,
+      "Termination Reason: \(2) with status: 2"
+    )
+    XCTAssertEqual(
+      expectedError.errorDescription,
+      "Termination Reason: \(2) with status: 2"
+    )
   }
 }

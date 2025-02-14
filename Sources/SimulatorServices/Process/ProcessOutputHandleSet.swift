@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -34,7 +34,10 @@ internal struct ProcessOutputHandleSet {
   private let output: FileHandle
   private let error: FileHandle
 
+  // swift-format-ignore: NoLeadingUnderscores
   private var _outputResult: Result<Data?, any Error>?
+
+  // swift-format-ignore: NoLeadingUnderscores
   private var _errorResult: Result<Data?, any Error>?
 
   internal var outputResult: Result<Data?, any Error> {

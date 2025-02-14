@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,11 +27,12 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
-public class ProcessTests: XCTestCase {
-  func testRunProcess() async throws {
+@testable import SimulatorServices
+
+internal class ProcessTests: XCTestCase {
+  internal func testRunProcess() async throws {
     guard #available(iOS 13.4, *) else {
       throw XCTSkip("Required API is not available for this test.")
     }
@@ -41,7 +42,12 @@ public class ProcessTests: XCTestCase {
     let error: Data = .random()
     let termination: TerminationResult = .init(reason: 1, status: 0)
 
-    let process = MockAsyncableProcess(outputData: output, errorData: error, terminationResult: termination, willTimeout: false)
+    let process = MockAsyncableProcess(
+      outputData: output,
+      errorData: error,
+      terminationResult: termination,
+      willTimeout: false
+    )
     let actualOutput = try await process.run(timeout: timeout)
     XCTAssertEqual(output, actualOutput)
   }

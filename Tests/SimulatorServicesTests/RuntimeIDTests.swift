@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -28,24 +28,21 @@
 //
 
 import Foundation
-@testable import SimulatorServices
 import XCTest
 
-extension Array {
-  static func random(withCountIn countRange: ClosedRange<Int>, using closure: @escaping @Sendable () -> Element) -> Self {
-    let count: Int = .random(in: countRange)
-    return (0 ..< count).map { _ in closure() }
-  }
-}
+@testable import SimulatorServices
 
-final class RuntimeIDTests: XCTestCase {
-  func random(_: Int) -> RuntimeID {
-    .init(platform: .random(), version: .random())
+internal final class RuntimeIDTests: XCTestCase {
+  private func random(_: Int) -> RuntimeID {
+    .init(
+      platform: .random(),
+      version: .random()
+    )
   }
 
-  func testInitDescription() throws {
-    let count: Int = .random(in: 20 ... 50)
-    let runtimes = (0 ..< count).map(random)
+  internal func testInitDescription() throws {
+    let count: Int = .random(in: 20...50)
+    let runtimes = (0..<count).map(random)
 
     for runtime in runtimes {
       let suffix = runtime.suffix
@@ -56,5 +53,15 @@ final class RuntimeIDTests: XCTestCase {
       let actualWDesc = RuntimeID(description)
       XCTAssertEqual(runtime, actualWDesc)
     }
+  }
+}
+
+extension Array {
+  internal static func random(
+    withCountIn countRange: ClosedRange<Int>,
+    using closure: @escaping @Sendable () -> Element
+  ) -> Self {
+    let count: Int = .random(in: countRange)
+    return (0..<count).map { _ in closure() }
   }
 }

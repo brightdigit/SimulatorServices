@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -40,7 +40,7 @@ public struct DevicePair: Decodable, Equatable, Sendable {
     public let udid: UUID
 
     /// The state of the device.
-    public let state: DeviceState // Device.State
+    public let state: DeviceState  // Device.State
   }
 
   /// The watch device in the pair.
@@ -50,5 +50,5 @@ public struct DevicePair: Decodable, Equatable, Sendable {
   public let phone: Device
 
   /// The state of the device pair.
-  public let state: PairState // Pair.State
+  public let state: PairState  // Pair.State
 }
