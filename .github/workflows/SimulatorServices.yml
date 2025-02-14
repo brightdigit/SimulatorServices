@@ -20,8 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/ubuntu-build
-      - name: Prepare Code Coverage
-        run: llvm-cov export -format="lcov" .build/x86_64-unknown-linux-gnu/debug/${{ github.workflow }}PackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
+      - name: Process Coverage
+        uses: sersoft-gmbh/swift-coverage-action@v4
+        with:
+          fail-on-empty-output: true
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -121,7 +123,6 @@ jobs:
         uses: ./.github/actions/macos-build
         with:
           type: ${{ matrix.type }}
-          os: ${{ matrix.os }}
           xcode: ${{ matrix.xcode }}
           deviceName: ${{ matrix.deviceName }}
           osVersion: ${{ matrix.osVersion }}

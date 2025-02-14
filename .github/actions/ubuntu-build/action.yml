@@ -7,7 +7,7 @@ runs:
     - name: Get Swift and OS versions
       shell: bash
       run: |
-        SWIFT_VERSION=$(swift --version | head -n 1 | cut -d ' ' -f 4 | cut -d'-' -f1)
+        SWIFT_VERSION=$(swift --version | head -n 1 | cut -d ' ' -f 3)
         OS_VERSION=$(. /etc/os-release && echo $VERSION_CODENAME)
         echo "SWIFT_VERSION=$SWIFT_VERSION" >> $GITHUB_ENV
         echo "OS_VERSION=$OS_VERSION" >> $GITHUB_ENV
@@ -17,8 +17,6 @@ runs:
       with:
         path: .build
         key: spm-${{ env.OS_VERSION }}-${{ env.SWIFT_VERSION }}-${{ hashFiles('Package.resolved') }}
-        restore-keys: |
-          spm-${{ env.OS_VERSION }}-${{ env.SWIFT_VERSION }}-
 
     - name: Build
       shell: bash
