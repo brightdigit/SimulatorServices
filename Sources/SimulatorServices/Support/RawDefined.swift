@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,14 +27,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// A protocol for types that support reverse mapping from raw values to options.
-public protocol RawReversable {
-  /// The associated type representing the option type.
-  associatedtype OptionType: RawDefined
-
-  /// Initializes an instance with a provided option.
-  init?(option: OptionType)
-}
+#warning("Move RawReversable to Options.")
 
 /// A protocol for types with raw options.
 public protocol RawDefined {
@@ -75,7 +68,8 @@ extension RawDefined where Self: Decodable, Self.RawAvailableOptions.RawValue: D
   /// - Parameter decoder: The decoder to read data from.
   /// - Throws: Any errors encountered during decoding.
   public init(from decoder: any Decoder) throws {
-    let rawValueString = try decoder
+    let rawValueString =
+      try decoder
       .singleValueContainer()
       .decode(RawAvailableOptions.RawValue.self)
     self.init(rawValue: rawValueString)
@@ -90,42 +84,39 @@ extension RawDefined where Self: CaseIterable, Self.RawAvailableOptions: CaseIte
 }
 
 extension RawDefined
-  where Self.RawAvailableOptions: RawReversable,
-  Self.RawAvailableOptions.OptionType == Self {
+// swiftlint:disable:next line_length
+where Self.RawAvailableOptions: RawReversable, Self.RawAvailableOptions.OptionType == Self {
   /// Retrieves the underlying raw value.
   public var underlyingValue: RawAvailableOptions.RawValue {
     switch (RawAvailableOptions(option: self), unknownValue()) {
-    case let (.some(value), _):
-      return value.rawValue
+    case let (.some(value), _): return value.rawValue
 
-    case let (.none, .some(value)):
-      return value
+    case let (.none, .some(value)): return value
 
-    case (.none, .none):
-      fatalError("Invalid state should never happen.")
+    case (.none, .none): fatalError("Invalid state should never happen.")
     }
   }
 }
 
+// swift-format-ignore
 extension RawDefined
-  where Self: CustomStringConvertible,
+where
+  Self: CustomStringConvertible,
   Self.RawAvailableOptions: RawReversable,
   Self.RawAvailableOptions.OptionType == Self,
   Self.RawAvailableOptions.RawValue: CustomStringConvertible {
   /// A textual representation of the instance.
-  public var description: String {
-    underlyingValue.description
-  }
+  public var description: String { underlyingValue.description }
 }
 
+// swift-format-ignore
 extension RawDefined
-  where Self: CustomStringConvertible,
+where
+  Self: CustomStringConvertible,
   Self: PrefixedDecodableString,
   Self.RawAvailableOptions: RawReversable,
   Self.RawAvailableOptions.OptionType == Self,
   Self.RawAvailableOptions.RawValue: CustomStringConvertible {
   /// A textual representation of the instance with the prefix and suffix.
-  public var description: String {
-    Self.decodableStringPrefix + suffix
-  }
+  public var description: String { Self.decodableStringPrefix + suffix }
 }

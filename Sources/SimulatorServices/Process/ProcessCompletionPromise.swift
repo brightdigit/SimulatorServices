@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -31,7 +31,6 @@ import Foundation
 
 internal protocol ProcessCompletionPromise {
   func waitForCompletion(
-    for timeout: DispatchTime,
-    with result: @autoclosure @escaping () -> TerminationResult
+    for timeout: DispatchTime, with result: @autoclosure @escaping () -> TerminationResult
   ) -> ProcessResult
 }

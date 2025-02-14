@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -35,12 +35,13 @@ public enum SimulatorID: CustomStringConvertible, Equatable, Sendable {
   case id(UUID)
   /// Specify any booted device.
   case booted
+
+  /// Returns "booted" if ``booted``, otherwise returns the  `UUID` from ``id(_:)``.
   public var description: String {
     switch self {
-    case .booted:
-      return "booted"
-    case let .id(uuid):
-      return uuid.uuidString
+    case .booted: return "booted"
+
+    case let .id(uuid): return uuid.uuidString
     }
   }
 }

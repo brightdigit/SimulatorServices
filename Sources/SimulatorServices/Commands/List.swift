@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -56,19 +56,13 @@ public struct List: Subcommand {
   private let decoder: any InternalListDecoder
 
   /// Arguments to pass to `simctl`
-  public var arguments: [String] {
-    ["list", "-j"]
-  }
+  public var arguments: [String] { ["list", "-j"] }
 
   /// Creates the List subcommand.
   @available(macOS 13.0, *)
-  public init() {
-    self.init(decoder: Self.decoder)
-  }
+  public init() { self.init(decoder: Self.decoder) }
 
-  internal init(decoder: any InternalListDecoder) {
-    self.decoder = decoder
-  }
+  internal init(decoder: any InternalListDecoder) { self.decoder = decoder }
 
   /// Parses the JSON returned from `simctl`.
   /// - Parameter data: Stanard output from the `simctl` call.
@@ -76,9 +70,7 @@ public struct List: Subcommand {
   /// - Throws: ``Error`` if the standard output data is nil
   ///           or the JSON could not be decoded.
   public func parse(_ data: Data?) throws -> SimulatorList {
-    guard let data else {
-      throw Error.missingData
-    }
+    guard let data else { throw Error.missingData }
 
     do {
       return try decoder.decode(SimulatorList.self, from: data)

@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,12 +27,13 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-@testable import SimulatorServices
 import XCTest
 
-final class PairStateTests: XCTestCase {
-  func testExample() throws {
-    let pairStates: [PairState] = Array.random(withCountIn: 20 ... 50) {
+@testable import SimulatorServices
+
+internal final class PairStateTests: XCTestCase {
+  internal func testExample() throws {
+    let pairStates: [PairState] = Array.random(withCountIn: 20...50) {
       Bool.random() ? PairState.random() : .unknown(UUID().uuidString)
     }
 

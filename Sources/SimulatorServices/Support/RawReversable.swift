@@ -1,9 +1,9 @@
 //
-//  DeviceTypeTests.swift
+//  RawReversable.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -27,14 +27,11 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
-import SimulatorServices
-import XCTest
+/// A protocol for types that support reverse mapping from raw values to options.
+public protocol RawReversable {
+  /// The associated type representing the option type.
+  associatedtype OptionType: RawDefined
 
-final class DeviceStateTests: XCTestCase {
-  func testDecode() throws {
-    let decoder = JSONDecoder()
-    let value = try decoder.decode(DeviceState.self, from: "\"Booted\"".data(using: .utf8)!)
-    XCTAssertEqual(value, .booted)
-  }
+  /// Initializes an instance with a provided option.
+  init?(option: OptionType)
 }

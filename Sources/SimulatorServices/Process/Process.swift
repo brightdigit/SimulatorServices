@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -52,12 +52,14 @@
     internal func promise() -> any ProcessCompletionPromise {
       let semaphore = DispatchSemaphore(value: 0)
 
-      terminationHandler = { _ in
-        semaphore.signal()
-      }
+      terminationHandler = { _ in semaphore.signal() }
       return semaphore
     }
 
+    /// Runs the process within the timeout given.
+    /// - Parameter timeout: `DispatchTime` for the process to complete.
+    /// - Returns: `Data` returned from the command.
+    /// - Throws: An error is the process fails.
     public func run(till timeout: DispatchTime) async throws -> Data? {
       try await run(timeout: timeout)
     }

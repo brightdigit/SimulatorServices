@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -32,16 +32,16 @@ public struct Runtime: Decodable, Equatable, Sendable {
   /// A structure representing a supported device type for the runtime.
   public struct SupportedDeviceType: Decodable, Equatable, Sendable {
     /// The bundle path of the device type.
-    public let bundlePath: Path // URL?
+    public let bundlePath: Path  // URL?
 
     /// The name of the device type.
     public let name: String
 
     /// The identifier of the device type.
-    public let identifier: DeviceTypeID // identifier
+    public let identifier: DeviceTypeID  // identifier
 
     /// The product family of the device type.
-    public let productFamily: ProductFamily // deviceType
+    public let productFamily: ProductFamily  // deviceType
   }
 
   /// An array of supported device types for the runtime.

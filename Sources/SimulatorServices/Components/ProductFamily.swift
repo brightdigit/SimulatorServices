@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -32,19 +32,15 @@
 /// - SeeAlso: ``RawAvailableOptions`` for the available raw options.
 /// - SeeAlso: ``unknownValue()`` for retrieving the unknown value.
 /// - Important: The ``unknown`` case allows for custom product family names.
-public enum ProductFamily:
-  RawDefined,
-  Equatable,
-  Decodable,
-  Sendable,
-  CaseIterable,
-  RandomEnum {
+public enum ProductFamily {
+  // swiftlint:disable missing_docs
   case iPhone
   case iPad
   case appleTV
   case appleWatch
   case appleVision
   case unknown(String)
+  // swiftlint:enable missing_docs
 
   /// Available raw options for the product family.
   public enum RawAvailableOptions: String, CaseIterable {
@@ -74,3 +70,10 @@ public enum ProductFamily:
     return string
   }
 }
+
+extension ProductFamily: RawDefined {}
+extension ProductFamily: Equatable {}
+extension ProductFamily: Decodable {}
+extension ProductFamily: Sendable {}
+extension ProductFamily: CaseIterable {}
+extension ProductFamily: RandomEnum {}

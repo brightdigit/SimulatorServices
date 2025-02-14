@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2024 BrightDigit.
+//  Copyright © 2025 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -30,8 +30,8 @@
 import SimulatorServices
 import XCTest
 
-final class ContainerIDTests: XCTestCase {
-  func testDescriptions() {
+internal final class ContainerIDTests: XCTestCase {
+  internal func testDescriptions() {
     let appGroup = UUID().uuidString
 
     XCTAssertEqual(ContainerID.data.description, "data")
