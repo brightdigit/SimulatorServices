@@ -43,7 +43,8 @@ let package = Package(
     ),
     .testTarget(
       name: "SimulatorServicesTests",
-      dependencies: ["SimulatorServices"]
+      dependencies: ["SimulatorServices"],
+      resources: [.copy("Resources")]
     ),
     .testTarget(
       name: "SimulatorServicesIntegrationTests",

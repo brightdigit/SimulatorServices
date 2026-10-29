@@ -30,28 +30,121 @@
 import Foundation
 
 /// Interface for running `simctl`.
+///
+/// By default each subcommand runs as `xcrun simctl <arguments>`.
+/// A ``SimCtl`` from ``find(developerDirectory:xcRunURL:)`` runs the `simctl`
+/// that `xcrun --find simctl` resolved instead.
+/// When ``developerDirectory`` is set, every process gets it as `DEVELOPER_DIR`,
+/// so `simctl` comes from that Xcode rather than the one `xcode-select` points to.
 public struct SimCtl: Sendable {
+  /// The name of the environment variable `xcrun` reads the developer directory from.
+  public static let developerDirectoryKey = "DEVELOPER_DIR"
+
   /// URL Path to `xcrun`
   public let xcRunURL: URL
 
+  /// URL path to `simctl`, as resolved by `xcrun --find simctl`.
+  ///
+  /// When it's `nil`, subcommands run through `xcrun simctl`.
+  public let simCtlURL: URL?
+
+  /// The developer directory passed as `DEVELOPER_DIR` to every process,
+  /// or `nil` to use the one `xcode-select` points to.
+  public let developerDirectory: URL?
+
+  private let environment: [String: String]
   private let processFactory: @Sendable () -> any InternalSimCtlProcess
 
   internal init(
     xcRunURL: URL,
+    simCtlURL: URL? = nil,
+    developerDirectory: URL? = nil,
+    environment: [String: String] = [:],
     processFactory: @escaping @autoclosure @Sendable () -> any InternalSimCtlProcess
   ) {
     self.xcRunURL = xcRunURL
+    self.simCtlURL = simCtlURL
+    self.developerDirectory = developerDirectory.map(Self.developerDirectory(for:))
+    self.environment = environment
     self.processFactory = processFactory
   }
 
   #if os(macOS)
     /// Create an interface to `simctl`
-    /// - Parameter xcRunURL: URL path to `xcrun`.
+    /// - Parameters:
+    ///   - xcRunURL: URL path to `xcrun`.
+    ///   - developerDirectory: The Xcode to use, either the app
+    ///     (`/Applications/Xcode.app`) or its developer directory
+    ///     (`/Applications/Xcode.app/Contents/Developer`). It's passed as
+    ///     `DEVELOPER_DIR`. `nil` uses the one `xcode-select` points to.
     @available(macOS 10.15.4, *)
-    public init(xcRunURL: URL = URL(fileURLWithPath: "/usr/bin/xcrun")) {
-      self.init(xcRunURL: xcRunURL, processFactory: Process())
+    public init(
+      xcRunURL: URL = URL(fileURLWithPath: "/usr/bin/xcrun"),
+      developerDirectory: URL? = nil
+    ) {
+      self.init(
+        xcRunURL: xcRunURL,
+        developerDirectory: developerDirectory,
+        environment: ProcessInfo.processInfo.environment,
+        processFactory: Process()
+      )
+    }
+
+    /// Resolve `simctl` with `xcrun --find simctl` and create an interface to it.
+    /// - Parameters:
+    ///   - developerDirectory: The Xcode to use, either the app or its developer
+    ///     directory. It's passed as `DEVELOPER_DIR`, both to `xcrun --find`
+    ///     and to every later `simctl` call.
+    ///     `nil` uses the one `xcode-select` points to.
+    ///   - xcRunURL: URL path to `xcrun`.
+    /// - Returns: An interface that runs the resolved `simctl` directly.
+    /// - Throws: ``ProcessError`` if `xcrun` fails,
+    ///   or ``FindError`` if its output isn't a path.
+    @available(macOS 10.15.4, *)
+    public static func find(
+      developerDirectory: URL?,
+      xcRunURL: URL = URL(fileURLWithPath: "/usr/bin/xcrun")
+    ) async throws -> SimCtl {
+      try await SimCtl(
+        xcRunURL: xcRunURL,
+        developerDirectory: developerDirectory,
+        environment: ProcessInfo.processInfo.environment,
+        processFactory: Process()
+      )
+      .find()
     }
   #endif
+
+  private func makeProcess(
+    executableURL: URL,
+    arguments: [String]
+  ) -> any InternalSimCtlProcess {
+    let process = processFactory()
+    process.executableURL = executableURL
+    process.arguments = arguments
+    if let developerDirectory {
+      var environment = self.environment
+      environment[Self.developerDirectoryKey] = developerDirectory.path
+      process.environment = environment
+    }
+    return process
+  }
+
+  /// Resolve `simctl` with `xcrun --find simctl`.
+  /// - Returns: A copy of this interface that runs the resolved `simctl` directly.
+  /// - Throws: ``ProcessError`` if `xcrun` fails,
+  ///   or ``FindError`` if its output isn't a path.
+  internal func find() async throws -> SimCtl {
+    let process = makeProcess(executableURL: xcRunURL, arguments: ["--find", "simctl"])
+    let data = try await process.run(timeout: .distantFuture)
+    return SimCtl(
+      xcRunURL: xcRunURL,
+      simCtlURL: try Self.parseFindOutput(data),
+      developerDirectory: developerDirectory,
+      environment: environment,
+      processFactory: processFactory()
+    )
+  }
 
   /// Run a subcommand under `simctl`.
   /// - Parameter subcommand: subcommand to run.
@@ -60,9 +153,12 @@ public struct SimCtl: Sendable {
   public func run<SubcommandType: Subcommand>(
     _ subcommand: SubcommandType
   ) async throws -> SubcommandType.OutputType {
-    let process = processFactory()
-    process.executableURL = xcRunURL
-    process.arguments = ["simctl"] + subcommand.arguments
+    let process =
+      if let simCtlURL {
+        makeProcess(executableURL: simCtlURL, arguments: subcommand.arguments)
+      } else {
+        makeProcess(executableURL: xcRunURL, arguments: ["simctl"] + subcommand.arguments)
+      }
     let data: Data?
     do {
       data = try await process.run(timeout: .distantFuture)

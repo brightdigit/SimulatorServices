@@ -37,6 +37,9 @@ internal protocol InternalSimCtlProcess: AnyObject {
   /// The arguments to be passed to the process.
   var arguments: [String]? { get set }
 
+  /// The environment for the process, or `nil` to inherit the current one.
+  var environment: [String: String]? { get set }
+
   /// Runs the process with a specified timeout.
   /// - Parameter timeout: The time until the process times out.
   /// - Returns: The data output of the process.

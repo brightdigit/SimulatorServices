@@ -32,6 +32,7 @@ Control the simulator... in Swift
 * [Usage](#usage)
    * [Listing Simulators](#listing-simulators)
    * [Getting App Containers](#getting-app-containers)
+   * [Listing Runtime Images](#listing-runtime-images)
 * [Yeah but where's...?](#yeah-but-wheres)
 * [Learn more about simctl](#learn-more-about-simctl)
 * [Great Simulator Apps](#great-simulator-apps)
@@ -70,7 +71,18 @@ Use version up to `1.0.1`.
 
 # Usage
 
-**SimulatorServices** uses the `SimCtl` object to pass subcommands. Each subcommand objects takes custom arguments or property and can parse the standard output into an easy to use Swift object. There are currently two supported subcommands: `GetAppContainers` and `List`.
+**SimulatorServices** uses the `SimCtl` object to pass subcommands. Each subcommand objects takes custom arguments or property and can parse the standard output into an easy to use Swift object. The supported subcommands are `GetAppContainer`, `List`, `RuntimeList`, `RuntimeDelete`, `DeviceDelete`, `DeleteUnavailable`, `Boot`, `Shutdown` and `Erase`.
+
+## Choosing an Xcode
+
+By default `SimCtl` runs `xcrun simctl` with the Xcode that `xcode-select` points to. Pass `developerDirectory` to use another one. It's set as `DEVELOPER_DIR` for every call, and can be an Xcode app or its `Contents/Developer` directory:
+
+```swift
+let xcode = URL(fileURLWithPath: "/Applications/Xcode-beta.app")
+let simctl = SimCtl(developerDirectory: xcode)
+// or resolve simctl once with `xcrun --find simctl` and run it directly:
+let resolved = try await SimCtl.find(developerDirectory: xcode)
+```
 
 ## Listing Simulators
 
@@ -125,9 +137,38 @@ let jojoSimulatorDataDirPaths: [Path] = await withTaskGroup(of: Path?.self) { ta
 
 For more details on arguments available, check out the documentation on `List`.
 
+## Listing Runtime Images
+
+The `RuntimeList` subcommand runs `simctl runtime list -j` and returns each installed runtime image as a `RuntimeImage`, with its identifier, version, build, platform, size, state, kind and path:
+
+```swift
+let images = try await simctl.run(RuntimeList())
+let deletable = images.filter(\.canDelete)
+```
+
+`canDelete` is `false` for runtimes bundled with Xcode (`deletable: false`), legacy runtimes that aren't disk images (`kind` is `Legacy Download`), and images that are already being deleted (`state` is `Deleting`).
+
+## Deleting Runtimes and Changing Devices
+
+`RuntimeDelete`, `DeviceDelete`, `DeleteUnavailable`, `Boot`, `Shutdown` and `Erase` change simulators and return nothing. When `simctl` fails, they throw a `SimCtlError` holding its exit status and its standard error verbatim, plus a `reason` for the failures recorded so far (an unknown device, a device in the wrong state, or no matching runtime):
+
+```swift
+do {
+  try await simctl.run(RuntimeDelete(beta.identifier, otherBeta.identifier))
+} catch let error as SimCtlError {
+  print(error.standardError)
+}
+
+do {
+  try await simctl.run(Boot(device.udid))
+} catch let error as SimCtlError where error.reason == .invalidState {
+  // already booted
+}
+```
+
 # Yeah but where's...?
 
-While now this package only supports two subcommands, **however** there are two ways more subcommands can be supported:
+While now this package only supports a few subcommands, **however** there are two ways more subcommands can be supported:
 
 
 * [add an issue](https://github.com/brightdigit/SimulatorServices/issues/new) and it will be implemented in the future by the organizers

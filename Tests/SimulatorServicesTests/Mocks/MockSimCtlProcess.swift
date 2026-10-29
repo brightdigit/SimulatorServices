@@ -35,15 +35,18 @@ internal class MockSimCtlProcess: InternalSimCtlProcess {
   private let result: Result<Data?, Error>
   internal var executableURL: URL?
   internal var arguments: [String]?
+  internal var environment: [String: String]?
 
   internal init(
     result: Result<Data?, Error>,
     executableURL: URL? = nil,
-    arguments: [String]? = nil
+    arguments: [String]? = nil,
+    environment: [String: String]? = nil
   ) {
     self.result = result
     self.executableURL = executableURL
     self.arguments = arguments
+    self.environment = environment
   }
 
   internal func run(timeout _: DispatchTime) async throws -> Data? {

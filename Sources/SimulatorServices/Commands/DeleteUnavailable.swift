@@ -1,0 +1,60 @@
+//
+//  DeleteUnavailable.swift
+//  SimulatorServices
+//
+//  Created by Leo Dion.
+//  Copyright © 2025 BrightDigit.
+//
+//  Permission is hereby granted, free of charge, to any person
+//  obtaining a copy of this software and associated documentation
+//  files (the “Software”), to deal in the Software without
+//  restriction, including without limitation the rights to use,
+//  copy, modify, merge, publish, distribute, sublicense, and/or
+//  sell copies of the Software, and to permit persons to whom the
+//  Software is furnished to do so, subject to the following
+//  conditions:
+//
+//  The above copyright notice and this permission notice shall be
+//  included in all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+//  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+//  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+//  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+//  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+//  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+//  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+//  OTHER DEALINGS IN THE SOFTWARE.
+//
+
+import Foundation
+
+/// Deletes every unavailable device with `simctl delete unavailable`.
+///
+/// A device is unavailable when its runtime is missing or unsupported
+/// (``Device/isAvailable`` is `false`).
+///
+/// If `simctl` fails, ``SimCtl/run(_:)`` throws a ``SimCtlError`` with its
+/// standard error verbatim.
+/// - SeeAlso: ``DeviceDelete``
+public struct DeleteUnavailable: Subcommand {
+  /// Nothing.
+  public typealias OutputType = Void
+
+  /// Arguments to pass to `simctl`
+  public var arguments: [String] { ["delete", "unavailable"] }
+
+  /// Delete every unavailable device.
+  public init() {}
+
+  /// Does nothing.
+  /// - Parameter _: Standard output from the `simctl` call.
+  public func parse(_: Data?) {}
+
+  /// Throws a ``SimCtlError`` with `simctl`'s standard error.
+  /// - Parameter error: The error from running `simctl`.
+  /// - Throws: ``SimCtlError``, or `error` for a timeout.
+  public func recover(_ error: ProcessError) throws {
+    throw SimCtlError.from(error, arguments: arguments)
+  }
+}

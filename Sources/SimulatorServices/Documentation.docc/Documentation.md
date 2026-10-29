@@ -130,6 +130,16 @@ This code is distributed under the MIT license. See the [LICENSE](https://github
 - ``List``
 - ``GetAppContainer``
 
+### Deleting Runtimes and Changing Devices
+
+- ``RuntimeDelete``
+- ``DeviceDelete``
+- ``DeleteUnavailable``
+- ``Boot``
+- ``Shutdown``
+- ``Erase``
+- ``SimCtlError``
+
 ### Command Arguments
 
 - ``ContainerID``
