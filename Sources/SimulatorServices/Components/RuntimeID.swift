@@ -28,6 +28,12 @@
 //
 
 /// A structure representing a runtime ID.
+///
+/// Most identifiers are `<platform>-<major>-<minor>`, such as
+/// `com.apple.CoreSimulator.SimRuntime.iOS-27-2`. A runtime made for
+/// specific hardware adds a ``variant``, such as
+/// `com.apple.CoreSimulator.SimRuntime.iOS-27-2-iPhone19-4`
+/// (seen with Xcode 27.1 on 2026-10-29).
 public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable {
   /// The prefix used for decoding strings.
   public static let decodableStringPrefix = "com.apple.CoreSimulator.SimRuntime."
@@ -38,11 +44,17 @@ public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable 
   /// The version of the runtime.
   public let version: Version
 
+  /// What follows the version, such as `iPhone19-4`, or `nil` for none.
+  public let variant: String?
+
   /// The suffix part of the runtime ID.
   public var suffix: String {
-    let values: [any CustomStringConvertible] = [
+    var values: [any CustomStringConvertible] = [
       platform, version.majorVersion, version.minorVersion,
     ]
+    if let variant {
+      values.append(variant)
+    }
     return values.map(\.description).joined(separator: "-")
   }
 
@@ -51,9 +63,11 @@ public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable 
   /// - Parameters:
   ///   - platform: The platform of the runtime.
   ///   - version: The version of the runtime.
-  public init(platform: Platform, version: Version) {
+  ///   - variant: What follows the version, such as `iPhone19-4`.
+  public init(platform: Platform, version: Version, variant: String? = nil) {
     self.platform = platform
     self.version = version
+    self.variant = variant
   }
 
   /// Initializes a runtime ID with the given suffix.
@@ -62,14 +76,15 @@ public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable 
   /// - Throws: An error if initialization fails.
   public init(suffix: any StringProtocol) throws {
     let values = suffix.components(separatedBy: "-")
-    guard values.count == 3 else {
+    guard values.count >= 3 else {
       throw DecodingError.dataCorrupted(
         .init(codingPath: [], debugDescription: "Invalid value: \"\(suffix)\"")
       )
     }
     let platform = Platform(rawValue: values[0])
-    let versionValues = values[1...].compactMap(Int.init)
+    let versionValues = values[1...2].compactMap(Int.init)
     let version = try Version(array: versionValues)
-    self.init(platform: platform, version: version)
+    let variant = values.count > 3 ? values[3...].joined(separator: "-") : nil
+    self.init(platform: platform, version: version, variant: variant)
   }
 }

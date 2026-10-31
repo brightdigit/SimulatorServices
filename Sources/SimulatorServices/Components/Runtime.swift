@@ -71,6 +71,11 @@ public struct Runtime: Decodable, Equatable, Sendable {
   /// A boolean indicating whether the runtime is available.
   public let isAvailable: Bool
 
+  /// Why the runtime isn't available, when ``isAvailable`` is `false`,
+  /// such as `The iOS 16.0 simulator runtime is not supported on hosts
+  /// after macOS 26.99.99.`
+  public let availabilityError: String?
+
   /// The name of the runtime.
   public let name: String
 }

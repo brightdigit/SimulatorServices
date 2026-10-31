@@ -50,7 +50,18 @@ public struct Device: Decodable, Equatable, Sendable {
   public let logPathSize: Int?
 
   /// The timestamp when the device was last booted.
+  ///
+  /// Xcode 27.1's `simctl list -j` doesn't report it. Use ``lastUsedAt``.
   public let lastBootedAt: Date?
+
+  /// When the device was last used, as `simctl list -j` reports it
+  /// (`lastUsedAt`, ISO 8601).
+  ///
+  /// Devices that have never been booted don't have it.
+  public let lastUsedAt: Date?
+
+  /// Why the device isn't available, when ``isAvailable`` is `false`.
+  public let availabilityError: String?
 
   /// The identifier for the device type.
   public let deviceTypeIdentifier: DeviceTypeID  // Identifier (Device)
