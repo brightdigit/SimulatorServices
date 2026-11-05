@@ -58,8 +58,8 @@ internal final class DeviceDeleteTests: XCTestCase {
     XCTAssertEqual(error.reason, .invalidDevice)
     XCTAssertEqual(error.arguments, command.arguments)
     XCTAssertEqual(error.message, "Invalid device: 00000000-0000-0000-0000-000000000000")
-    XCTAssertEqual(
-      error.standardError, String(decoding: try fixture.standardError(), as: UTF8.self))
+    let standardError = String(bytes: try fixture.standardError(), encoding: .utf8)
+    XCTAssertEqual(error.standardError, standardError)
   }
 
   internal func testDeleteUnavailableArguments() {

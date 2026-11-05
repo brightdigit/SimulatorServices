@@ -30,7 +30,7 @@
 import Foundation
 
 /// Represents a device used in simulation.
-public struct Device: Decodable, Equatable, Sendable {
+public struct Device: Decodable, Hashable, Sendable {
   /// The path to the data directory.
   public let dataPath: Path  // URL?
 
@@ -71,4 +71,33 @@ public struct Device: Decodable, Equatable, Sendable {
 
   /// The name of the device.
   public let name: String
+
+  /// Creates a device.
+  public init(
+    udid: UUID,
+    name: String,
+    state: DeviceState,
+    deviceTypeIdentifier: DeviceTypeID,
+    dataPath: Path,
+    logPath: Path,
+    isAvailable: Bool = true,
+    availabilityError: String? = nil,
+    dataPathSize: Int? = nil,
+    logPathSize: Int? = nil,
+    lastBootedAt: Date? = nil,
+    lastUsedAt: Date? = nil
+  ) {
+    self.udid = udid
+    self.name = name
+    self.state = state
+    self.deviceTypeIdentifier = deviceTypeIdentifier
+    self.isAvailable = isAvailable
+    self.availabilityError = availabilityError
+    self.dataPath = dataPath
+    self.dataPathSize = dataPathSize
+    self.logPath = logPath
+    self.logPathSize = logPathSize
+    self.lastBootedAt = lastBootedAt
+    self.lastUsedAt = lastUsedAt
+  }
 }

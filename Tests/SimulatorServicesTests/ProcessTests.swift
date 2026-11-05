@@ -37,7 +37,6 @@ internal class ProcessTests: XCTestCase {
       throw XCTSkip("Required API is not available for this test.")
     }
 
-    let timeout: DispatchTime = .now() + 1.0
     let output: Data = .random()
     let error: Data = .random()
     let termination: TerminationResult = .init(reason: 1, status: 0)
@@ -45,10 +44,9 @@ internal class ProcessTests: XCTestCase {
     let process = MockAsyncableProcess(
       outputData: output,
       errorData: error,
-      terminationResult: termination,
-      willTimeout: false
+      terminationResult: termination
     )
-    let actualOutput = try await process.run(timeout: timeout)
+    let actualOutput = try await process.runToCompletion()
     XCTAssertEqual(output, actualOutput)
   }
 }

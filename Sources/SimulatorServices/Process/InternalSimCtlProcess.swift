@@ -40,9 +40,9 @@ internal protocol InternalSimCtlProcess: AnyObject {
   /// The environment for the process, or `nil` to inherit the current one.
   var environment: [String: String]? { get set }
 
-  /// Runs the process with a specified timeout.
-  /// - Parameter timeout: The time until the process times out.
+  /// Runs the process until it exits.
   /// - Returns: The data output of the process.
-  /// - Throws: An error is the process fails.
-  func run(timeout: DispatchTime) async throws -> Data?
+  /// - Throws: ``ProcessError`` if it can't start, fails, or its output
+  ///   can't be read.
+  func runToCompletion() async throws(ProcessError) -> Data?
 }

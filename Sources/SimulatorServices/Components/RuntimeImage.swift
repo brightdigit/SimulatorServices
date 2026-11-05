@@ -32,7 +32,12 @@ import Foundation
 /// A simulator runtime image from `simctl runtime list -j`.
 ///
 /// Property names match the JSON keys recorded from Xcode 27.1.
-public struct RuntimeImage: Decodable, Equatable, Sendable {
+public struct RuntimeImage: Decodable, Hashable, Sendable {
+  /// The smallest ``sizeBytes`` taken as a runtime's real size: 1 MB.
+  ///
+  /// No simulator runtime is smaller. See ``reportedSizeBytes``.
+  public static let minimumPlausibleSizeBytes = 1_048_576
+
   /// The image identifier, which `simctl runtime delete` takes.
   public let identifier: UUID
 
@@ -53,7 +58,8 @@ public struct RuntimeImage: Decodable, Equatable, Sendable {
   /// The size `simctl` reports, in bytes.
   ///
   /// For a cryptex image whose `path` is a directory, this is the size of the
-  /// directory entry (128 bytes), not of the runtime.
+  /// directory entry (128 bytes), not of the runtime, and
+  /// ``reportedSizeBytes`` is `nil`.
   public let sizeBytes: Int
 
   /// The state of the image.
@@ -105,6 +111,15 @@ public struct RuntimeImage: Decodable, Equatable, Sendable {
 
   /// Whether a delete is in progress for this runtime.
   public var isPendingDelete: Bool { state.isPendingDelete }
+
+  /// ``sizeBytes`` when it's the runtime's size, or `nil` when `simctl`
+  /// reported something smaller than ``minimumPlausibleSizeBytes``.
+  ///
+  /// For a cryptex image whose `path` is a directory, `simctl` reports the
+  /// directory entry (128 bytes). Measure the directory on disk instead.
+  public var reportedSizeBytes: Int? {
+    sizeBytes >= Self.minimumPlausibleSizeBytes ? sizeBytes : nil
+  }
 
   /// Whether the runtime can be deleted with `simctl runtime delete`
   /// without admin rights.

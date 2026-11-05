@@ -40,40 +40,45 @@ internal protocol InternalAsyncableProcess: AnyObject {
 @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
 extension InternalAsyncableProcess {
   internal func data(
-    basedOn result: ProcessResult,
+    basedOn termination: TerminationResult,
     from fileHandles: ProcessOutputHandleSet
-  ) throws -> Data? {
-    switch result {
-    case let .success(termination):
-      if let uncaught = UncaughtSignal(
-        termination: termination, data: fileHandles.errorData,
-        output: try? fileHandles.outputResult.get()
-      ) {
-        throw ProcessError.uncaughtSignal(uncaught)
-      } else {
-        return try fileHandles.outputResult.get()
-      }
-
-    case let .timedOut(timeout): throw ProcessError.timeout(timeout)
+  ) throws(ProcessError) -> Data? {
+    let output = fileHandles.outputResult
+    if let uncaught = UncaughtSignal(
+      termination: termination,
+      data: fileHandles.errorData,
+      output: try? output.get()
+    ) {
+      throw .uncaughtSignal(uncaught)
+    }
+    do {
+      return try output.get()
+    } catch {
+      throw .unreadableOutput(error.localizedDescription)
     }
   }
 
-  /// Run the process asyncronously and returns the output as data.
-  /// - Parameter timeout: Timeout for the process to be done.
-  /// - Returns: Data if there anything output from the process.
-  /// - Throws: The `error` either from failure to complete or from the data returned.
-  internal func run(timeout: DispatchTime) async throws -> Data? {
+  /// Runs the process until it exits and returns its standard output.
+  /// - Returns: Standard output, if the process printed anything.
+  /// - Throws: ``ProcessError`` if it can't start, fails, or its output
+  ///   can't be read.
+  internal func runToCompletion() async throws(ProcessError) -> Data? {
     var handles = fileHandles()
     let semaphore = promise()
-    try run()
-    handles.readToEnd()
-    return try await withCheckedThrowingContinuation { continuation in
-      let semaphoreResult = semaphore.waitForCompletion(
-        for: timeout,
-        with: self.termintationResult()
-      )
-      let result = Result { try self.data(basedOn: semaphoreResult, from: handles) }
-      continuation.resume(with: result)
+    do {
+      try run()
+    } catch {
+      throw .launchFailed(error.localizedDescription)
     }
+    handles.readToEnd()
+    let result = await withCheckedContinuation { continuation in
+      let termination = semaphore.waitForCompletion(with: self.termintationResult())
+      continuation.resume(
+        returning: Result { () throws(ProcessError) -> Data? in
+          try self.data(basedOn: termination, from: handles)
+        }
+      )
+    }
+    return try result.get()
   }
 }

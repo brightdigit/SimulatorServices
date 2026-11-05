@@ -68,11 +68,4 @@ public struct DeviceDelete: Subcommand {
   /// Does nothing. `simctl` prints nothing when the delete succeeds.
   /// - Parameter _: Standard output from the `simctl` call.
   public func parse(_: Data?) {}
-
-  /// Throws a ``SimCtlError`` with `simctl`'s standard error.
-  /// - Parameter error: The error from running `simctl`.
-  /// - Throws: ``SimCtlError``, or `error` for a timeout.
-  public func recover(_ error: ProcessError) throws {
-    throw SimCtlError.from(error, arguments: arguments)
-  }
 }

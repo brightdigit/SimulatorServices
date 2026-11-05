@@ -51,40 +51,21 @@ public enum RuntimeImageKind: Equatable, Hashable, Decodable, Sendable, RawDefin
     case patchableCryptexDiskImage = "Patchable Cryptex Disk Image"
     case legacyDownload = "Legacy Download"
     case bundledWithXcode = "Bundled with Xcode"
-
-    /// Creates the raw option for a kind, or `nil` for an unknown kind.
-    /// - Parameter option: The kind.
-    public init?(option: RuntimeImageKind) {
-      switch option {
-      case .diskImage: self = .diskImage
-      case .cryptexDiskImage: self = .cryptexDiskImage
-      case .patchableCryptexDiskImage: self = .patchableCryptexDiskImage
-      case .legacyDownload: self = .legacyDownload
-      case .bundledWithXcode: self = .bundledWithXcode
-      case .unknown: return nil
-      }
-    }
   }
 
-  /// Whether the runtime is a disk image (plain, cryptex or patchable cryptex).
-  public var isDiskImage: Bool {
-    switch self {
-    case .diskImage, .cryptexDiskImage, .patchableCryptexDiskImage: true
-    case .legacyDownload, .bundledWithXcode, .unknown: false
-    }
-  }
+  /// The kinds that are disk images: plain, cryptex and patchable cryptex.
+  public static let diskImageKinds: Set<RuntimeImageKind> = [
+    .diskImage, .cryptexDiskImage, .patchableCryptexDiskImage,
+  ]
 
-  /// Creates a kind from a raw option.
-  /// - Parameter rawOption: The raw option.
-  public init(rawOption: RawAvailableOptions) {
-    switch rawOption {
-    case .diskImage: self = .diskImage
-    case .cryptexDiskImage: self = .cryptexDiskImage
-    case .patchableCryptexDiskImage: self = .patchableCryptexDiskImage
-    case .legacyDownload: self = .legacyDownload
-    case .bundledWithXcode: self = .bundledWithXcode
-    }
-  }
+  /// Each raw option and the case it stands for.
+  public static let rawOptions: BidirectionalMap<RawAvailableOptions, Self> = [
+    .diskImage: .diskImage,
+    .cryptexDiskImage: .cryptexDiskImage,
+    .patchableCryptexDiskImage: .patchableCryptexDiskImage,
+    .legacyDownload: .legacyDownload,
+    .bundledWithXcode: .bundledWithXcode,
+  ]
 
   /// The raw string of an unknown kind, otherwise `nil`.
   public func unknownValue() -> String? {
@@ -96,3 +77,17 @@ public enum RuntimeImageKind: Equatable, Hashable, Decodable, Sendable, RawDefin
 }
 
 extension RuntimeImageKind: CustomStringConvertible {}
+
+extension RuntimeImageKind: RawMapped {}
+
+extension RuntimeImageKind {
+  /// Whether the runtime is a disk image (plain, cryptex or patchable cryptex).
+  public var isDiskImage: Bool {
+    Self.diskImageKinds.contains(self)
+  }
+}
+
+extension RuntimeImageKind.RawAvailableOptions {
+  /// The type these options stand for.
+  public typealias OptionType = RuntimeImageKind
+}

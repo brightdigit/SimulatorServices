@@ -48,6 +48,7 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible, Sendable {
   /// Data returned from standard output.
   public let output: Data?
 
+  /// Standard error as text, or the termination reason and status.
   public var description: String {
     if let errorText = data.flatMap({ String(bytes: $0, encoding: .utf8) }) {
       return errorText

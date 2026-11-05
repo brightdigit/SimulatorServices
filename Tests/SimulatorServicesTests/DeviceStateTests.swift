@@ -37,4 +37,16 @@ internal final class DeviceStateTests: XCTestCase {
     let value = try decoder.decode(DeviceState.self, from: Data("\"Booted\"".utf8))
     XCTAssertEqual(value, .booted)
   }
+
+  internal func testDecodeTransitionalStates() throws {
+    let decoder = JSONDecoder()
+    let booting = try decoder.decode(DeviceState.self, from: Data("\"Booting\"".utf8))
+    XCTAssertEqual(booting, .booting)
+    let shuttingDown = try decoder.decode(
+      DeviceState.self,
+      from: Data("\"Shutting Down\"".utf8)
+    )
+    XCTAssertEqual(shuttingDown, .shuttingDown)
+    XCTAssertEqual(shuttingDown.underlyingValue, "Shutting Down")
+  }
 }

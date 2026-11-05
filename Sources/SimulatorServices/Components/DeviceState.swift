@@ -28,12 +28,18 @@
 //
 
 /// State for the device.
-public enum DeviceState: Equatable, Decodable, Sendable, RawDefined {
+public enum DeviceState: Hashable, Decodable, Sendable, RawDefined {
   /// Represents a booted state for the device.
   case booted
 
+  /// The device is booting.
+  case booting
+
   /// Represents a creating state for the device.
   case creating
+
+  /// The device is shutting down.
+  case shuttingDown
 
   /// Represents a shutdown state for the device.
   case shutdown
@@ -42,24 +48,22 @@ public enum DeviceState: Equatable, Decodable, Sendable, RawDefined {
   case unknown(String)
 
   /// Available raw options for the device state.
-  public enum RawAvailableOptions: String {
+  public enum RawAvailableOptions: String, Sendable, RawReversable, CaseIterable {
     case booted = "Booted"
+    case booting = "Booting"
     case creating = "Creating"
+    case shuttingDown = "Shutting Down"
     case shutdown = "Shutdown"
   }
 
-  /// Initializes the device state with a raw option.
-  ///
-  /// - Parameter rawOption: The raw option to initialize from.
-  public init(rawOption: RawAvailableOptions) {
-    switch rawOption {
-    case .booted: self = .booted
-
-    case .creating: self = .creating
-
-    case .shutdown: self = .shutdown
-    }
-  }
+  /// Each raw option and the case it stands for.
+  public static let rawOptions: BidirectionalMap<RawAvailableOptions, Self> = [
+    .booted: .booted,
+    .booting: .booting,
+    .creating: .creating,
+    .shuttingDown: .shuttingDown,
+    .shutdown: .shutdown,
+  ]
 
   /// Retrieves the custom string for an unknown device state.
   ///
@@ -71,4 +75,11 @@ public enum DeviceState: Equatable, Decodable, Sendable, RawDefined {
     }
     return string
   }
+}
+
+extension DeviceState: RawMapped {}
+
+extension DeviceState.RawAvailableOptions {
+  /// The type these options stand for.
+  public typealias OptionType = DeviceState
 }

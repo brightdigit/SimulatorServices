@@ -28,9 +28,9 @@
 //
 
 /// A structure representing a runtime.
-public struct Runtime: Decodable, Equatable, Sendable {
+public struct Runtime: Decodable, Hashable, Sendable {
   /// A structure representing a supported device type for the runtime.
-  public struct SupportedDeviceType: Decodable, Equatable, Sendable {
+  public struct SupportedDeviceType: Decodable, Hashable, Sendable {
     /// The bundle path of the device type.
     public let bundlePath: Path  // URL?
 

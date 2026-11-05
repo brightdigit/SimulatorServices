@@ -41,13 +41,13 @@ public protocol Subcommand: Sendable {
   /// - Parameter error: ``UncaughtSignal`` received.
   /// - SeeAlso: ``GetAppContainer/recover(_:)``
   /// - Throws: Tries to parse the error otherwise returns it again.
-  func recover(_ error: ProcessError) throws
+  func recover(_ error: ProcessError) throws(SimCtlError)
 
   /// Convert the data into the desiginated ``OutputType``.
   /// - Parameter data: Data received from the `simctl`
   /// - Throws: An error if the parsing failed.
   /// - Returns: The parsed ``OutputType``.
-  func parse(_ data: Data?) throws -> OutputType
+  func parse(_ data: Data?) throws(SimCtlError) -> OutputType
 }
 
 extension Subcommand {
@@ -56,5 +56,7 @@ extension Subcommand {
   /// - Throws: Tries to parse the error otherwise returns it again.
   /// By default it'll just throw the error back.
   /// - SeeAlso: ``GetAppContainer/recover(_:)``
-  public func recover(_ error: ProcessError) throws { throw error }
+  public func recover(_ error: ProcessError) throws(SimCtlError) {
+    throw .from(error, arguments: arguments)
+  }
 }

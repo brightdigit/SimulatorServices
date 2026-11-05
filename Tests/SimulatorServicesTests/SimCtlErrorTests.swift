@@ -33,34 +33,53 @@ import XCTest
 @testable import SimulatorServices
 
 internal final class SimCtlErrorTests: XCTestCase {
-  private static func error(status: Int, standardError: String) throws -> SimCtlError {
-    let signal = try XCTUnwrap(
-      UncaughtSignal(
-        reason: 1, status: status, data: Data(standardError.utf8), output: nil
+  /// The recorded exit 2 stderr for an unknown runtime ID.
+  private static let noRuntime = """
+    No runtime disk images or bundles found matching 'X'. Try 'runtime list'.
+    No matching images found to delete
+
+    """
+
+  private static func failure(
+    status: Int,
+    standardError: String,
+    terminationReason: TerminationReason = 1
+  ) -> SimCtlError {
+    .failed(
+      SimCtlError.Failure(
+        arguments: ["boot", "booted"],
+        status: status,
+        standardError: standardError,
+        terminationReason: terminationReason
       )
     )
-    return SimCtlError(signal: signal, arguments: ["boot", "booted"])
   }
 
-  internal func testKeepsStandardErrorVerbatim() throws {
-    let error = try Self.error(status: 1, standardError: "  Something failed\n")
+  internal func testKeepsStandardErrorVerbatim() {
+    let error = Self.failure(status: 1, standardError: "  Something failed\n")
 
     XCTAssertEqual(error.standardError, "  Something failed\n")
-    XCTAssertEqual(error.message, "Something failed")
     XCTAssertEqual(error.errorDescription, "Something failed")
     XCTAssertEqual(error.reason, .other)
-    XCTAssertEqual(error.standardOutput, "")
-    XCTAssertEqual(error.terminationReason, 1)
+    XCTAssertEqual(error.exitCode, 1)
+    XCTAssertEqual(error.arguments, ["boot", "booted"])
   }
 
-  internal func testMessageWithoutStandardError() throws {
-    let error = try Self.error(status: 3, standardError: "\n")
-    XCTAssertEqual(error.message, "simctl boot booted failed with status 3")
+  internal func testMessageWithoutStandardError() {
+    let error = Self.failure(status: 3, standardError: "\n")
+    XCTAssertEqual(error.errorDescription, "simctl boot booted failed with status 3")
   }
 
-  internal func testFromTimeout() {
-    let timeout = ProcessError.timeout(.now())
-    XCTAssertEqual(SimCtlError.from(timeout, arguments: []) as? ProcessError, timeout)
+  internal func testAnExitKeepsItsStatusAndStandardError() {
+    let error = Self.failure(status: 2, standardError: Self.noRuntime)
+    XCTAssertEqual(error.exitCode, 2)
+    XCTAssertEqual(error.standardError, Self.noRuntime)
+    XCTAssertEqual(error.reason, .noMatchingRuntime)
+  }
+
+  internal func testASignalHasNoExitCode() {
+    let error = Self.failure(status: 9, standardError: "", terminationReason: 2)
+    XCTAssertNil(error.exitCode)
   }
 
   internal func testFromUncaughtSignal() throws {
@@ -70,10 +89,56 @@ internal final class SimCtlErrorTests: XCTestCase {
       )
     )
     let error = SimCtlError.from(.uncaughtSignal(signal), arguments: ["erase", "x"])
-    XCTAssertEqual(
-      error as? SimCtlError,
-      SimCtlError(signal: signal, arguments: ["erase", "x"])
+    let failure = SimCtlError.Failure(signal: signal, arguments: ["erase", "x"])
+    XCTAssertEqual(error, .failed(failure))
+    XCTAssertEqual(error.reason, .invalidDevice)
+  }
+
+  internal func testFromALaunchFailure() {
+    let error = SimCtlError.from(.launchFailed("No such file"), arguments: ["list", "-j"])
+    let expected = SimCtlError.launchFailed(
+      arguments: ["list", "-j"],
+      description: "No such file"
     )
-    XCTAssertEqual((error as? SimCtlError)?.reason, .invalidDevice)
+    XCTAssertEqual(error, expected)
+    XCTAssertNil(error.exitCode)
+    XCTAssertNil(error.standardError)
+    XCTAssertEqual(error.errorDescription, "simctl couldn't be started: No such file")
+  }
+
+  internal func testListFailuresAreSimCtlErrors() async throws {
+    let signal = try XCTUnwrap(
+      UncaughtSignal(
+        reason: 1, status: 72, data: Data("No devices\n".utf8), output: nil
+      )
+    )
+    let simctl = SimCtl(
+      xcRunURL: URL(fileURLWithPath: "/usr/bin/xcrun"),
+      processFactory: MockSimCtlProcess(result: .failure(.uncaughtSignal(signal)))
+    )
+    do {
+      _ = try await simctl.run(RuntimeList())
+      XCTFail("Expected a SimCtlError")
+    } catch {
+      XCTAssertEqual(error.exitCode, 72)
+      XCTAssertEqual(error.arguments, ["runtime", "list", "-j"])
+    }
+    do {
+      _ = try await simctl.run(List())
+      XCTFail("Expected a SimCtlError")
+    } catch {
+      XCTAssertEqual(error.arguments, ["list", "-j"])
+    }
+  }
+
+  internal func testEmptyOutputIsUnreadable() {
+    XCTAssertThrowsError(try RuntimeList().parse(nil)) { error in
+      let expected = SimCtlError.unreadableOutput(
+        arguments: ["runtime", "list", "-j"],
+        nil
+      )
+      XCTAssertEqual(error as? SimCtlError, expected)
+      XCTAssertEqual((error as? SimCtlError)?.errorDescription, "simctl printed nothing.")
+    }
   }
 }

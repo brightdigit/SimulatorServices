@@ -77,8 +77,8 @@ internal final class RuntimeDeleteTests: XCTestCase {
     XCTAssertEqual(error.status, 2)
     XCTAssertEqual(error.reason, .noMatchingRuntime)
     XCTAssertEqual(error.arguments, command.arguments)
-    XCTAssertEqual(
-      error.standardError, String(decoding: try fixture.standardError(), as: UTF8.self))
+    let standardError = String(bytes: try fixture.standardError(), encoding: .utf8)
+    XCTAssertEqual(error.standardError, standardError)
     XCTAssertEqual(
       error.message,
       """
@@ -103,10 +103,13 @@ internal final class RuntimeDeleteTests: XCTestCase {
     )
   }
 
-  internal func testRecoverTimeout() {
-    let timeout = ProcessError.timeout(.now())
-    XCTAssertThrowsError(try RuntimeDelete(CommandFixture.iOS16Image).recover(timeout)) {
-      XCTAssertEqual($0 as? ProcessError, timeout)
+  internal func testRecoverLaunchFailure() {
+    let delete = RuntimeDelete(CommandFixture.iOS16Image)
+    XCTAssertThrowsError(try delete.recover(.launchFailed("No such file"))) {
+      XCTAssertEqual(
+        $0 as? SimCtlError,
+        .launchFailed(arguments: delete.arguments, description: "No such file")
+      )
     }
   }
 }

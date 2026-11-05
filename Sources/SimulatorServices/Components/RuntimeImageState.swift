@@ -27,7 +27,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// swiftlint:disable cyclomatic_complexity
 /// State of a simulator runtime disk image,
 /// as reported in `state` by `simctl runtime list -j`.
 ///
@@ -66,43 +65,23 @@ public enum RuntimeImageState: Equatable, Hashable, Decodable, Sendable, RawDefi
     case unusable = "Unusable"
     case deleting = "Deleting"
     case unmounting = "Unmounting"
-
-    /// Creates the raw option for a state, or `nil` for an unknown state.
-    /// - Parameter option: The state.
-    public init?(option: RuntimeImageState) {
-      switch option {
-      case .copying: self = .copying
-      case .verifying: self = .verifying
-      case .reading: self = .reading
-      case .expanding: self = .expanding
-      case .mounting: self = .mounting
-      case .ready: self = .ready
-      case .unusable: self = .unusable
-      case .deleting: self = .deleting
-      case .unmounting: self = .unmounting
-      case .unknown: return nil
-      }
-    }
   }
+
+  /// Each raw option and the case it stands for.
+  public static let rawOptions: BidirectionalMap<RawAvailableOptions, Self> = [
+    .copying: .copying,
+    .verifying: .verifying,
+    .reading: .reading,
+    .expanding: .expanding,
+    .mounting: .mounting,
+    .ready: .ready,
+    .unusable: .unusable,
+    .deleting: .deleting,
+    .unmounting: .unmounting,
+  ]
 
   /// Whether a delete is in progress for this image.
   public var isPendingDelete: Bool { self == .deleting }
-
-  /// Creates a state from a raw option.
-  /// - Parameter rawOption: The raw option.
-  public init(rawOption: RawAvailableOptions) {
-    switch rawOption {
-    case .copying: self = .copying
-    case .verifying: self = .verifying
-    case .reading: self = .reading
-    case .expanding: self = .expanding
-    case .mounting: self = .mounting
-    case .ready: self = .ready
-    case .unusable: self = .unusable
-    case .deleting: self = .deleting
-    case .unmounting: self = .unmounting
-    }
-  }
 
   /// The raw string of an unknown state, otherwise `nil`.
   public func unknownValue() -> String? {
@@ -112,6 +91,12 @@ public enum RuntimeImageState: Equatable, Hashable, Decodable, Sendable, RawDefi
     return string
   }
 }
-// swiftlint:enable cyclomatic_complexity
 
 extension RuntimeImageState: CustomStringConvertible {}
+
+extension RuntimeImageState: RawMapped {}
+
+extension RuntimeImageState.RawAvailableOptions {
+  /// The type these options stand for.
+  public typealias OptionType = RuntimeImageState
+}

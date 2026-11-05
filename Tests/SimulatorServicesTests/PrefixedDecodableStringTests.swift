@@ -36,7 +36,7 @@ internal struct MockPDS: PrefixedDecodableString, LosslessStringConvertible, Equ
 
   internal let suffix: String
 
-  internal init(suffix: any StringProtocol) throws {
+  internal init(suffix: any StringProtocol) {
     self.suffix = .init(suffix)
   }
 }

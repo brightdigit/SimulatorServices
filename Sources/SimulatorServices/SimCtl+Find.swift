@@ -30,14 +30,6 @@
 import Foundation
 
 extension SimCtl {
-  /// Errors from resolving `simctl` with `xcrun --find simctl`.
-  public enum FindError: Swift.Error, Equatable, Sendable {
-    /// `xcrun` printed nothing.
-    case missingData
-    /// `xcrun` printed something that isn't an absolute path.
-    case invalidPath(String)
-  }
-
   /// The developer directory to pass as `DEVELOPER_DIR` for an Xcode.
   /// - Parameter xcodeURL: An Xcode app, or a developer directory.
   /// - Returns: `Contents/Developer` inside an `.app`, otherwise `xcodeURL` itself.
@@ -53,19 +45,40 @@ extension SimCtl {
 
   /// Parse the output of `xcrun --find simctl`.
   /// - Parameter data: Standard output from `xcrun`.
-  /// - Returns: The URL of `simctl`.
-  /// - Throws: ``FindError`` if the output is empty or isn't an absolute path.
-  internal static func parseFindOutput(_ data: Data?) throws -> URL {
+  /// - Returns: The URL of `simctl`, or `nil` if the output is empty or
+  ///   isn't an absolute path.
+  internal static func parseFindOutput(_ data: Data?) -> URL? {
     guard let data, let text = String(data: data, encoding: .utf8) else {
-      throw FindError.missingData
+      return nil
     }
     let path = text.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !path.isEmpty else {
-      throw FindError.missingData
-    }
     guard path.hasPrefix("/"), !path.contains("\n") else {
-      throw FindError.invalidPath(path)
+      return nil
     }
     return URL(fileURLWithPath: path)
+  }
+
+  /// Resolve `simctl` with `xcrun --find simctl`.
+  /// - Returns: A copy of this interface that runs the resolved `simctl` directly.
+  /// - Throws: ``SimCtlError`` if `xcrun` fails or its output isn't a path.
+  internal func find() async throws(SimCtlError) -> SimCtl {
+    let arguments = ["--find", "simctl"]
+    let process = makeProcess(executableURL: xcRunURL, arguments: arguments)
+    let data: Data?
+    do {
+      data = try await process.runToCompletion()
+    } catch {
+      throw .from(error, arguments: arguments)
+    }
+    guard let simCtlURL = Self.parseFindOutput(data) else {
+      throw .unreadableOutput(arguments: arguments, nil)
+    }
+    return SimCtl(
+      xcRunURL: xcRunURL,
+      simCtlURL: simCtlURL,
+      developerDirectory: developerDirectory,
+      environment: baseEnvironment,
+      processFactory: processFactory()
+    )
   }
 }

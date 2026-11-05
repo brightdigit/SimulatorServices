@@ -34,14 +34,6 @@ public struct GetAppContainer: Subcommand {
   /// Path type.
   public typealias OutputType = Path
 
-  /// Error type thrown by this ``Subcommand``
-  public enum Error: Swift.Error, Equatable {
-    /// Nothing was returned. Likely the simulator specified does not contain this app.
-    case missingData
-    /// Data returned by the call is invalid.
-    case invalidData(Data)
-  }
-
   /// Bundle identifier of the app container.
   public let appBundleIdentifier: String
   /// ``ContainerID`` directory path to fetch.
@@ -77,12 +69,12 @@ public struct GetAppContainer: Subcommand {
   /// Parse the data from the call to `simctl`
   /// - Parameter data: Stanard output from the `simctl` call.
   /// - Returns: ``Path`` to the directory queried.
-  /// - Throws: ``Error`` if the standard output data is nil or invalid.
-  public func parse(_ data: Data?) throws -> Path {
-    guard let data else { throw Error.missingData }
-
-    guard let text = String(bytes: data, encoding: .utf8) else {
-      throw Error.invalidData(data)
+  /// - Throws: ``SimCtlError/unreadableOutput(arguments:_:)`` if `simctl`
+  ///   printed nothing, likely because the simulator doesn't have the app,
+  ///   or text that isn't UTF-8.
+  public func parse(_ data: Data?) throws(SimCtlError) -> Path {
+    guard let data, let text = String(bytes: data, encoding: .utf8) else {
+      throw .unreadableOutput(arguments: arguments, nil)
     }
 
     return text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -90,14 +82,12 @@ public struct GetAppContainer: Subcommand {
 
   /// Recovers from the error state thrown by the command line call.
   /// - Parameter error: ``ProcessError`` from an uncaught signal or a timeout.
-  /// - Throws: An error is parsing the error fails.
-  public func recover(_ error: ProcessError) throws {
-    guard case let .uncaughtSignal(signal) = error else {
-      throw error
-    }
-
-    guard let text = signal.data.flatMap({ String(data: $0, encoding: .utf8) }) else {
-      throw error
+  /// - Throws: ``SimCtlError`` unless the app has no such container.
+  public func recover(_ error: ProcessError) throws(SimCtlError) {
+    guard case let .uncaughtSignal(signal) = error,
+      let text = signal.data.flatMap({ String(data: $0, encoding: .utf8) })
+    else {
+      throw .from(error, arguments: arguments)
     }
 
     let lines = text.components(separatedBy: .newlines)
@@ -108,11 +98,11 @@ public struct GetAppContainer: Subcommand {
       let errorString = lines.last?
         .trimmingCharacters(in: .whitespacesAndNewlines)
     else {
-      throw error
+      throw .from(error, arguments: arguments)
     }
 
     guard errorString == "No such file or directory" else {
-      throw error
+      throw .from(error, arguments: arguments)
     }
   }
 }

@@ -102,7 +102,10 @@ internal class GetAppContainerTests: XCTestCase {
     )
 
     XCTAssertThrowsError(try appContainer.parse(nil)) { error in
-      XCTAssertEqual(error as? GetAppContainer.Error, GetAppContainer.Error.missingData)
+      XCTAssertEqual(
+        error as? SimCtlError,
+        .unreadableOutput(arguments: appContainer.arguments, nil)
+      )
     }
   }
 
@@ -118,8 +121,8 @@ internal class GetAppContainerTests: XCTestCase {
 
     XCTAssertThrowsError(try appContainer.parse(Self.utf32String)) { error in
       XCTAssertEqual(
-        error as? GetAppContainer.Error,
-        GetAppContainer.Error.invalidData(Self.utf32String)
+        error as? SimCtlError,
+        .unreadableOutput(arguments: appContainer.arguments, nil)
       )
     }
   }

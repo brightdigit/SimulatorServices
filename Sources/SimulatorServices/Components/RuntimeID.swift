@@ -73,17 +73,18 @@ public struct RuntimeID: PrefixedDecodableString, Equatable, Hashable, Sendable 
   /// Initializes a runtime ID with the given suffix.
   ///
   /// - Parameter suffix: The suffix part of the runtime ID.
-  /// - Throws: An error if initialization fails.
-  public init(suffix: any StringProtocol) throws {
+  /// - Throws: `DecodingError.dataCorrupted` if it isn't
+  ///   `<platform>-<major>-<minor>[-<variant>]`.
+  public init(suffix: any StringProtocol) throws(DecodingError) {
     let values = suffix.components(separatedBy: "-")
-    guard values.count >= 3 else {
-      throw DecodingError.dataCorrupted(
+    let versionValues = values.dropFirst().prefix(2).compactMap(Int.init)
+    guard values.count >= 3, versionValues.count == 2 else {
+      throw .dataCorrupted(
         .init(codingPath: [], debugDescription: "Invalid value: \"\(suffix)\"")
       )
     }
     let platform = Platform(rawValue: values[0])
-    let versionValues = values[1...2].compactMap(Int.init)
-    let version = try Version(array: versionValues)
+    let version = Version(majorVersion: versionValues[0], minorVersion: versionValues[1])
     let variant = values.count > 3 ? values[3...].joined(separator: "-") : nil
     self.init(platform: platform, version: version, variant: variant)
   }

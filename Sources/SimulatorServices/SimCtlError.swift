@@ -29,11 +29,21 @@
 
 import Foundation
 
-/// A `simctl` subcommand that exited with an error.
+/// Why a `simctl` call failed.
 ///
-/// ``standardError`` holds what `simctl` wrote to standard error, verbatim,
-/// so it can be shown to the user as is.
-public struct SimCtlError: Error, Equatable, Sendable, LocalizedError {
+/// Every ``SimCtl`` call throws only this.
+public enum SimCtlError: Error, Sendable, LocalizedError {
+  /// `simctl` exited with a non-zero status or was killed by a signal.
+  case failed(Failure)
+
+  /// `xcrun` or `simctl` couldn't be started, for example because
+  /// `DEVELOPER_DIR` doesn't point at an Xcode.
+  case launchFailed(arguments: [String], description: String)
+
+  /// `simctl` succeeded but printed nothing, or something that couldn't be
+  /// read. The decoding error is included when there is one.
+  case unreadableOutput(arguments: [String], DecodingError?)
+
   /// What went wrong, as far as it can be told from the exit status and standard error.
   ///
   /// The strings and exit statuses were recorded from Xcode 27.1.
@@ -52,69 +62,97 @@ public struct SimCtlError: Error, Equatable, Sendable, LocalizedError {
     ///
     /// Exit status 2, with `No matching images found to delete`.
     case noMatchingRuntime
-    /// Anything else. Read ``SimCtlError/standardError``.
+    /// Anything else. Read ``Failure/standardError``.
     case other
   }
 
   /// The arguments passed to `simctl`.
-  public let arguments: [String]
-  /// The exit status, or the signal number if `simctl` was killed by a signal.
-  public let status: Int
-  /// The termination reason (`1` for an exit, `2` for an uncaught signal).
-  public let terminationReason: TerminationReason
-  /// Standard error from `simctl`, verbatim.
-  public let standardError: String
-  /// Standard output from `simctl`, verbatim.
-  public let standardOutput: String
+  public var arguments: [String] {
+    switch self {
+    case .failed(let failure): failure.arguments
+    case .launchFailed(let arguments, _), .unreadableOutput(let arguments, _): arguments
+    }
+  }
 
-  /// What went wrong, worked out from ``status`` and ``standardError``.
+  /// The status `simctl` exited with, or `nil` when it was killed by a
+  /// signal or never ran.
+  public var exitCode: Int32? {
+    guard case .failed(let failure) = self else {
+      return nil
+    }
+    return failure.exitCode
+  }
+
+  /// Standard error from `simctl`, verbatim, when it ran and failed.
+  public var standardError: String? {
+    guard case .failed(let failure) = self else {
+      return nil
+    }
+    return failure.standardError
+  }
+
+  /// What went wrong, worked out from the exit status and standard error,
+  /// or ``Reason/other`` when `simctl` didn't run or its output was unreadable.
   public var reason: Reason {
-    if standardError.hasPrefix("Invalid device") {
-      return .invalidDevice
+    guard case .failed(let failure) = self else {
+      return .other
     }
-    if standardError.contains("domain=com.apple.CoreSimulator.SimError, code=405") {
-      return .invalidState
-    }
-    if standardError.contains("No matching images found to delete") {
-      return .noMatchingRuntime
-    }
-    return .other
+    return failure.reason
   }
 
-  /// Standard error without surrounding whitespace, or the exit status if it's empty.
-  public var message: String {
-    let message = standardError.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard message.isEmpty else {
-      return message
+  /// A sentence for an alert.
+  public var errorDescription: String? {
+    switch self {
+    case .failed(let failure):
+      failure.message
+
+    case .launchFailed(_, let description):
+      "simctl couldn't be started: \(description)"
+
+    case .unreadableOutput(_, nil):
+      "simctl printed nothing."
+
+    case .unreadableOutput(_, let error?):
+      "Couldn't read simctl's output: \(error)"
     }
-    return "simctl \(arguments.joined(separator: " ")) failed with status \(status)"
   }
 
-  /// The same as ``message``.
-  public var errorDescription: String? { message }
-
-  /// Create an error from a failed `simctl` process.
+  /// The error for a ``ProcessError`` from running `simctl`.
   /// - Parameters:
-  ///   - signal: How the process ended, with its output.
+  ///   - error: How the process failed.
   ///   - arguments: The arguments passed to `simctl`.
-  public init(signal: UncaughtSignal, arguments: [String]) {
-    self.arguments = arguments
-    status = signal.status
-    terminationReason = signal.reason
-    standardError = signal.data.map { String(decoding: $0, as: UTF8.self) } ?? ""
-    standardOutput = signal.output.map { String(decoding: $0, as: UTF8.self) } ?? ""
-  }
+  /// - Returns: The matching ``SimCtlError``.
+  internal static func from(_ error: ProcessError, arguments: [String]) -> SimCtlError {
+    switch error {
+    case .uncaughtSignal(let signal):
+      .failed(Failure(signal: signal, arguments: arguments))
 
-  /// The error a subcommand rethrows for a ``ProcessError``.
-  /// - Parameters:
-  ///   - error: The error from running `simctl`.
-  ///   - arguments: The arguments passed to `simctl`.
-  /// - Returns: A ``SimCtlError`` for a process that failed,
-  ///   otherwise `error` itself (a timeout).
-  internal static func from(_ error: ProcessError, arguments: [String]) -> any Error {
-    guard case let .uncaughtSignal(signal) = error else {
-      return error
+    case .launchFailed(let description):
+      .launchFailed(arguments: arguments, description: description)
+
+    case .unreadableOutput:
+      .unreadableOutput(arguments: arguments, nil)
     }
-    return SimCtlError(signal: signal, arguments: arguments)
+  }
+}
+
+extension SimCtlError: Equatable {
+  /// Two errors are equal when their cases and values match. Decoding
+  /// errors, which aren't `Equatable`, are compared by description.
+  public static func == (lhs: SimCtlError, rhs: SimCtlError) -> Bool {
+    switch (lhs, rhs) {
+    case let (.failed(left), .failed(right)):
+      left == right
+
+    case let (.launchFailed(leftArguments, left), .launchFailed(rightArguments, right)):
+      leftArguments == rightArguments && left == right
+
+    case let (.unreadableOutput(leftArgs, left), .unreadableOutput(rightArgs, right)):
+      leftArgs == rightArgs
+        && left.map { String(describing: $0) } == right.map { String(describing: $0) }
+
+    default:
+      false
+    }
   }
 }

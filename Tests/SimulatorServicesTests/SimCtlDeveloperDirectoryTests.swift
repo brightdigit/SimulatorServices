@@ -109,17 +109,54 @@ internal final class SimCtlDeveloperDirectoryTests: XCTestCase {
 
   internal func testParseFindOutput() throws {
     XCTAssertEqual(
-      try SimCtl.parseFindOutput(Data("\(Self.simCtlPath)\n".utf8)).path,
+      SimCtl.parseFindOutput(Data("\(Self.simCtlPath)\n".utf8))?.path,
       Self.simCtlPath
     )
-    XCTAssertThrowsError(try SimCtl.parseFindOutput(nil)) {
-      XCTAssertEqual($0 as? SimCtl.FindError, .missingData)
-    }
-    XCTAssertThrowsError(try SimCtl.parseFindOutput(Data(" \n".utf8))) {
-      XCTAssertEqual($0 as? SimCtl.FindError, .missingData)
-    }
-    XCTAssertThrowsError(try SimCtl.parseFindOutput(Data("simctl\n".utf8))) {
-      XCTAssertEqual($0 as? SimCtl.FindError, .invalidPath("simctl"))
-    }
+    XCTAssertNil(SimCtl.parseFindOutput(nil))
+    XCTAssertNil(SimCtl.parseFindOutput(Data(" \n".utf8)))
+    XCTAssertNil(SimCtl.parseFindOutput(Data("simctl\n".utf8)))
+  }
+
+  internal func testXcodeURLForDeveloperDirectory() {
+    let developer = URL(fileURLWithPath: Self.developerPath, isDirectory: true)
+    XCTAssertEqual(
+      SimCtl.xcodeURL(forDeveloperDirectory: developer)?.path,
+      Self.xcodeURL.path
+    )
+    let volume = URL(fileURLWithPath: "/Volumes/X/Xcode.app/Contents/Developer")
+    XCTAssertEqual(
+      SimCtl.xcodeURL(forDeveloperDirectory: volume)?.path,
+      "/Volumes/X/Xcode.app"
+    )
+    XCTAssertNil(SimCtl.xcodeURL(forDeveloperDirectory: SimCtl.commandLineToolsDirectory))
+    let notAnApp = URL(fileURLWithPath: "/opt/Contents/Developer")
+    XCTAssertNil(SimCtl.xcodeURL(forDeveloperDirectory: notAnApp))
+  }
+
+  internal func testCommandLineTools() {
+    XCTAssertTrue(SimCtl.isCommandLineTools(SimCtl.commandLineToolsDirectory))
+    let slash = URL(fileURLWithPath: "/Library/Developer/CommandLineTools/")
+    XCTAssertTrue(SimCtl.isCommandLineTools(slash))
+    let developer = URL(fileURLWithPath: Self.developerPath)
+    XCTAssertFalse(SimCtl.isCommandLineTools(developer))
+  }
+
+  internal func testEnvironmentSetsDeveloperDirectory() {
+    let base = ["PATH": "/usr/bin", "DEVELOPER_DIR": "/elsewhere"]
+    XCTAssertEqual(
+      SimCtl.environment(base, developerDirectory: Self.xcodeURL),
+      Self.expectedEnvironment
+    )
+    let developer = URL(fileURLWithPath: Self.developerPath, isDirectory: true)
+    XCTAssertEqual(
+      SimCtl.environment(base, developerDirectory: developer),
+      Self.expectedEnvironment
+    )
+  }
+
+  internal func testEnvironmentRemovesAnInheritedDeveloperDirectory() {
+    let base = ["PATH": "/usr/bin", "DEVELOPER_DIR": "/elsewhere"]
+    let environment = SimCtl.environment(base, developerDirectory: nil)
+    XCTAssertEqual(environment, ["PATH": "/usr/bin"])
   }
 }

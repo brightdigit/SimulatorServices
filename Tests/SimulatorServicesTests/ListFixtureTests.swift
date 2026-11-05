@@ -103,6 +103,7 @@ internal final class ListFixtureTests: XCTestCase {
       iOS16.availabilityError,
       "The iOS 16.0 simulator runtime is not supported on hosts after macOS 26.99.99."
     )
-    XCTAssert(list.runtimes.filter(\.isAvailable).allSatisfy { $0.availabilityError == nil })
+    let available = list.runtimes.filter(\.isAvailable)
+    XCTAssert(available.allSatisfy { $0.availabilityError == nil })
   }
 }

@@ -38,7 +38,8 @@ internal final class RuntimeImageTests: XCTestCase {
   private static func image(
     deletable: Bool = true,
     kind: String = "Patchable Cryptex Disk Image",
-    state: String = "Ready"
+    state: String = "Ready",
+    sizeBytes: Int = 8_067_000_161
   ) throws -> RuntimeImage {
     let json = """
       {
@@ -49,7 +50,7 @@ internal final class RuntimeImageTests: XCTestCase {
         "path": "/Library/Developer/CoreSimulator/Images/1.dmg",
         "platformIdentifier": "com.apple.platform.iphonesimulator",
         "runtimeIdentifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
-        "sizeBytes": 8067000161,
+        "sizeBytes": \(sizeBytes),
         "state": "\(state)",
         "version": "27.0"
       }
@@ -114,5 +115,14 @@ internal final class RuntimeImageTests: XCTestCase {
         fixture.rawValue
       )
     }
+  }
+
+  internal func testReportedSizeIgnoresADirectoryEntry() throws {
+    XCTAssertEqual(try Self.image().reportedSizeBytes, 8_067_000_161)
+    XCTAssertNil(try Self.image(sizeBytes: 128).reportedSizeBytes)
+    XCTAssertEqual(
+      try Self.image(sizeBytes: RuntimeImage.minimumPlausibleSizeBytes).reportedSizeBytes,
+      RuntimeImage.minimumPlausibleSizeBytes
+    )
   }
 }

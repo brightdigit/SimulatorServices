@@ -33,15 +33,17 @@ import Foundation
 
 internal final class MockSubcommand<OutputType>: Subcommand {
   internal let arguments: [String]
-  private let callback: @Sendable (Data?) throws -> OutputType
+  private let callback: @Sendable (Data?) throws(SimCtlError) -> OutputType
 
   internal init(
     arguments: [String] = [String](),
-    callback: @escaping @Sendable (Data?) throws -> OutputType
+    callback: @escaping @Sendable (Data?) throws(SimCtlError) -> OutputType
   ) {
     self.callback = callback
     self.arguments = arguments
   }
 
-  internal func parse(_ data: Data?) throws -> OutputType { try callback(data) }
+  internal func parse(_ data: Data?) throws(SimCtlError) -> OutputType {
+    try callback(data)
+  }
 }

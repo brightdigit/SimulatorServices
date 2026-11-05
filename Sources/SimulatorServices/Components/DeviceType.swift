@@ -28,7 +28,7 @@
 //
 
 /// A type representing a specific device configuration.
-public struct DeviceType: Decodable, Equatable, Sendable {
+public struct DeviceType: Decodable, Hashable, Sendable {
   /// The family of products the device belongs to.
   public let productFamily: ProductFamily  // deviceType
 

@@ -35,12 +35,25 @@ extension Decoder {
   /// - Returns: The suffix part of the string after removing the prefix.
   internal func decodeSuffix(
     for decodable: (some PrefixedDecodableString).Type
-  ) throws -> any StringProtocol {
-    let stringValue = try singleValueContainer().decode(String.self)
+  ) throws(DecodingError) -> any StringProtocol {
+    let stringValue: String
+    do {
+      stringValue = try singleValueContainer().decode(String.self)
+    } catch let error as DecodingError {
+      throw error
+    } catch {
+      throw .dataCorrupted(
+        .init(
+          codingPath: codingPath,
+          debugDescription: "\(error)",
+          underlyingError: error
+        )
+      )
+    }
     do {
       return try decodable.suffix(forString: stringValue)
-    } catch let error as PrefixMismatchError {
-      throw DecodingError.dataCorrupted(
+    } catch {
+      throw .dataCorrupted(
         .init(
           codingPath: [],
           debugDescription: "Invalid Value: \(error.singleStringValue)",
@@ -75,7 +88,7 @@ extension DecodingError {
   ///
   /// - Throws: The original error if the underlying error is not a `PrefixMismatchError`.
   /// - Returns: The single string value causing the prefix mismatch.
-  internal func prefixMismatchStringValue() throws -> String {
+  internal func prefixMismatchStringValue() throws(DecodingError) -> String {
     guard
       let prefixMismatchError = context?.underlyingError
         as? PrefixMismatchError

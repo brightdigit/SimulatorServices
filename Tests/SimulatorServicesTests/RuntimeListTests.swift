@@ -39,7 +39,7 @@ internal final class RuntimeListTests: XCTestCase {
 
   internal func testParseMissingData() {
     XCTAssertThrowsError(try RuntimeList().parse(nil)) { error in
-      guard case .missingData = error as? RuntimeList.Error else {
+      guard case .unreadableOutput(_, nil) = error as? SimCtlError else {
         XCTFail("Unexpected error: \(error)")
         return
       }
@@ -48,7 +48,7 @@ internal final class RuntimeListTests: XCTestCase {
 
   internal func testParseInvalidJSON() {
     XCTAssertThrowsError(try RuntimeList().parse(Data("[]".utf8))) { error in
-      guard case .decodingError = error as? RuntimeList.Error else {
+      guard case .unreadableOutput(_, .some) = error as? SimCtlError else {
         XCTFail("Unexpected error: \(error)")
         return
       }

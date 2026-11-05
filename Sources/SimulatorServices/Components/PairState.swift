@@ -28,7 +28,7 @@
 //
 
 /// Represents the state of an Apple Watch and iPhone pair.
-public enum PairState: Equatable, Decodable, Sendable, RawDefined, RandomEnum {
+public enum PairState: Hashable, Decodable, Sendable, RawDefined, RandomEnum {
   /// The devices are actively connected.
   case activeConnected
 
@@ -42,22 +42,18 @@ public enum PairState: Equatable, Decodable, Sendable, RawDefined, RandomEnum {
   case unknown(String)
 
   /// Available raw options for `PairState`.
-  public enum RawAvailableOptions: String, CaseIterable {
+  public enum RawAvailableOptions: String, CaseIterable, Sendable {
     case activeConnected = "(active, disconnected)"
     case activeDisconnected = "(active, connected)"
     case unavailable = "(unavailable)"
   }
 
-  /// Initializes a `PairState` from a raw option.
-  public init(rawOption: RawAvailableOptions) {
-    switch rawOption {
-    case .activeConnected: self = .activeConnected
-
-    case .unavailable: self = .unavailable
-
-    case .activeDisconnected: self = .activeDisconnected
-    }
-  }
+  /// Each raw option and the case it stands for.
+  public static let rawOptions: BidirectionalMap<RawAvailableOptions, Self> = [
+    .activeConnected: .activeConnected,
+    .unavailable: .unavailable,
+    .activeDisconnected: .activeDisconnected,
+  ]
 
   /// Retrieves the associated string for an unknown state.
   public func unknownValue() -> String? {
@@ -67,3 +63,5 @@ public enum PairState: Equatable, Decodable, Sendable, RawDefined, RandomEnum {
     return string
   }
 }
+
+extension PairState: RawMapped {}

@@ -37,32 +37,23 @@ internal class MockAsyncableProcess: InternalAsyncableProcess, ProcessCompletion
   private let errorData: Data
   private let terminationResult: TerminationResult
   private let runError: Error?
-  private let willTimeout: Bool
 
   internal init(
     outputData: Data,
     errorData: Data,
     terminationResult: TerminationResult,
-    willTimeout: Bool,
     runError: Error? = nil
   ) {
     self.outputData = outputData
     self.errorData = errorData
     self.terminationResult = terminationResult
     self.runError = runError
-    self.willTimeout = willTimeout
   }
 
   internal func waitForCompletion(
-    for timeout: DispatchTime,
     with result: @autoclosure @escaping () -> SimulatorServices.TerminationResult
-  ) -> SimulatorServices.ProcessResult {
-    sleep(1)
-    if willTimeout {
-      return .timedOut(timeout)
-    } else {
-      return .success(result())
-    }
+  ) -> SimulatorServices.TerminationResult {
+    result()
   }
 
   internal func run() throws {

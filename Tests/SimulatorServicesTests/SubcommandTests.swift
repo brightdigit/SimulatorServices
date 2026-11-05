@@ -32,33 +32,36 @@ import XCTest
 @testable import SimulatorServices
 
 internal class SubcommandTests: XCTestCase {
-  internal func testRecover() {
-    let expectedError: ProcessError
+  private static func signalError() -> ProcessError {
     if #available(iOS 13.4, *) {
-      expectedError = ProcessError.uncaughtSignal(
+      return .uncaughtSignal(
         // swiftlint:disable:next force_unwrapping
         .init(reason: 2, status: 2, standardError: FileHandle.nullDevice, output: nil)!
       )
-    } else {
-      expectedError = ProcessError.uncaughtSignal(
-        // swiftlint:disable:next force_unwrapping
-        .init(reason: 2, status: 2, data: nil, output: nil)!
-      )
     }
+    return .uncaughtSignal(
+      // swiftlint:disable:next force_unwrapping
+      .init(reason: 2, status: 2, data: nil, output: nil)!
+    )
+  }
 
-    let subcommand = MockSubcommand { _ in throw expectedError }
+  internal func testRecover() {
+    let expectedError = Self.signalError()
+    let subcommand = MockSubcommand<Void>(arguments: ["boot", "X"]) { _ in }
 
+    // By default a failed process becomes a SimCtlError for the command.
     XCTAssertThrowsError(try subcommand.recover(expectedError)) { actualError in
-      XCTAssertEqual(actualError as? ProcessError, expectedError)
+      XCTAssertEqual(
+        actualError as? SimCtlError,
+        SimCtlError.from(expectedError, arguments: ["boot", "X"])
+      )
+      XCTAssertEqual((actualError as? SimCtlError)?.arguments, ["boot", "X"])
     }
+  }
 
-    XCTAssertEqual(
-      expectedError.localizedDescription,
-      "Termination Reason: \(2) with status: 2"
-    )
-    XCTAssertEqual(
-      expectedError.errorDescription,
-      "Termination Reason: \(2) with status: 2"
-    )
+  internal func testSignalDescription() {
+    let error = Self.signalError()
+    XCTAssertEqual(error.localizedDescription, "Termination Reason: \(2) with status: 2")
+    XCTAssertEqual(error.errorDescription, "Termination Reason: \(2) with status: 2")
   }
 }

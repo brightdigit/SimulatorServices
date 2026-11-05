@@ -31,14 +31,14 @@ import Foundation
 
 @testable import SimulatorServices
 
-internal class MockSimCtlProcess: InternalSimCtlProcess {
-  private let result: Result<Data?, Error>
+internal final class MockSimCtlProcess: InternalSimCtlProcess, @unchecked Sendable {
+  private let result: Result<Data?, ProcessError>
   internal var executableURL: URL?
   internal var arguments: [String]?
   internal var environment: [String: String]?
 
   internal init(
-    result: Result<Data?, Error>,
+    result: Result<Data?, ProcessError>,
     executableURL: URL? = nil,
     arguments: [String]? = nil,
     environment: [String: String]? = nil
@@ -49,7 +49,7 @@ internal class MockSimCtlProcess: InternalSimCtlProcess {
     self.environment = environment
   }
 
-  internal func run(timeout _: DispatchTime) async throws -> Data? {
+  internal func runToCompletion() async throws(ProcessError) -> Data? {
     try result.get()
   }
 }

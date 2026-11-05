@@ -34,14 +34,6 @@ public struct RuntimeList: Subcommand {
   /// The runtime images, sorted by identifier.
   public typealias OutputType = [RuntimeImage]
 
-  /// Errors thrown
-  public enum Error: Swift.Error {
-    /// No standard output data.
-    case missingData
-    /// Unable to decode the JSON returned by `simctl`
-    case decodingError(DecodingError)
-  }
-
   @available(macOS 13.0, *)
   private static let decoder: any InternalListDecoder = {
     let decoder = JSONDecoder()
@@ -65,16 +57,21 @@ public struct RuntimeList: Subcommand {
   /// `simctl` returns a dictionary keyed by image identifier.
   /// - Parameter data: Standard output from the `simctl` call.
   /// - Returns: The runtime images, sorted by identifier.
-  /// - Throws: ``Error`` if the standard output data is nil
-  ///           or the JSON could not be decoded.
-  public func parse(_ data: Data?) throws -> [RuntimeImage] {
-    guard let data else { throw Error.missingData }
+  /// - Throws: ``SimCtlError/unreadableOutput(arguments:_:)`` if `simctl`
+  ///   printed nothing or JSON that couldn't be decoded.
+  public func parse(_ data: Data?) throws(SimCtlError) -> [RuntimeImage] {
+    guard let data else {
+      throw .unreadableOutput(arguments: arguments, nil)
+    }
 
     let images: [String: RuntimeImage]
     do {
       images = try decoder.decode([String: RuntimeImage].self, from: data)
     } catch let error as DecodingError {
-      throw Error.decodingError(error)
+      throw .unreadableOutput(arguments: arguments, error)
+    } catch {
+      // A component's own decoding error, such as an unexpected identifier.
+      throw .unreadableOutput(arguments: arguments, nil)
     }
     return images.values.sorted { $0.identifier.uuidString < $1.identifier.uuidString }
   }

@@ -1,5 +1,5 @@
 //
-//  ProcessResult.swift
+//  PlatformTests.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,9 +27,18 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+import XCTest
 
-internal enum ProcessResult {
-  case success(TerminationResult)
-  case timedOut(DispatchTime)
+@testable import SimulatorServices
+
+internal final class PlatformTests: XCTestCase {
+  internal func testDisplayNameUsesTheDictionary() {
+    XCTAssertEqual(Platform.xrOS.displayName, "visionOS")
+  }
+
+  internal func testDisplayNameFallsBackToTheRawValue() {
+    XCTAssertEqual(Platform.iOS.displayName, "iOS")
+    XCTAssertEqual(Platform.watchOS.displayName, "watchOS")
+    XCTAssertEqual(Platform.unknown("macOS").displayName, "macOS")
+  }
 }

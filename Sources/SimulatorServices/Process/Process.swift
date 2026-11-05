@@ -55,14 +55,6 @@
       terminationHandler = { _ in semaphore.signal() }
       return semaphore
     }
-
-    /// Runs the process within the timeout given.
-    /// - Parameter timeout: `DispatchTime` for the process to complete.
-    /// - Returns: `Data` returned from the command.
-    /// - Throws: An error is the process fails.
-    public func run(till timeout: DispatchTime) async throws -> Data? {
-      try await run(timeout: timeout)
-    }
   }
 
 #endif

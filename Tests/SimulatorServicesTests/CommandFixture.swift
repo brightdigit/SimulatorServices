@@ -83,7 +83,7 @@ internal struct CommandFixture {
 
   /// The recorded exit status.
   internal func status() throws -> Int {
-    let text = String(decoding: try data("exit"), as: UTF8.self)
+    let text = try XCTUnwrap(String(bytes: try data("exit"), encoding: .utf8))
     return try XCTUnwrap(Int(text.trimmingCharacters(in: .whitespacesAndNewlines)))
   }
 
@@ -95,7 +95,7 @@ internal struct CommandFixture {
 
   /// What the process would return: standard output for exit status 0,
   /// otherwise a ``ProcessError`` like the one `Process` throws.
-  internal func result() throws -> Result<Data?, any Error> {
+  internal func result() throws -> Result<Data?, ProcessError> {
     let signal = UncaughtSignal(
       reason: 1,
       status: try status(),
@@ -105,7 +105,7 @@ internal struct CommandFixture {
     guard let signal else {
       return .success(try standardOutput())
     }
-    return .failure(ProcessError.uncaughtSignal(signal))
+    return .failure(.uncaughtSignal(signal))
   }
 
   /// Run a subcommand through ``SimCtl`` with a process that replays this fixture.
@@ -121,14 +121,14 @@ internal struct CommandFixture {
   }
 
   /// Run a subcommand that this fixture makes fail.
-  /// - Returns: The ``SimCtlError`` it throws.
+  /// - Returns: The ``SimCtlError/Failure`` it throws.
   internal func error<SubcommandType: Subcommand>(
     running subcommand: SubcommandType
-  ) async throws -> SimCtlError {
+  ) async throws -> SimCtlError.Failure {
     do {
       _ = try await run(subcommand)
-    } catch let error as SimCtlError {
-      return error
+    } catch let SimCtlError.failed(failure) {
+      return failure
     }
     throw UnexpectedSuccess(name: name)
   }
