@@ -1,0 +1,347 @@
+{
+  "8A5EBB70-7234-4C77-B46E-A33222AF0948" : {
+    "build" : "24B91016s",
+    "deletable" : true,
+    "identifier" : "8A5EBB70-7234-4C77-B46E-A33222AF0948",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.2.91016.19.vokWln",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/iphonesimulator_27.2_24B91016s.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/8A5EBB70-7234-4C77-B46E-A33222AF0948",
+    "platformIdentifier" : "com.apple.platform.iphonesimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.2.91016.19.vokWln\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.iOS-27-2-iPhone19-4",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "9A1FF303-ED55-4573-8B0A-DB97A119E008" : {
+    "build" : "24A434",
+    "deletable" : true,
+    "identifier" : "9A1FF303-ED55-4573-8B0A-DB97A119E008",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.wjhRKV",
+    "parentMountPath" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_iOSSimulatorRuntime\/3e800c38767f9f2c5fc86acdad7adf44565e051a.asset\/AssetData",
+    "path" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_iOSSimulatorRuntime\/3e800c38767f9f2c5fc86acdad7adf44565e051a.asset\/AssetData",
+    "platformIdentifier" : "com.apple.platform.iphonesimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.wjhRKV\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 27.0.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 8067000161,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.0"
+  },
+  "9BA5B4FC-3285-4F71-A400-3548B6E6D5D7" : {
+    "build" : "24S116",
+    "deletable" : true,
+    "identifier" : "9BA5B4FC-3285-4F71-A400-3548B6E6D5D7",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.WatchOS.SimulatorRuntime-v24.19.116.0.KzgzDZ",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/watchsimulator_27.2_24S116.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/9BA5B4FC-3285-4F71-A400-3548B6E6D5D7",
+    "platformIdentifier" : "com.apple.platform.watchsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.WatchOS.SimulatorRuntime-v24.19.116.0.KzgzDZ\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/watchOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "27FE7573-5415-4733-A579-D68391B942EA" : {
+    "build" : "24J360",
+    "deletable" : true,
+    "identifier" : "27FE7573-5415-4733-A579-D68391B942EA",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.AppleTVOS.SimulatorRuntime-v24.10.360.0.vNgQzk",
+    "parentMountPath" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_appleTVOSSimulatorRuntime\/f6a3a9321156c52c0d245f50953d9867b2b139ab.asset\/AssetData",
+    "path" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_appleTVOSSimulatorRuntime\/f6a3a9321156c52c0d245f50953d9867b2b139ab.asset\/AssetData",
+    "platformIdentifier" : "com.apple.platform.appletvsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.AppleTVOS.SimulatorRuntime-v24.10.360.0.vNgQzk\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/tvOS 27.0.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.tvOS-27-0",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 3697822545,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.0"
+  },
+  "45ACF822-8115-45D9-B146-48C7489B4B7B" : {
+    "build" : "23L470",
+    "deletable" : true,
+    "identifier" : "45ACF822-8115-45D9-B146-48C7489B4B7B",
+    "kind" : "Patchable Cryptex Disk Image",
+    "lastUsedAt" : "2026-05-26T17:24:48Z",
+    "mountPath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/tvOS_23L470",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/appletvsimulator_26.5_23L470.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Images\/45ACF822-8115-45D9-B146-48C7489B4B7B.dmg",
+    "platformIdentifier" : "com.apple.platform.appletvsimulator",
+    "runtimeBundlePath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/tvOS_23L470\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/tvOS 26.5.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.tvOS-26-5",
+    "signatureState" : "Verified",
+    "sizeBytes" : 3727213852,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "26.5"
+  },
+  "139AC192-CAEA-4F38-98C6-38FD8946BB68" : {
+    "build" : "23T570",
+    "deletable" : true,
+    "identifier" : "139AC192-CAEA-4F38-98C6-38FD8946BB68",
+    "kind" : "Patchable Cryptex Disk Image",
+    "lastUsedAt" : "2026-09-22T22:47:40Z",
+    "mountPath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/watchOS_23T570",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/watchsimulator_26.5_23T570.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Images\/139AC192-CAEA-4F38-98C6-38FD8946BB68.dmg",
+    "platformIdentifier" : "com.apple.platform.watchsimulator",
+    "runtimeBundlePath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/watchOS_23T570\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/watchOS 26.5.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-26-5",
+    "signatureState" : "Verified",
+    "sizeBytes" : 3935033546,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "26.5"
+  },
+  "152AAA64-34E5-4679-8DCC-B3F9F37E7E6B" : {
+    "build" : "24N120",
+    "deletable" : true,
+    "identifier" : "152AAA64-34E5-4679-8DCC-B3F9F37E7E6B",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.XROS.SimulatorRuntime-v24.14.120.0.T6jI7E",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/xrsimulator_27.2_24N120.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/152AAA64-34E5-4679-8DCC-B3F9F37E7E6B",
+    "platformIdentifier" : "com.apple.platform.xrsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.XROS.SimulatorRuntime-v24.14.120.0.T6jI7E\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/xrOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.xrOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "7008A4BE-71CE-4433-A215-FC2D794AB423" : {
+    "build" : "24B114",
+    "deletable" : true,
+    "identifier" : "7008A4BE-71CE-4433-A215-FC2D794AB423",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.2.114.0.gXVZ2a",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/iphonesimulator_27.2_24B114.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/7008A4BE-71CE-4433-A215-FC2D794AB423",
+    "platformIdentifier" : "com.apple.platform.iphonesimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.2.114.0.gXVZ2a\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "8668E02E-BBCB-4A90-96A9-49025E6048B2" : {
+    "build" : "24K150",
+    "deletable" : true,
+    "identifier" : "8668E02E-BBCB-4A90-96A9-49025E6048B2",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.AppleTVOS.SimulatorRuntime-v24.11.150.0.vxt8WP",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/appletvsimulator_27.2_24K150.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/8668E02E-BBCB-4A90-96A9-49025E6048B2",
+    "platformIdentifier" : "com.apple.platform.appletvsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.AppleTVOS.SimulatorRuntime-v24.11.150.0.vxt8WP\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/tvOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.tvOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "A63F348B-E8D7-43D7-9309-276CC6BE5451" : {
+    "build" : "21T575",
+    "deletable" : true,
+    "identifier" : "A63F348B-E8D7-43D7-9309-276CC6BE5451",
+    "kind" : "Disk Image",
+    "mountPath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/watchOS_21T575",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Images\/A63F348B-E8D7-43D7-9309-276CC6BE5451.dmg",
+    "platformIdentifier" : "com.apple.platform.watchsimulator",
+    "runtimeBundlePath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/watchOS_21T575\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/watchOS 10.5.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-10-5",
+    "signatureState" : "Verified",
+    "sizeBytes" : 3946536779,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "x86_64",
+      "arm64"
+    ],
+    "version" : "10.5"
+  },
+  "A2904B31-2DF9-466C-BC53-7C61DC67FE7A" : {
+    "build" : "24B8117",
+    "deletable" : true,
+    "identifier" : "A2904B31-2DF9-466C-BC53-7C61DC67FE7A",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.2.8117.0.xqmU29",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/iphonesimulator_27.2_24B8117.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/A2904B31-2DF9-466C-BC53-7C61DC67FE7A",
+    "platformIdentifier" : "com.apple.platform.iphonesimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.iPhoneOS.SimulatorRuntime-v24.2.8117.0.xqmU29\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.iOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "A4153FD4-3687-484D-AB5C-75B576E8B9DD" : {
+    "build" : "23O470",
+    "deletable" : true,
+    "identifier" : "A4153FD4-3687-484D-AB5C-75B576E8B9DD",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/xrOS_23O470",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/xrsimulator_26.5_23O470.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Images\/A4153FD4-3687-484D-AB5C-75B576E8B9DD.dmg",
+    "platformIdentifier" : "com.apple.platform.xrsimulator",
+    "runtimeBundlePath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/xrOS_23O470\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/xrOS 26.5.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.xrOS-26-5",
+    "signatureState" : "Verified",
+    "sizeBytes" : 7277773057,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "26.5"
+  },
+  "BC0CBBAE-F8C3-42DC-969F-0A681AD7C037" : {
+    "build" : "24K118",
+    "deletable" : true,
+    "identifier" : "BC0CBBAE-F8C3-42DC-969F-0A681AD7C037",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.AppleTVOS.SimulatorRuntime-v24.11.118.0.GznwxM",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/appletvsimulator_27.2_24K118.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/BC0CBBAE-F8C3-42DC-969F-0A681AD7C037",
+    "platformIdentifier" : "com.apple.platform.appletvsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.AppleTVOS.SimulatorRuntime-v24.11.118.0.GznwxM\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/tvOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.tvOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "BF0BC1A2-13FC-4AE8-805C-18E7C3618639" : {
+    "build" : "24N118",
+    "deletable" : true,
+    "identifier" : "BF0BC1A2-13FC-4AE8-805C-18E7C3618639",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.XROS.SimulatorRuntime-v24.14.118.0.0RXO9Y",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/xrsimulator_27.2_24N118.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/BF0BC1A2-13FC-4AE8-805C-18E7C3618639",
+    "platformIdentifier" : "com.apple.platform.xrsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.XROS.SimulatorRuntime-v24.14.118.0.0RXO9Y\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/xrOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.xrOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "C18D1BA2-6D26-4D9C-8AA0-2DD89CB0B0F9" : {
+    "build" : "24R362",
+    "deletable" : true,
+    "identifier" : "C18D1BA2-6D26-4D9C-8AA0-2DD89CB0B0F9",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/watchOS_24R362",
+    "parentMountPath" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_watchOSSimulatorRuntime\/3f39f470a745ea5cc62fc1967054b0dcf8fb0875.asset\/AssetData",
+    "path" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_watchOSSimulatorRuntime\/3f39f470a745ea5cc62fc1967054b0dcf8fb0875.asset\/AssetData",
+    "platformIdentifier" : "com.apple.platform.watchsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/watchOS_24R362\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/watchOS 27.0.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-27-0",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 3814435665,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.0"
+  },
+  "E051E86A-5579-437C-BC74-04C272B98577" : {
+    "build" : "24M362",
+    "deletable" : true,
+    "identifier" : "E051E86A-5579-437C-BC74-04C272B98577",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.XROS.SimulatorRuntime-v24.13.362.0.u2npm2",
+    "parentMountPath" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_xrOSSimulatorRuntime\/870e651c5b56773428623ecc15e770d0886a390b.asset\/AssetData",
+    "path" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_xrOSSimulatorRuntime\/870e651c5b56773428623ecc15e770d0886a390b.asset\/AssetData",
+    "platformIdentifier" : "com.apple.platform.xrsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.XROS.SimulatorRuntime-v24.13.362.0.u2npm2\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/xrOS 27.0.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.xrOS-27-0",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 7480076129,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.0"
+  },
+  "E947E6F5-5FEB-4E9E-8D6C-40125D503489" : {
+    "build" : "24S118",
+    "deletable" : true,
+    "identifier" : "E947E6F5-5FEB-4E9E-8D6C-40125D503489",
+    "kind" : "Patchable Cryptex Disk Image",
+    "mountPath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.WatchOS.SimulatorRuntime-v24.19.118.0.5wGMWl",
+    "parentMountPath" : "\/var\/folders\/vx\/fntrrcyj3j784mz37ffgp5780000gn\/T\/watchsimulator_27.2_24S118.exportedBundle",
+    "path" : "\/Library\/Developer\/CoreSimulator\/Cryptex\/Images\/E947E6F5-5FEB-4E9E-8D6C-40125D503489",
+    "platformIdentifier" : "com.apple.platform.watchsimulator",
+    "runtimeBundlePath" : "\/private\/var\/run\/com.apple.security.cryptexd\/mnt\/com.apple.WatchOS.SimulatorRuntime-v24.19.118.0.5wGMWl\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/watchOS 27.2.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.watchOS-27-2",
+    "signatureState" : "Unknown",
+    "sizeBytes" : 128,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "27.2"
+  },
+  "F39D4EC4-F5AA-4248-A9B8-B59EB30BDF1D" : {
+    "build" : "23F77",
+    "deletable" : true,
+    "identifier" : "F39D4EC4-F5AA-4248-A9B8-B59EB30BDF1D",
+    "kind" : "Patchable Cryptex Disk Image",
+    "lastUsedAt" : "2026-09-22T22:47:59Z",
+    "mountPath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_23F77",
+    "parentMountPath" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_iOSSimulatorRuntime\/26c9174130fa5962f3e60f2a49963194dadbae4c.asset\/AssetData",
+    "path" : "\/System\/Library\/AssetsV2\/com_apple_MobileAsset_iOSSimulatorRuntime\/26c9174130fa5962f3e60f2a49963194dadbae4c.asset\/AssetData\/Restore\/094-56039-099.dmg",
+    "platformIdentifier" : "com.apple.platform.iphonesimulator",
+    "runtimeBundlePath" : "\/Library\/Developer\/CoreSimulator\/Volumes\/iOS_23F77\/Library\/Developer\/CoreSimulator\/Profiles\/Runtimes\/iOS 26.5.simruntime",
+    "runtimeIdentifier" : "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+    "signatureState" : "Verified",
+    "sizeBytes" : 8494282293,
+    "state" : "Ready",
+    "supportedArchitectures" : [
+      "arm64"
+    ],
+    "version" : "26.5"
+  }
+}

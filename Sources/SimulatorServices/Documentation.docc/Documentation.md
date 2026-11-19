@@ -163,6 +163,26 @@ This code is distributed under the MIT license. See the [LICENSE](https://github
 - ``RuntimeID``
 - ``Path``
 
+### Reading Runtimes Together
+
+- ``SimctlSnapshot``
+- ``DirectorySizeMeasurer``
+
+### Versions and Builds
+
+- ``VersionNumber``
+- ``MajorMinorVersion``
+- ``BuildNumber``
+- ``VersionedBuild``
+
+### Finding Xcode
+
+- ``XcodeLocating``
+- ``XcodeSnapshot``
+- ``XcodeInstallation``
+- ``XcodeToolOutput``
+- ``XcodeDiscoveryError``
+
 
 ### Creating your own subcommands
 
