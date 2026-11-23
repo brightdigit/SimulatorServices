@@ -86,39 +86,5 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible, Sendable {
     )
   }
 
-  @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-  internal init?(
-    reason: TerminationReason,
-    status: Int,
-    standardError: FileHandle,
-    output: Data?
-  ) {
-    if reason == UncaughtSignal.exitReason, status == 0 {
-      return nil
-    }
-    let reason = reason
-    let status = status
-    let data = try? standardError.readToEnd()
 
-    self.init(
-      uncheckedReason: reason,
-      uncheckedStatus: Int(status),
-      data: data,
-      output: output
-    )
-  }
-
-  @available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-  internal init?(
-    termination: TerminationResult,
-    data: Data?,
-    output: Data?
-  ) {
-    self.init(
-      reason: termination.reason,
-      status: termination.status,
-      data: data,
-      output: output
-    )
-  }
 }

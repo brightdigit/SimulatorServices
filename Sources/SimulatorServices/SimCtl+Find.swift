@@ -63,11 +63,13 @@ extension SimCtl {
   /// - Throws: ``SimCtlError`` if `xcrun` fails or its output isn't a path.
   internal func find() async throws(SimCtlError) -> SimCtl {
     let arguments = ["--find", "simctl"]
-    let process = makeProcess(executableURL: xcRunURL, arguments: arguments)
     let data: Data?
-    do {
-      data = try await process.runToCompletion()
-    } catch {
+    switch await runToCompletion(makeCommand(executableURL: xcRunURL, arguments: arguments)) {
+    case .success(let output):
+      data = output
+    case .failure(.cancelled):
+      throw .cancelled(arguments: arguments)
+    case .failure(.process(let error)):
       throw .from(error, arguments: arguments)
     }
     guard let simCtlURL = Self.parseFindOutput(data) else {
@@ -78,7 +80,7 @@ extension SimCtl {
       simCtlURL: simCtlURL,
       developerDirectory: developerDirectory,
       environment: baseEnvironment,
-      processFactory: processFactory()
+      runner: runner
     )
   }
 }

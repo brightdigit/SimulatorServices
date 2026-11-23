@@ -34,22 +34,12 @@ import Foundation
 @available(macOS 10.15, iOS 13.4, tvOS 13.4, watchOS 6.4, *)
 extension ProcessError {
   internal init?(withMessage message: String) throws {
-    let tmpPath = FileManager.default.temporaryDirectory.appendingPathComponent(
-      UUID().uuidString
-    )
-    try message.write(
-      to: tmpPath,
-      atomically: true,
-      encoding: .utf8
-    )
-    let standardError = try FileHandle(forReadingFrom: tmpPath)
     let signal = UncaughtSignal(
       reason: 2,
       status: 2,
-      standardError: standardError,
+      data: Data(message.utf8),
       output: nil
     )
-
     guard let signal else {
       return nil
     }

@@ -53,7 +53,7 @@ internal final class SimCtlDeveloperDirectoryTests: XCTestCase {
     let simctl = SimCtl(
       xcRunURL: Self.xcRunURL,
       environment: ["PATH": "/usr/bin"],
-      processFactory: process
+      runner: process
     )
     try await simctl.run(Boot(CommandFixture.device))
 
@@ -70,7 +70,7 @@ internal final class SimCtlDeveloperDirectoryTests: XCTestCase {
       xcRunURL: Self.xcRunURL,
       developerDirectory: Self.xcodeURL,
       environment: ["PATH": "/usr/bin", "DEVELOPER_DIR": "/Applications/Xcode.app"],
-      processFactory: process
+      runner: process
     )
     try await simctl.run(Shutdown(CommandFixture.device))
 
@@ -89,7 +89,7 @@ internal final class SimCtlDeveloperDirectoryTests: XCTestCase {
       xcRunURL: Self.xcRunURL,
       developerDirectory: Self.xcodeURL,
       environment: ["PATH": "/usr/bin"],
-      processFactory: process
+      runner: process
     )
     .find()
 
@@ -100,7 +100,6 @@ internal final class SimCtlDeveloperDirectoryTests: XCTestCase {
     XCTAssertEqual(simctl.developerDirectory?.path, Self.developerPath)
 
     // Later subcommands run the resolved simctl directly, with the same DEVELOPER_DIR.
-    process.environment = nil
     try await simctl.run(Erase(CommandFixture.device))
     XCTAssertEqual(process.executableURL?.path, Self.simCtlPath)
     XCTAssertEqual(process.arguments, ["erase", CommandFixture.device.uuidString])

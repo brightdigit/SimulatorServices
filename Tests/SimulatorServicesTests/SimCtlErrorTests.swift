@@ -114,7 +114,7 @@ internal final class SimCtlErrorTests: XCTestCase {
     )
     let simctl = SimCtl(
       xcRunURL: URL(fileURLWithPath: "/usr/bin/xcrun"),
-      processFactory: MockSimCtlProcess(result: .failure(.uncaughtSignal(signal)))
+      runner: MockSimCtlProcess(result: .failure(.uncaughtSignal(signal)))
     )
     do {
       _ = try await simctl.run(RuntimeList())

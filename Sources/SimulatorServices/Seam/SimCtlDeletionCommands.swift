@@ -1,5 +1,5 @@
 //
-//  ProcessOutputHandleSet.swift
+//  SimCtlDeletionCommands.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,41 +29,15 @@
 
 import Foundation
 
-@available(macOS 10.15.4, iOS 13.4, watchOS 6.2, tvOS 13.4, *)
-internal struct ProcessOutputHandleSet {
-  private let output: FileHandle
-  private let error: FileHandle
-
-  // swift-format-ignore: NoLeadingUnderscores
-  private var _outputResult: Result<Data?, any Error>?
-
-  // swift-format-ignore: NoLeadingUnderscores
-  private var _errorResult: Result<Data?, any Error>?
-
-  internal var outputResult: Result<Data?, any Error> {
-    guard let outputResult = _outputResult else {
-      preconditionFailure("Must call readToEnd first.")
-    }
-    return outputResult
-  }
-
-  internal var errorData: Data? {
-    guard let errorResult = _errorResult else {
-      preconditionFailure("Must call readToEnd first.")
-    }
-
-    return try? errorResult.get()
-  }
-
-  internal init(output: FileHandle, error: FileHandle) {
-    self.output = output
-    self.error = error
-    _outputResult = nil
-    _errorResult = nil
-  }
-
-  internal mutating func readToEnd() {
-    _outputResult = Result { try output.readToEnd() }
-    _errorResult = Result { try error.readToEnd() }
-  }
+/// The `simctl` calls that delete runtimes and simulators, one item per
+/// call, so each failure names exactly one simulator or runtime.
+///
+/// ``LiveSimCtlCommands`` runs them through ``SimCtl``; tests use a fake.
+public protocol SimCtlDeletionCommands: Sendable {
+  /// `simctl shutdown <udid>`.
+  func shutDown(_ udid: UUID) async throws(SimCtlError)
+  /// `simctl delete <udid>`.
+  func deleteSimulator(_ udid: UUID) async throws(SimCtlError)
+  /// `simctl runtime delete <id>`, for a ``RuntimeImage/identifier``.
+  func deleteRuntime(_ id: UUID) async throws(SimCtlError)
 }

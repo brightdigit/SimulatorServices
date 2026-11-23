@@ -36,7 +36,7 @@ internal class SubcommandTests: XCTestCase {
     if #available(iOS 13.4, *) {
       return .uncaughtSignal(
         // swiftlint:disable:next force_unwrapping
-        .init(reason: 2, status: 2, standardError: FileHandle.nullDevice, output: nil)!
+        .init(reason: 2, status: 2, data: nil, output: nil)!
       )
     }
     return .uncaughtSignal(

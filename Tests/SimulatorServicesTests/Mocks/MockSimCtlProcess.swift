@@ -28,28 +28,44 @@
 //
 
 import Foundation
+import Synchronization
 
 @testable import SimulatorServices
 
-internal final class MockSimCtlProcess: InternalSimCtlProcess, @unchecked Sendable {
+/// Replays one result for every command, and records the last command run.
+internal final class MockSimCtlProcess: CommandRunning {
   private let result: Result<Data?, ProcessError>
-  internal var executableURL: URL?
-  internal var arguments: [String]?
-  internal var environment: [String: String]?
+  private let lastCommand = Mutex<Command?>(nil)
 
-  internal init(
-    result: Result<Data?, ProcessError>,
-    executableURL: URL? = nil,
-    arguments: [String]? = nil,
-    environment: [String: String]? = nil
-  ) {
+  /// The executable of the last command run.
+  internal var executableURL: URL? { lastCommand.withLock { $0?.executableURL } }
+  /// The arguments of the last command run.
+  internal var arguments: [String]? { lastCommand.withLock { $0?.arguments } }
+  /// The environment of the last command run, `nil` when it inherits.
+  internal var environment: [String: String]? { lastCommand.withLock { $0?.environment } }
+
+  /// - Parameter result: Standard output for a command that exits with
+  ///   status 0, or how it fails.
+  internal init(result: Result<Data?, ProcessError>) {
     self.result = result
-    self.executableURL = executableURL
-    self.arguments = arguments
-    self.environment = environment
   }
 
-  internal func runToCompletion() async throws(ProcessError) -> Data? {
-    try result.get()
+  internal func run(_ command: Command) async throws(CommandError) -> CommandOutput {
+    lastCommand.withLock { $0 = command }
+    switch result {
+    case .success(let output):
+      return CommandOutput(standardOutput: output ?? Data())
+    case .failure(.uncaughtSignal(let signal)):
+      return CommandOutput(
+        standardOutput: signal.output ?? Data(),
+        standardError: signal.data ?? Data(),
+        termination: signal.reason == 1
+          ? .exited(Int32(signal.status)) : .signaled(Int32(signal.status))
+      )
+    case .failure(.launchFailed(let description)):
+      throw .launchFailed(description)
+    case .failure(.unreadableOutput(let description)):
+      throw .unreadableOutput(description)
+    }
   }
 }

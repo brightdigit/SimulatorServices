@@ -71,7 +71,7 @@ internal final class DeviceDeleteTests: XCTestCase {
     let process = MockSimCtlProcess(result: .success(Data()))
     let simctl = SimCtl(
       xcRunURL: URL(fileURLWithPath: "/usr/bin/xcrun"),
-      processFactory: process
+      runner: process
     )
     try await simctl.run(DeleteUnavailable())
     XCTAssertEqual(process.arguments, ["simctl", "delete", "unavailable"])

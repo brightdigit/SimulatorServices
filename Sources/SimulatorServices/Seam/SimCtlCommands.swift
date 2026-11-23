@@ -1,5 +1,5 @@
 //
-//  Process.swift
+//  SimCtlCommands.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,34 +27,23 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#if os(macOS)
-  import Foundation
+import Foundation
 
-  @available(macOS 10.15.4, *)
-  extension Process: InternalSimCtlProcess, InternalAsyncableProcess {
-    internal func termintationResult() -> TerminationResult {
-      .init(reason: terminationReason.rawValue, status: Int(terminationStatus))
-    }
-
-    internal func fileHandles() -> ProcessOutputHandleSet {
-      let standardError = Pipe()
-      let standardOutput = Pipe()
-
-      self.standardError = standardError
-      self.standardOutput = standardOutput
-
-      return .init(
-        output: standardOutput.fileHandleForReading,
-        error: standardError.fileHandleForReading
-      )
-    }
-
-    internal func promise() -> any ProcessCompletionPromise {
-      let semaphore = DispatchSemaphore(value: 0)
-
-      terminationHandler = { _ in semaphore.signal() }
-      return semaphore
-    }
-  }
-
-#endif
+/// The `simctl` calls an app that manages runtimes and simulators makes,
+/// one item per call.
+///
+/// ``LiveSimCtlCommands`` runs them through ``SimCtl``; tests use a fake,
+/// so no test runs a real `simctl` mutation.
+public protocol SimCtlCommands: SimCtlDeletionCommands {
+  /// `simctl runtime list -j` and `simctl list -j`.
+  func snapshot() async throws(SimCtlError) -> SimctlSnapshot
+  /// `simctl boot <udid>`.
+  func boot(_ udid: UUID) async throws(SimCtlError)
+  /// `simctl erase <udid>`.
+  func erase(_ udid: UUID) async throws(SimCtlError)
+  /// Runs every later call from this Xcode.
+  ///
+  /// - Parameter developerDirectory: The value for `DEVELOPER_DIR`, or
+  ///   `nil` to use the one `xcode-select` points to.
+  func useDeveloperDirectory(_ developerDirectory: URL?) async
+}

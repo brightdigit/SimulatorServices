@@ -43,6 +43,9 @@ public enum SimCtlError: Error, Sendable, LocalizedError {
   /// `simctl` succeeded but printed nothing, or something that couldn't be
   /// read. The decoding error is included when there is one.
   case unreadableOutput(arguments: [String], DecodingError?)
+  /// The calling task was cancelled, and the running `simctl` was
+  /// terminated. What it changed before then isn't known.
+  case cancelled(arguments: [String])
 
   /// What went wrong, as far as it can be told from the exit status and standard error.
   ///
@@ -70,7 +73,9 @@ public enum SimCtlError: Error, Sendable, LocalizedError {
   public var arguments: [String] {
     switch self {
     case .failed(let failure): failure.arguments
-    case .launchFailed(let arguments, _), .unreadableOutput(let arguments, _): arguments
+    case .launchFailed(let arguments, _), .unreadableOutput(let arguments, _),
+      .cancelled(let arguments):
+      arguments
     }
   }
 
@@ -114,6 +119,8 @@ public enum SimCtlError: Error, Sendable, LocalizedError {
 
     case .unreadableOutput(_, let error?):
       "Couldn't read simctl's output: \(error)"
+    case .cancelled:
+      "The simctl call was cancelled."
     }
   }
 
@@ -151,6 +158,8 @@ extension SimCtlError: Equatable {
       leftArgs == rightArgs
         && left.map { String(describing: $0) } == right.map { String(describing: $0) }
 
+    case let (.cancelled(leftArguments), .cancelled(rightArguments)):
+      leftArguments == rightArguments
     default:
       false
     }

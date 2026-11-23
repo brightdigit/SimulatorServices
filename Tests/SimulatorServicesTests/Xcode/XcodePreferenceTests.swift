@@ -1,5 +1,5 @@
 //
-//  InternalSimCtlProcess.swift
+//  XcodePreferenceTests.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -28,21 +28,30 @@
 //
 
 import Foundation
+import Testing
 
-/// A protocol representing an internal simulator control process.
-internal protocol InternalSimCtlProcess: AnyObject {
-  /// The URL of the executable.
-  var executableURL: URL? { get set }
+@testable import SimulatorServices
 
-  /// The arguments to be passed to the process.
-  var arguments: [String]? { get set }
+@Suite("Xcode preference")
+internal struct XcodePreferenceTests {
+  @Test("Automatic is stored as an empty string")
+  internal func automatic() {
+    #expect(XcodePreference.automatic.rawValue.isEmpty)
+    #expect(XcodePreference(rawValue: "") == .automatic)
+    #expect(XcodePreference.automatic.pinnedXcode == nil)
+  }
 
-  /// The environment for the process, or `nil` to inherit the current one.
-  var environment: [String: String]? { get set }
+  @Test("A pinned Xcode round-trips through its path")
+  internal func pinned() {
+    let url = URL(filePath: "/Volumes/External/Xcode.app", directoryHint: .isDirectory)
+    let preference = XcodePreference.pinned(url)
+    #expect(XcodePreference(rawValue: preference.rawValue) == preference)
+    #expect(preference.pinnedXcode == url)
+  }
 
-  /// Runs the process until it exits.
-  /// - Returns: The data output of the process.
-  /// - Throws: ``ProcessError`` if it can't start, fails, or its output
-  ///   can't be read.
-  func runToCompletion() async throws(ProcessError) -> Data?
+  @Test("A path with spaces isn't percent-encoded")
+  internal func spaces() {
+    let url = URL(filePath: "/Applications/Xcode 27.app", directoryHint: .isDirectory)
+    #expect(XcodePreference.pinned(url).rawValue == "/Applications/Xcode 27.app/")
+  }
 }

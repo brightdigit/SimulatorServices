@@ -115,7 +115,7 @@ internal struct CommandFixture {
     let process = MockSimCtlProcess(result: try result())
     let simctl = SimCtl(
       xcRunURL: URL(fileURLWithPath: "/usr/bin/xcrun"),
-      processFactory: process
+      runner: process
     )
     return try await simctl.run(subcommand)
   }

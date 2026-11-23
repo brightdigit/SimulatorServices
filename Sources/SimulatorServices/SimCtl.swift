@@ -53,20 +53,20 @@ public struct SimCtl: Sendable {
   public let developerDirectory: URL?
 
   internal let baseEnvironment: [String: String]
-  internal let processFactory: @Sendable () -> any InternalSimCtlProcess
+  internal let runner: any CommandRunning
 
   internal init(
     xcRunURL: URL,
     simCtlURL: URL? = nil,
     developerDirectory: URL? = nil,
     environment: [String: String] = [:],
-    processFactory: @escaping @autoclosure @Sendable () -> any InternalSimCtlProcess
+    runner: any CommandRunning
   ) {
     self.xcRunURL = xcRunURL
     self.simCtlURL = simCtlURL
     self.developerDirectory = developerDirectory.map(Self.developerDirectory(for:))
     self.baseEnvironment = environment
-    self.processFactory = processFactory
+    self.runner = runner
   }
 
   #if os(macOS)
@@ -86,7 +86,7 @@ public struct SimCtl: Sendable {
         xcRunURL: xcRunURL,
         developerDirectory: developerDirectory,
         environment: ProcessInfo.processInfo.environment,
-        processFactory: Process()
+        runner: SubprocessCommandRunner()
       )
     }
 
@@ -108,25 +108,47 @@ public struct SimCtl: Sendable {
         xcRunURL: xcRunURL,
         developerDirectory: developerDirectory,
         environment: ProcessInfo.processInfo.environment,
-        processFactory: Process()
+        runner: SubprocessCommandRunner()
       )
       .find()
     }
   #endif
 
-  internal func makeProcess(
-    executableURL: URL,
-    arguments: [String]
-  ) -> any InternalSimCtlProcess {
-    let process = processFactory()
-    process.executableURL = executableURL
-    process.arguments = arguments
+  /// Why ``runToCompletion(_:)`` returned no output.
+  internal enum RunFailure: Error, Sendable {
+    /// The calling task was cancelled.
+    case cancelled
+    /// The command failed, couldn't start, or its output was unreadable.
+    case process(ProcessError)
+  }
+
+  /// The command for `arguments`, with `DEVELOPER_DIR` set when
+  /// ``developerDirectory`` is.
+  internal func makeCommand(executableURL: URL, arguments: [String]) -> Command {
+    var environment: [String: String]?
     if let developerDirectory {
-      var environment = baseEnvironment
-      environment[Self.developerDirectoryKey] = developerDirectory.path
-      process.environment = environment
+      environment = baseEnvironment
+      environment?[Self.developerDirectoryKey] = developerDirectory.path
     }
-    return process
+    return Command(executableURL: executableURL, arguments: arguments, environment: environment)
+  }
+
+  /// Runs `command` and returns its standard output if it exited with
+  /// status 0.
+  internal func runToCompletion(_ command: Command) async -> Result<Data?, RunFailure> {
+    let output: CommandOutput
+    do {
+      output = try await runner.run(command)
+    } catch .cancelled {
+      return .failure(.cancelled)
+    } catch {
+      return .failure(.process(ProcessError(error)))
+    }
+    do {
+      return .success(try output.standardOutputIfSucceeded())
+    } catch {
+      return .failure(.process(error))
+    }
   }
 
   /// Run a subcommand under `simctl`.
@@ -136,16 +158,19 @@ public struct SimCtl: Sendable {
   public func run<SubcommandType: Subcommand>(
     _ subcommand: SubcommandType
   ) async throws(SimCtlError) -> SubcommandType.OutputType {
-    let process =
+    let command =
       if let simCtlURL {
-        makeProcess(executableURL: simCtlURL, arguments: subcommand.arguments)
+        makeCommand(executableURL: simCtlURL, arguments: subcommand.arguments)
       } else {
-        makeProcess(executableURL: xcRunURL, arguments: ["simctl"] + subcommand.arguments)
+        makeCommand(executableURL: xcRunURL, arguments: ["simctl"] + subcommand.arguments)
       }
     let data: Data?
-    do {
-      data = try await process.runToCompletion()
-    } catch {
+    switch await runToCompletion(command) {
+    case .success(let output):
+      data = output
+    case .failure(.cancelled):
+      throw .cancelled(arguments: subcommand.arguments)
+    case .failure(.process(let error)):
       try subcommand.recover(error)
       data = nil
     }

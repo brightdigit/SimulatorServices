@@ -1,5 +1,5 @@
 //
-//  TerminationResult.swift
+//  XcodeToolOutput+Testing.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -29,7 +29,16 @@
 
 import Foundation
 
-internal struct TerminationResult {
-  internal let reason: TerminationReason
-  internal let status: Int
+@testable import SimulatorServices
+
+extension XcodeToolOutput {
+  /// A recorded stdout from `Resources/xcode/xcode-27.2-27B48/`.
+  internal static func recorded(_ name: String) throws -> Self {
+    Self(standardOutput: try XcodeFixture.data(name))
+  }
+
+  /// A successful run that printed `text`.
+  internal static func text(_ text: String) -> Self {
+    Self(standardOutput: Data(text.utf8))
+  }
 }

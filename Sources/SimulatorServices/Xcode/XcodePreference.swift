@@ -1,5 +1,5 @@
 //
-//  FileHandle.swift
+//  XcodePreference.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,16 +27,38 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
+import Foundation
 
-@testable import SimulatorServices
+/// Which Xcode to use: Automatic, or a pinned Xcode.
+///
+/// ``XcodeResolution/resolve(_:pinnedXcode:canonicalURL:)`` takes its
+/// ``pinnedXcode``. Store it as its ``rawValue``.
+public enum XcodePreference: Sendable, Hashable, RawRepresentable {
+  /// `xcode-select`'s Xcode, or else the newest installed one.
+  case automatic
+  /// This Xcode app bundle. If it's deleted, Automatic applies.
+  case pinned(URL)
 
-extension FileHandle {
-  internal convenience init(temporaryFromData data: Data) throws {
-    let url = FileManager.default.temporaryDirectory.appendingPathComponent(
-      UUID().uuidString
-    )
-    try data.write(to: url)
-    try self.init(forReadingFrom: url)
+  /// The pinned app bundle, or `nil` for Automatic.
+  public var pinnedXcode: URL? {
+    guard case .pinned(let url) = self else {
+      return nil
+    }
+    return url
+  }
+
+  /// An empty string for Automatic, otherwise the pinned bundle's path.
+  public var rawValue: String {
+    pinnedXcode?.path(percentEncoded: false) ?? ""
+  }
+
+  /// Reads a stored value.
+  ///
+  /// An empty string is Automatic.
+  public init(rawValue: String) {
+    self =
+      rawValue.isEmpty
+      ? .automatic
+      : .pinned(URL(filePath: rawValue, directoryHint: .isDirectory))
   }
 }

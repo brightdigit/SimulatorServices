@@ -72,7 +72,7 @@ internal class SimCtlTests: XCTestCase {
         )
       let simctl = SimCtl(
         xcRunURL: expectedXcRunURL,
-        processFactory: MockSimCtlProcess(result: .success(expectedData))
+        runner: MockSimCtlProcess(result: .success(expectedData))
       )
 
       self.init(
@@ -91,7 +91,7 @@ internal class SimCtlTests: XCTestCase {
     )
     let simctl = SimCtl(
       xcRunURL: expectedXcRunURL,
-      processFactory: MockSimCtlProcess(result: .success(nil))
+      runner: MockSimCtlProcess(result: .success(nil))
     )
     XCTAssertEqual(expectedXcRunURL, simctl.xcRunURL)
   }

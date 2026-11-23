@@ -1,5 +1,5 @@
 //
-//  ProcessTests.swift
+//  XcodeLocating+Resolve.swift
 //  SimulatorServices
 //
 //  Created by Leo Dion.
@@ -27,26 +27,34 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import XCTest
+import Foundation
 
-@testable import SimulatorServices
-
-internal class ProcessTests: XCTestCase {
-  internal func testRunProcess() async throws {
-    guard #available(iOS 13.4, *) else {
-      throw XCTSkip("Required API is not available for this test.")
+extension XcodeLocating {
+  /// Resolves a snapshot: pinned, then `xcode-select`, then newest installed.
+  ///
+  /// A pinned Xcode that isn't in the snapshot (for example one picked with
+  /// Choose Xcode… outside `/Applications`) is read from disk and used if
+  /// it's still there.
+  public func resolve(
+    _ snapshot: XcodeSnapshot,
+    pinnedXcode: URL?
+  ) async -> XcodeResolution {
+    var installed = snapshot.installed
+    if let pinnedXcode, let pinned = await installation(at: pinnedXcode) {
+      installed.append(pinned)
     }
-
-    let output: Data = .random()
-    let error: Data = .random()
-    let termination: TerminationResult = .init(reason: 1, status: 0)
-
-    let process = MockAsyncableProcess(
-      outputData: output,
-      errorData: error,
-      terminationResult: termination
+    return XcodeResolution.resolve(
+      XcodeSnapshot(
+        installed: installed,
+        selectedDeveloperDirectory: snapshot.selectedDeveloperDirectory
+      ),
+      pinnedXcode: pinnedXcode,
+      canonicalURL: canonicalURL
     )
-    let actualOutput = try await process.runToCompletion()
-    XCTAssertEqual(output, actualOutput)
+  }
+
+  /// Looks now and resolves.
+  public func resolution(pinnedXcode: URL?) async -> XcodeResolution {
+    await resolve(snapshot(), pinnedXcode: pinnedXcode)
   }
 }

@@ -8,7 +8,8 @@ let package = Package(
   name: "SimulatorServices",
   platforms: [
     .iOS(.v16),
-    .macOS(.v13),
+    // 15.4 for `isolated deinit` (FSEventsPathWatch).
+    .macOS("15.4"),
     .watchOS(.v9),
     .macCatalyst(.v16),
     .tvOS(.v16),
@@ -24,12 +25,24 @@ let package = Package(
     .package(
       url: "https://github.com/brightdigit/OSVer.git",
       from: "1.0.0"
-    )
+    ),
+    // Runs xcrun, simctl, xcode-select and mdfind (macOS only).
+    .package(
+      url: "https://github.com/swiftlang/swift-subprocess.git",
+      from: "1.0.2"
+    ),
   ],
   targets: [
     .target(
       name: "SimulatorServices",
-      dependencies: ["OSVer"],
+      dependencies: [
+        "OSVer",
+        .product(
+          name: "Subprocess",
+          package: "swift-subprocess",
+          condition: .when(platforms: [.macOS])
+        ),
+      ],
       swiftSettings: [
         // Swift 6 mode already includes the other upcoming features.
         SwiftSetting.enableUpcomingFeature("ExistentialAny")
