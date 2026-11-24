@@ -20,15 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: brightdigit/swift-build@v1
-      - name: Process Coverage
-        uses: sersoft-gmbh/swift-coverage-action@v4
-        with:
-          fail-on-empty-output: true
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: spm,${{ matrix.os }},${{ matrix.swift-version }}
   build-macos:
     name: Build on macOS
     runs-on: ${{ matrix.os }}
@@ -126,17 +117,6 @@ jobs:
           xcode: ${{ matrix.xcode }}
           deviceName: ${{ matrix.deviceName }}
           osVersion: ${{ matrix.osVersion }}
-
-      - name: Process Coverage
-        uses: sersoft-gmbh/swift-coverage-action@v4
-        with:
-          fail-on-empty-output: true
-
-      - name: Upload Coverage
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ matrix.type && format('{0}{1}', matrix.type, matrix.osVersion) || 'spm' }}
 
   lint:
     name: Linting
