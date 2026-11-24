@@ -78,4 +78,45 @@ public struct Runtime: Decodable, Hashable, Sendable {
 
   /// The name of the runtime.
   public let name: String
+
+  /// Creates a runtime as `simctl list -j` reports it, for example to build
+  /// a ``SimulatorList`` in a preview or test without running `simctl`.
+  ///
+  /// - Parameters:
+  ///   - supportedDeviceTypes: The device types the runtime supports.
+  ///   - bundlePath: The `.simruntime` bundle's path.
+  ///   - buildversion: The build, such as `24A434`.
+  ///   - platform: The platform.
+  ///   - runtimeRoot: The runtime root's path.
+  ///   - identifier: The runtime identifier.
+  ///   - version: The version.
+  ///   - isInternal: Whether it's an Apple-internal runtime.
+  ///   - isAvailable: Whether this Mac can use it.
+  ///   - availabilityError: Why it isn't available, if it isn't.
+  ///   - name: The name, such as `iOS 27.0`.
+  public init(
+    supportedDeviceTypes: [SupportedDeviceType] = [],
+    bundlePath: Path,
+    buildversion: String,
+    platform: Platform,
+    runtimeRoot: Path,
+    identifier: RuntimeID,
+    version: Version,
+    isInternal: Bool = false,
+    isAvailable: Bool = true,
+    availabilityError: String? = nil,
+    name: String
+  ) {
+    self.supportedDeviceTypes = supportedDeviceTypes
+    self.bundlePath = bundlePath
+    self.buildversion = buildversion
+    self.platform = platform
+    self.runtimeRoot = runtimeRoot
+    self.identifier = identifier
+    self.version = version
+    self.isInternal = isInternal
+    self.isAvailable = isAvailable
+    self.availabilityError = availabilityError
+    self.name = name
+  }
 }

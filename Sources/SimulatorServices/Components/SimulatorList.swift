@@ -48,7 +48,16 @@ public struct SimulatorList: Decodable, Hashable, Sendable {
   /// DevicePairs and thier IDs
   public let pairs: [UUID: DevicePair]
 
-  internal init(
+  /// Creates a list from its parts, for example to build a
+  /// ``SimctlSnapshot`` in a preview or test without running `simctl`.
+  ///
+  /// - Parameters:
+  ///   - devicetypes: The device types.
+  ///   - runtimes: The runtimes `simctl` knows.
+  ///   - devices: The devices, keyed by the runtime identifier they're
+  ///     listed under, even one with no installed runtime.
+  ///   - pairs: The device pairs, keyed by pair UUID.
+  public init(
     devicetypes: [DeviceType],
     runtimes: [Runtime],
     devices: [RuntimeID: [Device]],
