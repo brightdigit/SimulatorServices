@@ -5,7 +5,7 @@
 
 Control the simulator... in Swift
 
-[![SwiftPM](https://img.shields.io/badge/SPM-Linux%20%7C%20iOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS-success?logo=swift)](https://swift.org)
+[![SwiftPM](https://img.shields.io/badge/SPM-Linux%20%7C%20iOS%20%7C%20macOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20visionOS-success?logo=swift)](https://swift.org)
 [![Twitter](https://img.shields.io/badge/twitter-@brightdigit-blue.svg?style=flat)](http://twitter.com/brightdigit)
 ![GitHub](https://img.shields.io/github/license/brightdigit/SimulatorServices)
 ![GitHub issues](https://img.shields.io/github/issues/brightdigit/SimulatorServices)
@@ -21,9 +21,11 @@ Control the simulator... in Swift
    * [Installation](#installation)
    * [What does Simulator Services provide?](#what-does-simulator-services-provide)
 * [Usage](#usage)
+   * [Choosing an Xcode](#choosing-an-xcode)
    * [Listing Simulators](#listing-simulators)
    * [Getting App Containers](#getting-app-containers)
    * [Listing Runtime Images](#listing-runtime-images)
+   * [Deleting Runtimes and Changing Devices](#deleting-runtimes-and-changing-devices)
 * [Yeah but where's...?](#yeah-but-wheres)
 * [Learn more about simctl](#learn-more-about-simctl)
 * [Great Simulator Apps](#great-simulator-apps)
@@ -37,14 +39,16 @@ Control the simulator... in Swift
 
 **Apple Platforms**
 
-- Xcode 13.3 or later
-- Swift 5.5.2 or later
-- iOS 14 / watchOS 6 / tvOS 14 / macOS 12 or later deployment targets
+- Xcode 27.2 or later
+- Swift 6.4 or later
+- macOS 15.4 / iOS 16 / Mac Catalyst 16 / watchOS 9 / tvOS 16 / visionOS 1 or later deployment targets
 
 **Linux**
 
-- Ubuntu 18.04 or later
-- Swift 5.5.2 or later
+- Ubuntu 22.04 or later
+- Swift 6.4 or later
+
+Running `simctl`, `xcode-select` and `mdfind`, and watching for Xcode installs, need macOS: `SimCtl()`, `SimCtl.find(developerDirectory:)`, `XcodeLocator` and `LiveSimCtlCommands` are only compiled there. On Linux and the other Apple platforms you still get the subcommands, the decoded models and the version parsing, for example to parse `simctl` output recorded on a Mac.
 
 ## Installation
 
@@ -54,11 +58,26 @@ Use the Swift Package Manager to install this library via the repository url:
 https://github.com/brightdigit/SimulatorServices.git
 ```
 
-Use version up to `1.0.1`.
+Or add it to your `Package.swift`:
+
+```swift
+dependencies: [
+  .package(url: "https://github.com/brightdigit/SimulatorServices.git", from: "1.1.0-beta.4")
+],
+```
+
+and add the `SimulatorServices` product to your target's dependencies.
 
 ## What does Simulator Services provide?
 
 **SimulatorServices** allows you to execute subcommands to `simctl` directly in Swift while offering an easy to use API for parsing and passing arguments.  
+
+It also includes:
+
+* `XcodeLocator`, which finds the installed Xcodes (including the one `xcode-select` points to) and streams a new snapshot when Xcodes are added, removed or selected
+* `SimCtlCommands`, a protocol over the `simctl` calls with `LiveSimCtlCommands` as its live implementation, so your code can be tested without a Mac's simulators
+* `SimctlSnapshot`, which holds one read of `simctl runtime list -j` and `simctl list -j` together, and `SimulatorAttribution`, which works out which simulators use which installed runtime
+* `VersionNumber` and `BuildNumber`, for parsing and comparing Apple version and build strings
 
 # Usage
 
@@ -84,7 +103,7 @@ let simctl = SimCtl()
 let list = try await simctl.run(List())
 let devices = list.devices.values
     .flatMap { $0 }
-    .filter{$0.state == "Booted"}
+    .filter { $0.state == .booted }
 ```
 
 For more details on the properties available, check out the documentation on `SimulatorList`.
@@ -108,8 +127,8 @@ let jojoSimulatorDataDirPaths: [Path] = await withTaskGroup(of: Path?.self) { ta
             simulator: .id(device.udid)
           )
         )
-      // if the data is missing that means that device does not contain that app container
-      } catch GetAppContainer.Error.missingData {
+      // unreadable output means that device does not contain that app container
+      } catch SimCtlError.unreadableOutput {
         return nil
       } catch {
         return nil
@@ -126,7 +145,7 @@ let jojoSimulatorDataDirPaths: [Path] = await withTaskGroup(of: Path?.self) { ta
 }
 ```
 
-For more details on arguments available, check out the documentation on `List`.
+For more details on arguments available, check out the documentation on `GetAppContainer`.
 
 ## Listing Runtime Images
 
@@ -146,14 +165,17 @@ let deletable = images.filter(\.canDelete)
 ```swift
 do {
   try await simctl.run(RuntimeDelete(beta.identifier, otherBeta.identifier))
-} catch let error as SimCtlError {
-  print(error.standardError)
+} catch {
+  // `run` throws `SimCtlError`
+  print(error.standardError ?? error.localizedDescription)
 }
 
 do {
   try await simctl.run(Boot(device.udid))
-} catch let error as SimCtlError where error.reason == .invalidState {
+} catch where error.reason == .invalidState {
   // already booted
+} catch {
+  print(error.localizedDescription)
 }
 ```
 
@@ -183,4 +205,4 @@ Also take a look at these great app which take advantage of what `simctl` can do
 
 # License 
 
-This code is distributed under the MIT license. See the [LICENSE](https://github.com/brightdigit/SimulatorServices/LICENSE) file for more info.
+This code is distributed under the MIT license. See the [LICENSE](https://github.com/brightdigit/SimulatorServices/blob/main/LICENSE) file for more info.
