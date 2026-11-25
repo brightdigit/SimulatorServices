@@ -48,10 +48,27 @@
       .failedToReadFromSubprocess, .outputLimitExceeded, .asyncIOFailed,
     ]
 
-    private static func environment(_ values: [String: String]?) -> Environment {
-      guard let values else {
-        return .inherit
+    /// Prefixes of variables that `xcodebuild test` and the debugger inject
+    /// into the test process to load XCTest and its helpers. A child such as
+    /// `simctl` must not inherit them: under `xcodebuild test` on CI runners
+    /// they make `Subprocess.run` fail with `CancellationError`.
+    internal static let injectedVariablePrefixes = [
+      "DYLD_", "__XPC_DYLD_", "XCTest", "XCInjectBundle",
+    ]
+
+    /// `environment` without the variables in ``injectedVariablePrefixes``.
+    internal static func removingInjectedVariables(
+      _ environment: [String: String]
+    ) -> [String: String] {
+      environment.filter { key, _ in
+        !injectedVariablePrefixes.contains { key.hasPrefix($0) }
       }
+    }
+
+    private static func environment(_ values: [String: String]?) -> Environment {
+      let values = removingInjectedVariables(
+        values ?? ProcessInfo.processInfo.environment
+      )
       let pairs = values.compactMap { key, value in
         Environment.Key(rawValue: key).map { ($0, value) }
       }

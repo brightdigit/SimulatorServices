@@ -15,3 +15,4 @@ This directory is SimulatorServices's memory store for agents. It's committed to
 ## Index
 
 - [Stewed subrepo](stewed-subrepo.md): Stewed vendors this repo at `Packages/SimulatorServices` on `simulator`; re-sync Stewed after any history rewrite here
+- [xcodebuild vs SwiftPM test runs](xcodebuild-vs-swiftpm-tests.md): resources, availability and injected env vars that pass `swift test` but fail the xcodebuild lanes

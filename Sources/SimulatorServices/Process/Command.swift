@@ -79,6 +79,8 @@ internal struct Command: Sendable, Hashable {
   internal let executableURL: URL
   /// The arguments, without the executable.
   internal let arguments: [String]
-  /// The whole environment, or `nil` to inherit this process's.
+  /// The whole environment, or `nil` to inherit this process's. Either way,
+  /// variables that load XCTest into a test process (`DYLD_*`, `XCTest*`)
+  /// aren't passed on.
   internal let environment: [String: String]?
 }
