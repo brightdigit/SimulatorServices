@@ -50,7 +50,7 @@ internal enum SimctlSnapshotFixture {
     let url = Bundle.module.url(
       forResource: name,
       withExtension: nil,
-      subdirectory: "Resources/simctl/\(recording)"
+      subdirectory: "simctl/\(recording)"
     )
     guard let url else {
       throw MissingResource(path: "\(recording)/\(name)")

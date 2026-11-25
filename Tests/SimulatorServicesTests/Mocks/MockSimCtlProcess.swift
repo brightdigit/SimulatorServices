@@ -28,21 +28,28 @@
 //
 
 import Foundation
-import Synchronization
 
 @testable import SimulatorServices
 
 /// Replays one result for every command, and records the last command run.
-internal final class MockSimCtlProcess: CommandRunning {
+///
+/// Guarded by an `NSLock` rather than `Mutex`, which needs iOS 18 / watchOS 11
+/// and newer than the package's minimums.
+internal final class MockSimCtlProcess: CommandRunning, @unchecked Sendable {
   private let result: Result<Data?, ProcessError>
-  private let lastCommand = Mutex<Command?>(nil)
+  private let lock = NSLock()
+  private var storedLastCommand: Command?
+
+  private var lastCommand: Command? {
+    lock.withLock { storedLastCommand }
+  }
 
   /// The executable of the last command run.
-  internal var executableURL: URL? { lastCommand.withLock { $0?.executableURL } }
+  internal var executableURL: URL? { lastCommand?.executableURL }
   /// The arguments of the last command run.
-  internal var arguments: [String]? { lastCommand.withLock { $0?.arguments } }
+  internal var arguments: [String]? { lastCommand?.arguments }
   /// The environment of the last command run, `nil` when it inherits.
-  internal var environment: [String: String]? { lastCommand.withLock { $0?.environment } }
+  internal var environment: [String: String]? { lastCommand?.environment }
 
   /// - Parameter result: Standard output for a command that exits with
   ///   status 0, or how it fails.
@@ -51,7 +58,7 @@ internal final class MockSimCtlProcess: CommandRunning {
   }
 
   internal func run(_ command: Command) async throws(CommandError) -> CommandOutput {
-    lastCommand.withLock { $0 = command }
+    lock.withLock { storedLastCommand = command }
     switch result {
     case .success(let output):
       return CommandOutput(standardOutput: output ?? Data())

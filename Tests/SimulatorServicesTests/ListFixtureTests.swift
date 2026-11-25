@@ -40,7 +40,7 @@ internal final class ListFixtureTests: XCTestCase {
       Bundle.module.url(
         forResource: "list",
         withExtension: "json",
-        subdirectory: "Resources/simctl/\(recording)"
+        subdirectory: "simctl/\(recording)"
       )
     )
     return try List().parse(Data(contentsOf: url))

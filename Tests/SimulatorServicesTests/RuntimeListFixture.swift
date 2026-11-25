@@ -46,7 +46,7 @@ internal enum RuntimeListFixture: String, CaseIterable {
       Bundle.module.url(
         forResource: "runtime-list",
         withExtension: "json",
-        subdirectory: "Resources/simctl/\(rawValue)"
+        subdirectory: "simctl/\(rawValue)"
       )
     )
     return try Data(contentsOf: url)

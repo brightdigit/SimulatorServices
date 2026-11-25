@@ -74,7 +74,7 @@ internal struct CommandFixture {
       Bundle.module.url(
         forResource: name,
         withExtension: pathExtension,
-        subdirectory: "Resources/simctl/\(recording.rawValue)/commands"
+        subdirectory: "simctl/\(recording.rawValue)/commands"
       ),
       "Missing fixture \(recording.rawValue)/commands/\(name).\(pathExtension)"
     )

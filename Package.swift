@@ -51,7 +51,12 @@ let package = Package(
     .testTarget(
       name: "SimulatorServicesTests",
       dependencies: ["SimulatorServices"],
-      resources: [.copy("Resources")]
+      // Copy the fixture folders, not `Resources` itself: a top-level
+      // `Resources` folder makes codesign reject the iOS-family test bundle.
+      resources: [
+        .copy("Resources/simctl"),
+        .copy("Resources/xcode"),
+      ]
     ),
     .testTarget(
       name: "SimulatorServicesIntegrationTests",

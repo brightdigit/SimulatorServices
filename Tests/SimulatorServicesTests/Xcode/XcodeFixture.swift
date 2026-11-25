@@ -52,7 +52,7 @@ internal enum XcodeFixture {
     let url = Bundle.module.url(
       forResource: name,
       withExtension: nil,
-      subdirectory: "Resources/xcode/\(recording)"
+      subdirectory: "xcode/\(recording)"
     )
     guard let url else {
       throw MissingResource(name: name)
