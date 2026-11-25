@@ -33,7 +33,7 @@
 
   @testable import SimulatorServices
 
-  @Suite("XcodeLocator scanning")
+  @Suite("XcodeLocator scanning", .enabled(if: Platform.isMacOS))
   internal struct XcodeLocatorTests {
     private let temp: TemporaryDirectory
     internal let applications: URL

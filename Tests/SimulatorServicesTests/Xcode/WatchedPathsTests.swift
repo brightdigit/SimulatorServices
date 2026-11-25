@@ -33,7 +33,7 @@
 
   @testable import SimulatorServices
 
-  @Suite("Watched paths")
+  @Suite("Watched paths", .enabled(if: Platform.isMacOS))
   internal struct WatchedPathsTests {
     private let paths = WatchedPaths(
       directories: [

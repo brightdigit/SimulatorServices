@@ -39,6 +39,7 @@
   /// `STEWED_XCODE_INTEGRATION_TESTS=1`.
   @Suite(
     "XcodeLocator on this Mac",
+    .enabled(if: Platform.isMacOS),
     .enabled(
       if: ProcessInfo.processInfo.environment["STEWED_XCODE_INTEGRATION_TESTS"] == "1"
     )

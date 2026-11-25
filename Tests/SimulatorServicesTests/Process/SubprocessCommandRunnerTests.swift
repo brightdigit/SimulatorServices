@@ -41,7 +41,7 @@
   }
 
   /// The live runner, against harmless system tools.
-  @Suite("Subprocess command runner")
+  @Suite("Subprocess command runner", .enabled(if: Platform.isMacOS))
   internal struct SubprocessCommandRunnerTests {
     private let runner = SubprocessCommandRunner()
 

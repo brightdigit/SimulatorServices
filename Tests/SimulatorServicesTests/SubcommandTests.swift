@@ -33,13 +33,7 @@ import XCTest
 
 internal class SubcommandTests: XCTestCase {
   private static func signalError() -> ProcessError {
-    if #available(iOS 13.4, *) {
-      return .uncaughtSignal(
-        // swiftlint:disable:next force_unwrapping
-        .init(reason: 2, status: 2, data: nil, output: nil)!
-      )
-    }
-    return .uncaughtSignal(
+    .uncaughtSignal(
       // swiftlint:disable:next force_unwrapping
       .init(reason: 2, status: 2, data: nil, output: nil)!
     )

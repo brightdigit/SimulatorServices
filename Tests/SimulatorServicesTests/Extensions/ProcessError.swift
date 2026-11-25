@@ -31,7 +31,6 @@ import Foundation
 
 @testable import SimulatorServices
 
-@available(macOS 10.15, iOS 13.4, tvOS 13.4, watchOS 6.4, *)
 extension ProcessError {
   internal init?(withMessage message: String) throws {
     let signal = UncaughtSignal(

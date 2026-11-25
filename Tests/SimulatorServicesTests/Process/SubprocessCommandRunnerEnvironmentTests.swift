@@ -34,7 +34,7 @@
   @testable import SimulatorServices
 
   /// What the live runner passes on to a child's environment.
-  @Suite("Subprocess command runner environment")
+  @Suite("Subprocess command runner environment", .enabled(if: Platform.isMacOS))
   internal struct SubprocessCommandRunnerEnvironmentTests {
     private let runner = SubprocessCommandRunner()
 

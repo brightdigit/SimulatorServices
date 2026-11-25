@@ -33,7 +33,7 @@
 
   @testable import SimulatorServices
 
-  @Suite
+  @Suite(.enabled(if: Platform.isMacOS))
   internal struct DirectorySizeMeasurerTests {
     @Test
     internal func measuresAllocatedBytesUnderADirectory() async throws {

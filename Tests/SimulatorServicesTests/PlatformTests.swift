@@ -33,12 +33,12 @@ import XCTest
 
 internal final class PlatformTests: XCTestCase {
   internal func testDisplayNameUsesTheDictionary() {
-    XCTAssertEqual(Platform.xrOS.displayName, "visionOS")
+    XCTAssertEqual(SimulatorServices.Platform.xrOS.displayName, "visionOS")
   }
 
   internal func testDisplayNameFallsBackToTheRawValue() {
-    XCTAssertEqual(Platform.iOS.displayName, "iOS")
-    XCTAssertEqual(Platform.watchOS.displayName, "watchOS")
-    XCTAssertEqual(Platform.unknown("macOS").displayName, "macOS")
+    XCTAssertEqual(SimulatorServices.Platform.iOS.displayName, "iOS")
+    XCTAssertEqual(SimulatorServices.Platform.watchOS.displayName, "watchOS")
+    XCTAssertEqual(SimulatorServices.Platform.unknown("macOS").displayName, "macOS")
   }
 }

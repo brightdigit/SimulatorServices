@@ -54,15 +54,17 @@ internal final class RawMappedTests: XCTestCase {
     assertRoundTrips(DeviceState.self)
     assertRoundTrips(DeviceTypeID.self)
     assertRoundTrips(PairState.self)
-    assertRoundTrips(Platform.self)
+    assertRoundTrips(SimulatorServices.Platform.self)
     assertRoundTrips(ProductFamily.self)
     assertRoundTrips(RuntimeImageKind.self)
     assertRoundTrips(RuntimeImageState.self)
   }
 
   internal func testReversibleOptionsComeFromTheSameMap() {
-    XCTAssertEqual(Platform.RawAvailableOptions(option: .xrOS), .xrOS)
-    XCTAssertNil(Platform.RawAvailableOptions(option: .unknown("macOS")))
+    XCTAssertEqual(SimulatorServices.Platform.RawAvailableOptions(option: .xrOS), .xrOS)
+    XCTAssertNil(
+      SimulatorServices.Platform.RawAvailableOptions(option: .unknown("macOS"))
+    )
     XCTAssertEqual(DeviceState.RawAvailableOptions(option: .shuttingDown), .shuttingDown)
     let visionPro = DeviceTypeID.RawAvailableOptions(option: .appleVisionPro)
     XCTAssertEqual(visionPro, .appleVisionPro)

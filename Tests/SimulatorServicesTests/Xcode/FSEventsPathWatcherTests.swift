@@ -36,7 +36,11 @@
   /// Runs real FSEvents on a temporary folder.
   ///
   /// Nothing here reads the Mac's installed Xcodes.
-  @Suite("FSEvents path watcher", .timeLimit(.minutes(1)))
+  @Suite(
+    "FSEvents path watcher",
+    .enabled(if: Platform.isMacOS),
+    .timeLimit(.minutes(1))
+  )
   internal struct FSEventsPathWatcherTests {
     /// Whether watching `paths` reports a change while `touch` runs.
     ///
