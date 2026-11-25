@@ -28,6 +28,7 @@
 //
 
 extension DeviceTypeID {
+  // swiftlint:disable type_body_length
   /// The raw values `simctl` uses for device types.
   public enum RawAvailableOptions: String, CaseIterable, RawReversable, Sendable {
     case appleTV1080p = "Apple-TV-1080p"
@@ -133,7 +134,38 @@ extension DeviceTypeID {
     case iPadminiA17Pro = "iPad-mini-A17-Pro"
     case appleWatchSeries1042mm = "Apple-Watch-Series-10-42mm"
     case appleWatchSeries1046mm = "Apple-Watch-Series-10-46mm"
+    case iPhone18Pro = "iPhone-18-Pro"
+    case iPhone18ProMax = "iPhone-18-Pro-Max"
+    case iPhoneDuo = "iPhone-Duo"
+    case iPhone17Pro = "iPhone-17-Pro"
+    case iPhone17ProMax = "iPhone-17-Pro-Max"
+    case iPhone17e = "iPhone-17e"
+    case iPhoneAir = "iPhone-Air"
+    case iPhone17 = "iPhone-17"
+    case iPhone16e = "iPhone-16e"
+    case iPadminiA20Pro = "iPad-mini-A20-Pro"
+    case iPadPro13inchM516GB = "iPad-Pro-13-inch-M5-16GB"
+    case iPadPro13inchM512GB = "iPad-Pro-13-inch-M5-12GB"
+    case iPadPro11inchM516GB = "iPad-Pro-11-inch-M5-16GB"
+    case iPadPro11inchM512GB = "iPad-Pro-11-inch-M5-12GB"
+    case iPadAir13inchM4 = "iPad-Air-13-inch-M4"
+    case iPadAir11inchM4 = "iPad-Air-11-inch-M4"
+    case iPadA16 = "iPad-A16"
+    case iPadAir13inchM3 = "iPad-Air-13-inch-M3"
+    case iPadAir11inchM3 = "iPad-Air-11-inch-M3"
+    case appleTV4K4thgeneration4K = "Apple-TV-4K-4th-generation-4K"
+    case appleTV4K4thgeneration1080p = "Apple-TV-4K-4th-generation-1080p"
+    case appleWatchSeries1246mm = "Apple-Watch-Series-12-46mm"
+    case appleWatchSeries1242mm = "Apple-Watch-Series-12-42mm"
+    case appleWatchUltra449mm = "Apple-Watch-Ultra-4-49mm"
+    case appleWatchSeries1146mm = "Apple-Watch-Series-11-46mm"
+    case appleWatchSeries1142mm = "Apple-Watch-Series-11-42mm"
+    case appleWatchUltra349mm = "Apple-Watch-Ultra-3-49mm"
+    case appleWatchSE344mm = "Apple-Watch-SE-3-44mm"
+    case appleWatchSE340mm = "Apple-Watch-SE-3-40mm"
+    case appleVisionPro4K = "Apple-Vision-Pro-4K"
   }
+  // swiftlint:enable type_body_length
 }
 
 extension DeviceTypeID.RawAvailableOptions {

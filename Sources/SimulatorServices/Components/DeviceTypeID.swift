@@ -132,6 +132,36 @@ public enum DeviceTypeID {
   case iPadminiA17Pro
   case appleWatchSeries1042mm
   case appleWatchSeries1046mm
+  case iPhone18Pro
+  case iPhone18ProMax
+  case iPhoneDuo
+  case iPhone17Pro
+  case iPhone17ProMax
+  case iPhone17e
+  case iPhoneAir
+  case iPhone17
+  case iPhone16e
+  case iPadminiA20Pro
+  case iPadPro13inchM516GB
+  case iPadPro13inchM512GB
+  case iPadPro11inchM516GB
+  case iPadPro11inchM512GB
+  case iPadAir13inchM4
+  case iPadAir11inchM4
+  case iPadA16
+  case iPadAir13inchM3
+  case iPadAir11inchM3
+  case appleTV4K4thgeneration4K
+  case appleTV4K4thgeneration1080p
+  case appleWatchSeries1246mm
+  case appleWatchSeries1242mm
+  case appleWatchUltra449mm
+  case appleWatchSeries1146mm
+  case appleWatchSeries1142mm
+  case appleWatchUltra349mm
+  case appleWatchSE344mm
+  case appleWatchSE340mm
+  case appleVisionPro4K
   case unknown(String)
 
   /// The prefix of every device type identifier.
