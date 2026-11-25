@@ -48,8 +48,6 @@
       .failedToReadFromSubprocess, .outputLimitExceeded, .asyncIOFailed,
     ]
 
-    internal init() {}
-
     private static func environment(_ values: [String: String]?) -> Environment {
       guard let values else {
         return .inherit

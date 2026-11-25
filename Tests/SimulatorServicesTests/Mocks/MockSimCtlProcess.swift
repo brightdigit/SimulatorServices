@@ -55,6 +55,7 @@ internal final class MockSimCtlProcess: CommandRunning {
     switch result {
     case .success(let output):
       return CommandOutput(standardOutput: output ?? Data())
+
     case .failure(.uncaughtSignal(let signal)):
       return CommandOutput(
         standardOutput: signal.output ?? Data(),
@@ -62,8 +63,10 @@ internal final class MockSimCtlProcess: CommandRunning {
         termination: signal.reason == 1
           ? .exited(Int32(signal.status)) : .signaled(Int32(signal.status))
       )
+
     case .failure(.launchFailed(let description)):
       throw .launchFailed(description)
+
     case .failure(.unreadableOutput(let description)):
       throw .unreadableOutput(description)
     }

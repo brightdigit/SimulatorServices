@@ -57,6 +57,21 @@
       }
     }
 
+    /// Iterates `locator`'s snapshots in a task, forwarding each one to
+    /// the returned stream, which finishes when the task is cancelled.
+    private static func forward(
+      _ locator: XcodeLocator
+    ) -> (consumer: Task<Void, Never>, emitted: AsyncStream<XcodeSnapshot>) {
+      let (emitted, continuation) = AsyncStream.makeStream(of: XcodeSnapshot.self)
+      let consumer = Task {
+        for await snapshot in locator.snapshots() {
+          continuation.yield(snapshot)
+        }
+        continuation.finish()
+      }
+      return (consumer, emitted)
+    }
+
     private func locator(
       _ runner: RecordingToolRunner,
       watcher: any PathWatching,
@@ -90,14 +105,7 @@
     internal func updates() async throws {
       let watcher = ManualPathWatcher()
       let runner = RecordingToolRunner()
-      let locator = locator(runner, watcher: watcher)
-      let (emitted, continuation) = AsyncStream.makeStream(of: XcodeSnapshot.self)
-      let consumer = Task {
-        for await snapshot in locator.snapshots() {
-          continuation.yield(snapshot)
-        }
-        continuation.finish()
-      }
+      let (consumer, emitted) = Self.forward(locator(runner, watcher: watcher))
       var iterator = emitted.makeAsyncIterator()
       #expect(await iterator.next()?.installed.isEmpty == true)
 

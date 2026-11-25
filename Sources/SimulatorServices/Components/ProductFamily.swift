@@ -31,7 +31,8 @@
 /// - Note: This enum conforms to several protocols for functionality.
 /// - SeeAlso: ``RawAvailableOptions`` for the available raw options.
 /// - SeeAlso: ``unknownValue()`` for retrieving the unknown value.
-/// - Important: The ``unknown`` case allows for custom product family names.
+/// - Important: The ``ProductFamily/unknown(_:)`` case allows for custom
+/// product family names.
 public enum ProductFamily {
   // swiftlint:disable missing_docs
   case iPhone

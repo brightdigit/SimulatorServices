@@ -33,6 +33,13 @@
 
   @testable import SimulatorServices
 
+  /// Runs `<simctl> 30`, which `/bin/sleep` takes as 30 seconds.
+  private struct SleepSubcommand: Subcommand {
+    typealias OutputType = Void
+    var arguments: [String] { ["30"] }
+    func parse(_: Data?) throws(SimCtlError) {}
+  }
+
   /// The live runner, against harmless system tools.
   @Suite("Subprocess command runner")
   internal struct SubprocessCommandRunnerTests {
@@ -107,11 +114,13 @@
     internal func cancellation() async {
       let runner = runner
       let task = Task {
-        try await runner.run(Command(
-          executableURL: URL(fileURLWithPath: "/bin/sleep"),
-          arguments: ["30"],
-          environment: nil
-        ))
+        try await runner.run(
+          Command(
+            executableURL: URL(fileURLWithPath: "/bin/sleep"),
+            arguments: ["30"],
+            environment: nil
+          )
+        )
       }
       try? await Task.sleep(for: .milliseconds(200))
       let start = ContinuousClock.now
@@ -139,12 +148,5 @@
         try await task.value
       }
     }
-  }
-
-  /// Runs `<simctl> 30`, which `/bin/sleep` takes as 30 seconds.
-  private struct SleepSubcommand: Subcommand {
-    internal typealias OutputType = Void
-    internal var arguments: [String] { ["30"] }
-    internal func parse(_: Data?) throws(SimCtlError) {}
   }
 #endif

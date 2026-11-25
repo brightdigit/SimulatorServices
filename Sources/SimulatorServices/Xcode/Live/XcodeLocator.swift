@@ -26,6 +26,7 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
+
 #if os(macOS)
 
   import Foundation
@@ -33,7 +34,7 @@
   /// The live ``XcodeLocating``.
   ///
   /// - Installed Xcodes are the bundles directly inside
-  ///   ``Configuration/applicationDirectories`` whose `CFBundleIdentifier`
+  ///   `Configuration.applicationDirectories` whose `CFBundleIdentifier`
   ///   is `com.apple.dt.Xcode`, the ones Spotlight finds, and the one
   ///   `xcode-select -p` points at wherever it is.
   /// - ``snapshots()`` rescans when the application directories or the
@@ -80,6 +81,11 @@
       return try output.developerDirectory()
     }
 
+    /// Looks now: every installed Xcode and `xcode-select -p`.
+    ///
+    /// Scans the application directories, Spotlight when it's enabled, and
+    /// the selected Xcode.
+    /// - Returns: The installed Xcodes and the selected developer directory.
     public func snapshot() async -> XcodeSnapshot {
       async let spotlight = configuration.usesSpotlight ? spotlightBundles() : []
       let selected = try? await selectedDeveloperDirectory()
@@ -97,7 +103,7 @@
     ///
     /// Changes come from FSEvents on the application directories and the
     /// `xcode-select` link, or from polling every
-    /// ``Configuration/pollingInterval`` when FSEvents can't start.
+    /// `Configuration.pollingInterval` when FSEvents can't start.
     /// Spotlight-only locations aren't watched.
     public func snapshots() -> AsyncStream<XcodeSnapshot> {
       let updates = XcodeSnapshotUpdates(
@@ -113,10 +119,17 @@
       return AsyncStream { await updates.next() }
     }
 
+    /// The Xcode at `url`, for a pinned one outside the scanned folders.
+    /// - Parameter url: The Xcode app bundle.
+    /// - Returns: The installation, or `nil` if it isn't a readable Xcode
+    ///   (for example it was deleted).
     public func installation(at url: URL) async -> XcodeInstallation? {
       Self.installation(at: url)
     }
 
+    /// `url` with symlinks resolved, for comparing paths.
+    /// - Parameter url: The URL to resolve.
+    /// - Returns: The resolved URL.
     public func canonicalURL(_ url: URL) -> URL {
       Self.canonicalURL(url)
     }

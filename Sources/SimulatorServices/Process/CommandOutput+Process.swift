@@ -72,8 +72,10 @@ extension ProcessError {
     switch error {
     case .launchFailed(let description):
       self = .launchFailed(description)
+
     case .unreadableOutput(let description):
       self = .unreadableOutput(description)
+
     case .cancelled:
       self = .launchFailed("The task was cancelled.")
     }

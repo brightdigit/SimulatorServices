@@ -29,22 +29,6 @@
 
 import Foundation
 
-/// A command for a ``CommandRunning`` to run.
-internal struct Command: Sendable, Hashable {
-  /// The executable, by absolute path.
-  internal let executableURL: URL
-  /// The arguments, without the executable.
-  internal let arguments: [String]
-  /// The whole environment, or `nil` to inherit this process's.
-  internal let environment: [String: String]?
-
-  internal init(executableURL: URL, arguments: [String], environment: [String: String]?) {
-    self.executableURL = executableURL
-    self.arguments = arguments
-    self.environment = environment
-  }
-}
-
 /// How a command ended.
 internal enum CommandTermination: Sendable, Hashable {
   /// It exited with this status.
@@ -87,4 +71,14 @@ internal protocol CommandRunning: Sendable {
   /// Runs `command` and waits for it to exit. Cancelling the calling task
   /// terminates it and throws ``CommandError/cancelled``.
   func run(_ command: Command) async throws(CommandError) -> CommandOutput
+}
+
+/// A command for a ``CommandRunning`` to run.
+internal struct Command: Sendable, Hashable {
+  /// The executable, by absolute path.
+  internal let executableURL: URL
+  /// The arguments, without the executable.
+  internal let arguments: [String]
+  /// The whole environment, or `nil` to inherit this process's.
+  internal let environment: [String: String]?
 }

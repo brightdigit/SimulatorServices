@@ -56,10 +56,13 @@
       state.withLock { $0.paths }
     }
 
+    // `nil` (never started) differs from `false` (started, not cancelled).
+    // swiftlint:disable discouraged_optional_boolean
     /// Whether the watch was cancelled, or `nil` if it never started.
     internal var isCancelled: Bool? {
       state.withLock { $0.watch }?.cancelled.withLock { $0 }
     }
+    // swiftlint:enable discouraged_optional_boolean
 
     /// - Parameter fails: Act as if FSEvents couldn't start.
     internal init(fails: Bool = false) {

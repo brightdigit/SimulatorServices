@@ -26,6 +26,7 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
+
 #if os(macOS)
 
   import Foundation
@@ -50,12 +51,17 @@
       let output: CommandOutput
       do {
         output = try await runner.run(
-          Command(executableURL: executable, arguments: arguments, environment: environment)
+          Command(
+            executableURL: executable,
+            arguments: arguments,
+            environment: environment
+          )
         )
       } catch {
         switch error {
         case .cancelled:
           throw .cancelled
+
         case .launchFailed(let description), .unreadableOutput(let description):
           let command =
             ([executable.path(percentEncoded: false)] + arguments).joined(separator: " ")

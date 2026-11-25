@@ -64,11 +64,14 @@ extension SimCtl {
   internal func find() async throws(SimCtlError) -> SimCtl {
     let arguments = ["--find", "simctl"]
     let data: Data?
-    switch await runToCompletion(makeCommand(executableURL: xcRunURL, arguments: arguments)) {
+    let command = makeCommand(executableURL: xcRunURL, arguments: arguments)
+    switch await runToCompletion(command) {
     case .success(let output):
       data = output
+
     case .failure(.cancelled):
       throw .cancelled(arguments: arguments)
+
     case .failure(.process(let error)):
       throw .from(error, arguments: arguments)
     }

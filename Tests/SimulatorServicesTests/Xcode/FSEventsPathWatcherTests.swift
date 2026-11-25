@@ -62,7 +62,17 @@
         }
       }
       defer { writer.cancel() }
-      return await withTaskGroup(of: Bool.self) { group in
+      return await firstChange(changes, continuation, timeout: timeout)
+    }
+
+    /// Whether `changes` emits before `timeout` passes. Finishes
+    /// `continuation` either way.
+    private static func firstChange(
+      _ changes: AsyncStream<Void>,
+      _ continuation: AsyncStream<Void>.Continuation,
+      timeout: Duration
+    ) async -> Bool {
+      await withTaskGroup(of: Bool.self) { group in
         group.addTask {
           var iterator = changes.makeAsyncIterator()
           return await iterator.next() != nil

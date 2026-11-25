@@ -28,6 +28,7 @@
 //
 
 import Foundation
+
 /// An installed copy of Xcode.
 public struct XcodeInstallation: Sendable, Hashable, Codable, Identifiable {
   /// The app bundle, for example `/Applications/Xcode.app`.

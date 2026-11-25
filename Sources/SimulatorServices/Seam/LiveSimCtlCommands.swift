@@ -26,6 +26,7 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
+
 #if os(macOS)
 
   import Foundation
@@ -65,10 +66,18 @@
       }
     }
 
+    /// Runs every later call from this Xcode.
+    ///
+    /// A call that's already running finishes with the Xcode it started with.
+    /// - Parameter developerDirectory: The value for `DEVELOPER_DIR`, or
+    ///   `nil` to use the one `xcode-select` points to.
     public func useDeveloperDirectory(_ developerDirectory: URL?) {
       simCtl = SimCtl(developerDirectory: developerDirectory)
     }
 
+    /// `simctl runtime list -j` and `simctl list -j`, run at the same time.
+    /// - Returns: The runtime images and the device list.
+    /// - Throws: ``SimCtlError`` if either call fails.
     public func snapshot() async throws(SimCtlError) -> SimctlSnapshot {
       let simCtl = simCtl
       // Both reads run at once. `async let` would lose the typed error, so
@@ -82,24 +91,39 @@
       return SimctlSnapshot(images: try await images.get(), list: try await list.get())
     }
 
+    /// `simctl boot <udid>`.
+    /// - Parameter udid: The simulator to boot.
+    /// - Throws: ``SimCtlError`` if `simctl` fails.
     public func boot(_ udid: UUID) async throws(SimCtlError) {
       try await run(Boot(udid))
     }
 
+    /// `simctl shutdown <udid>`.
+    /// - Parameter udid: The simulator to shut down.
+    /// - Throws: ``SimCtlError`` if `simctl` fails.
     public func shutDown(_ udid: UUID) async throws(SimCtlError) {
       try await run(Shutdown(udid))
     }
 
+    /// `simctl erase <udid>`.
+    /// - Parameter udid: The simulator to erase.
+    /// - Throws: ``SimCtlError`` if `simctl` fails.
     public func erase(_ udid: UUID) async throws(SimCtlError) {
       try await run(Erase(udid))
     }
 
+    /// `simctl delete <udid>`.
+    /// - Parameter udid: The simulator to delete.
+    /// - Throws: ``SimCtlError`` if `simctl` fails.
     public func deleteSimulator(
       _ udid: UUID
     ) async throws(SimCtlError) {
       try await run(DeviceDelete(udid))
     }
 
+    /// `simctl runtime delete <id>`, for a ``RuntimeImage/identifier``.
+    /// - Parameter id: The runtime image to delete.
+    /// - Throws: ``SimCtlError`` if `simctl` fails.
     public func deleteRuntime(_ id: UUID) async throws(SimCtlError) {
       try await run(RuntimeDelete(id))
     }

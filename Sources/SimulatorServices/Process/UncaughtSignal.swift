@@ -85,6 +85,4 @@ public struct UncaughtSignal: Equatable, CustomStringConvertible, Sendable {
       output: output
     )
   }
-
-
 }

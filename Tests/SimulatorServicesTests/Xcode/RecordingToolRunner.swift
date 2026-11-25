@@ -73,7 +73,11 @@
     ) async throws(XcodeDiscoveryError) -> XcodeToolOutput {
       recorded.withLock { invocations in
         invocations.append(
-          Invocation(executable: executable, arguments: arguments, environment: environment)
+          Invocation(
+            executable: executable,
+            arguments: arguments,
+            environment: environment
+          )
         )
       }
       guard let output = outputs.withLock({ $0[executable.lastPathComponent] }) else {

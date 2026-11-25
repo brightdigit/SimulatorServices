@@ -37,7 +37,7 @@ Use version up to `1.1.0`.
 
 ### Usage
 
-**SimulatorServices** uses the ``SimCtl`` object to pass subcommands. Each subcommand objects takes custom arguments or property and can parse the standard output into an easy to use Swift object. There are currently two supported subcommands: ``GetAppContainers`` and ``List``.
+**SimulatorServices** uses the ``SimCtl`` object to pass subcommands. Each subcommand objects takes custom arguments or property and can parse the standard output into an easy to use Swift object. There are currently two supported subcommands: ``GetAppContainer`` and ``List``.
 
 ### Listing Simulators
 

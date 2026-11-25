@@ -26,6 +26,7 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
+
 #if os(macOS)
 
   import CoreServices
@@ -37,16 +38,16 @@
   /// stream is created, stopped and released in the actor's isolation.
   internal actor FSEventsPathWatch: PathWatch {
     /// What the C callback reaches through the context's `info` pointer.
-    fileprivate final class Callback {
-      fileprivate let paths: WatchedPaths
+    private final class Callback {
+      let paths: WatchedPaths
       private let onChange: @Sendable () -> Void
 
-      fileprivate init(paths: WatchedPaths, onChange: @escaping @Sendable () -> Void) {
+      init(paths: WatchedPaths, onChange: @escaping @Sendable () -> Void) {
         self.paths = paths
         self.onChange = onChange
       }
 
-      fileprivate func handle(_ eventPaths: [String]) {
+      func handle(_ eventPaths: [String]) {
         if eventPaths.contains(where: paths.matches) {
           onChange()
         }
@@ -64,7 +65,7 @@
     private var stream: FSEventStreamRef?
 
     /// Runs the actor on `queue`, where FSEvents calls back.
-    internal nonisolated var unownedExecutor: UnownedSerialExecutor {
+    nonisolated internal var unownedExecutor: UnownedSerialExecutor {
       queue.asUnownedSerialExecutor()
     }
 
@@ -88,14 +89,11 @@
       self.stream = stream
     }
 
-    /// Creates a stream for the callback's paths.
-    ///
-    /// The stream releases `callback` when it's released.
-    private static func makeStream(
-      _ callback: Unmanaged<Callback>,
-      latency: TimeInterval
-    ) -> FSEventStreamRef? {
-      var context = FSEventStreamContext(
+    /// A context whose `info` is `callback`, released with the stream.
+    private static func makeContext(
+      _ callback: Unmanaged<Callback>
+    ) -> FSEventStreamContext {
+      FSEventStreamContext(
         version: 0,
         info: callback.toOpaque(),
         retain: nil,
@@ -107,6 +105,16 @@
         },
         copyDescription: nil
       )
+    }
+
+    /// Creates a stream for the callback's paths.
+    ///
+    /// The stream releases `callback` when it's released.
+    private static func makeStream(
+      _ callback: Unmanaged<Callback>,
+      latency: TimeInterval
+    ) -> FSEventStreamRef? {
+      var context = makeContext(callback)
       let handler: FSEventStreamCallback = { _, info, _, eventPaths, _, _ in
         guard let info else {
           return
@@ -133,7 +141,7 @@
     }
 
     /// Stops watching. Safe to call more than once.
-    internal nonisolated func cancel() {
+    nonisolated internal func cancel() {
       queue.async { [self] in
         assumeIsolated { $0.stop() }
       }

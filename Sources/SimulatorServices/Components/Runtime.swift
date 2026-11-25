@@ -79,6 +79,8 @@ public struct Runtime: Decodable, Hashable, Sendable {
   /// The name of the runtime.
   public let name: String
 
+  // Public API: reordering the parameters would break callers.
+  // swiftlint:disable function_default_parameter_at_end
   /// Creates a runtime as `simctl list -j` reports it, for example to build
   /// a ``SimulatorList`` in a preview or test without running `simctl`.
   ///
@@ -119,4 +121,5 @@ public struct Runtime: Decodable, Hashable, Sendable {
     self.availabilityError = availabilityError
     self.name = name
   }
+  // swiftlint:enable function_default_parameter_at_end
 }

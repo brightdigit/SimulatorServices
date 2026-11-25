@@ -26,6 +26,7 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
+
 #if os(macOS)
 
   import Foundation
@@ -57,7 +58,10 @@
       guard let infoPlist = try? Data(contentsOf: info) else {
         return nil
       }
-      let version = contents.appending(path: "version.plist", directoryHint: .notDirectory)
+      let version = contents.appending(
+        path: "version.plist",
+        directoryHint: .notDirectory
+      )
       return XcodeInstallation(
         bundleAt: url,
         infoPlist: infoPlist,

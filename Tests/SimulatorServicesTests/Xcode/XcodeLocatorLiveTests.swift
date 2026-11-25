@@ -52,7 +52,8 @@
       let installation = try #require(resolution.installation)
       #expect(snapshot.installed.contains(installation))
       let developer = try #require(resolution.developerDirectory)
-      #expect(FileManager.default.fileExists(atPath: developer.path(percentEncoded: false)))
+      let developerPath = developer.path(percentEncoded: false)
+      #expect(FileManager.default.fileExists(atPath: developerPath))
     }
   }
 #endif

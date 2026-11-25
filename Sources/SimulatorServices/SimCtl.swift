@@ -55,6 +55,8 @@ public struct SimCtl: Sendable {
   internal let baseEnvironment: [String: String]
   internal let runner: any CommandRunning
 
+  // `runner` stays last to match existing call sites.
+  // swiftlint:disable function_default_parameter_at_end
   internal init(
     xcRunURL: URL,
     simCtlURL: URL? = nil,
@@ -68,6 +70,7 @@ public struct SimCtl: Sendable {
     self.baseEnvironment = environment
     self.runner = runner
   }
+  // swiftlint:enable function_default_parameter_at_end
 
   #if os(macOS)
     /// Create an interface to `simctl`
@@ -114,43 +117,6 @@ public struct SimCtl: Sendable {
     }
   #endif
 
-  /// Why ``runToCompletion(_:)`` returned no output.
-  internal enum RunFailure: Error, Sendable {
-    /// The calling task was cancelled.
-    case cancelled
-    /// The command failed, couldn't start, or its output was unreadable.
-    case process(ProcessError)
-  }
-
-  /// The command for `arguments`, with `DEVELOPER_DIR` set when
-  /// ``developerDirectory`` is.
-  internal func makeCommand(executableURL: URL, arguments: [String]) -> Command {
-    var environment: [String: String]?
-    if let developerDirectory {
-      environment = baseEnvironment
-      environment?[Self.developerDirectoryKey] = developerDirectory.path
-    }
-    return Command(executableURL: executableURL, arguments: arguments, environment: environment)
-  }
-
-  /// Runs `command` and returns its standard output if it exited with
-  /// status 0.
-  internal func runToCompletion(_ command: Command) async -> Result<Data?, RunFailure> {
-    let output: CommandOutput
-    do {
-      output = try await runner.run(command)
-    } catch .cancelled {
-      return .failure(.cancelled)
-    } catch {
-      return .failure(.process(ProcessError(error)))
-    }
-    do {
-      return .success(try output.standardOutputIfSucceeded())
-    } catch {
-      return .failure(.process(error))
-    }
-  }
-
   /// Run a subcommand under `simctl`.
   /// - Parameter subcommand: subcommand to run.
   /// - Returns: Result of the subcommand.
@@ -168,8 +134,10 @@ public struct SimCtl: Sendable {
     switch await runToCompletion(command) {
     case .success(let output):
       data = output
+
     case .failure(.cancelled):
       throw .cancelled(arguments: subcommand.arguments)
+
     case .failure(.process(let error)):
       try subcommand.recover(error)
       data = nil

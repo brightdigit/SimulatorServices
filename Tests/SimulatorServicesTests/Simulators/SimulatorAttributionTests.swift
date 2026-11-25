@@ -43,20 +43,22 @@ internal struct SimulatorAttributionTests {
     let runtimeIdentifier: RuntimeID
   }
 
-  private static func identifier(_ suffix: String) -> RuntimeID {
-    // Fixed suffixes that always parse.
-    // swiftlint:disable:next force_try
-    try! RuntimeID(suffix: suffix)
-  }
-
-  private static let final = Runtime(id: "final", runtimeIdentifier: identifier("iOS-27-0"))
-  private static let beta = Runtime(id: "beta", runtimeIdentifier: identifier("iOS-27-0"))
+  private static let final = Runtime(
+    id: "final", runtimeIdentifier: identifier("iOS-27-0")
+  )
+  private static let beta = Runtime(
+    id: "beta", runtimeIdentifier: identifier("iOS-27-0")
+  )
   private static let watch = Runtime(
     id: "watch", runtimeIdentifier: identifier("watchOS-12-0")
   )
 
-  private static let phone = Simulator(name: "iPhone 17", runtimeIdentifier: identifier("iOS-27-0"))
-  private static let pad = Simulator(name: "iPad Pro", runtimeIdentifier: identifier("iOS-27-0"))
+  private static let phone = Simulator(
+    name: "iPhone 17", runtimeIdentifier: identifier("iOS-27-0")
+  )
+  private static let pad = Simulator(
+    name: "iPad Pro", runtimeIdentifier: identifier("iOS-27-0")
+  )
   private static let watchSimulator = Simulator(
     name: "Apple Watch", runtimeIdentifier: identifier("watchOS-12-0")
   )
@@ -68,6 +70,12 @@ internal struct SimulatorAttributionTests {
     runtimes: [final, beta, watch],
     simulators: [phone, pad, watchSimulator, orphan]
   )
+
+  private static func identifier(_ suffix: String) -> RuntimeID {
+    // Fixed suffixes that always parse.
+    // swiftlint:disable:next force_try
+    try! RuntimeID(suffix: suffix)
+  }
 
   @Test("A beta and its final both list the simulators with their identifier")
   internal func aBetaAndItsFinalBothListTheirSimulators() {

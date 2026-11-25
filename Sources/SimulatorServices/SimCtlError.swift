@@ -73,6 +73,7 @@ public enum SimCtlError: Error, Sendable, LocalizedError {
   public var arguments: [String] {
     switch self {
     case .failed(let failure): failure.arguments
+
     case .launchFailed(let arguments, _), .unreadableOutput(let arguments, _),
       .cancelled(let arguments):
       arguments
@@ -119,6 +120,7 @@ public enum SimCtlError: Error, Sendable, LocalizedError {
 
     case .unreadableOutput(_, let error?):
       "Couldn't read simctl's output: \(error)"
+
     case .cancelled:
       "The simctl call was cancelled."
     }
@@ -160,6 +162,7 @@ extension SimCtlError: Equatable {
 
     case let (.cancelled(leftArguments), .cancelled(rightArguments)):
       leftArguments == rightArguments
+
     default:
       false
     }

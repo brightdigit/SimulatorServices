@@ -36,8 +36,8 @@
   @Suite("XcodeLocator scanning")
   internal struct XcodeLocatorTests {
     private let temp: TemporaryDirectory
-    private let applications: URL
-    private let userApplications: URL
+    internal let applications: URL
+    internal let userApplications: URL
 
     internal init() throws {
       temp = try TemporaryDirectory()
@@ -108,7 +108,9 @@
       ])
       let snapshot = await locator(runner, usesSpotlight: true).snapshot()
       #expect(snapshot.installed.map(\.version) == ["27.1", "26.4"])
-      let query = runner.invocations.filter { $0.executable.lastPathComponent == "mdfind" }
+      let query = runner.invocations.filter {
+        $0.executable.lastPathComponent == "mdfind"
+      }
       #expect(
         query.map(\.arguments) == [["kMDItemCFBundleIdentifier == 'com.apple.dt.Xcode'"]]
       )
@@ -138,7 +140,9 @@
 
     @Test("A symlinked Xcode is listed once")
     internal func symlinkDedupe() async throws {
-      let real = try temp.bundle(in: applications, name: "Xcode_27.1.app", version: "27.1")
+      let real = try temp.bundle(
+        in: applications, name: "Xcode_27.1.app", version: "27.1"
+      )
       let link = applications.appending(path: "Xcode.app", directoryHint: .isDirectory)
       try FileManager.default.createSymbolicLink(at: link, withDestinationURL: real)
       let snapshot = await locator(RecordingToolRunner()).snapshot()
@@ -156,30 +160,14 @@
         "xcode-select": XcodeToolOutput.text(developer.path(percentEncoded: false) + "\n")
       ])
       let locator = locator(runner)
-      #expect(await locator.resolution(pinnedXcode: pinned).installation?.version == "27.2")
+      let before = await locator.resolution(pinnedXcode: pinned)
+      #expect(before.installation?.version == "27.2")
 
       try FileManager.default.removeItem(at: pinned)
       let resolution = await locator.resolution(pinnedXcode: pinned)
       #expect(resolution.installation?.version == "27.1")
       #expect(
         resolution == .ready(try #require(resolution.installation), source: .xcodeSelect)
-      )
-    }
-  }
-
-  extension XcodeLocatorTests {
-    private func locator(
-      _ runner: RecordingToolRunner,
-      usesSpotlight: Bool = false
-    ) -> XcodeLocator {
-      XcodeLocator(
-        configuration: .init(
-          applicationDirectories: [applications, userApplications],
-          usesSpotlight: usesSpotlight,
-          baseEnvironment: ["PATH": "/usr/bin", "DEVELOPER_DIR": "/inherited"]
-        ),
-        runner: runner,
-        watcher: ManualPathWatcher()
       )
     }
   }

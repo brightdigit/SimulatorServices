@@ -44,6 +44,8 @@ extension XcodeResolution {
   ///   - pinnedXcode: The pinned Xcode, as the app or its
   ///     developer directory, or `nil` for Automatic.
   ///   - canonicalURL: Resolves symlinks before paths are compared.
+  /// - Returns: The Xcode to use and why, or
+  ///   ``xcodeRequired(selectedDeveloperDirectory:)`` if none is installed.
   public static func resolve(
     _ snapshot: XcodeSnapshot,
     pinnedXcode: URL?,
