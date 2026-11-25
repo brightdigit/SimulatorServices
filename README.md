@@ -14,14 +14,6 @@ Control the simulator... in Swift
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FSimulatorServices%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/brightdigit/SimulatorServices)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbrightdigit%2FSimulatorServices%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/brightdigit/SimulatorServices)
 
-
-[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/brightdigit/SimulatorServices)](https://www.codefactor.io/repository/github/brightdigit/SimulatorServices)
-[![codebeat badge](https://codebeat.co/badges/9b0cb8e0-7ad2-4dcc-a418-18fde060c601)](https://codebeat.co/projects/github-com-brightdigit-sublimation-main)
-[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/brightdigit/SimulatorServices)](https://codeclimate.com/github/brightdigit/SimulatorServices)
-[![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/brightdigit/SimulatorServices?label=debt)](https://codeclimate.com/github/brightdigit/SimulatorServices)
-[![Code Climate issues](https://img.shields.io/codeclimate/issues/brightdigit/SimulatorServices)](https://codeclimate.com/github/brightdigit/SimulatorServices)
-[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
-
 # Table of Contents
 
 * [Introduction](#introduction)
