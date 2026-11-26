@@ -1,0 +1,32 @@
+{
+  "devices": {},
+  "devicetypes": [],
+  "pairs": {},
+  "runtimes": [
+    {
+      "buildversion": "24B91016s",
+      "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.2.91016.19.ssXR8v/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.2.simruntime",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-2-iPhone19-4",
+      "isAvailable": true,
+      "isInternal": false,
+      "lastUsage": {
+        "arm64": "0001-01-01T00:00:00Z"
+      },
+      "name": "iOS 27.2",
+      "platform": "iOS",
+      "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.2.91016.19.ssXR8v/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.2.simruntime/Contents/Resources/RuntimeRoot",
+      "supportedArchitectures": [
+        "arm64"
+      ],
+      "supportedDeviceTypes": [
+        {
+          "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Duo.simdevicetype",
+          "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Duo",
+          "name": "iPhone Duo",
+          "productFamily": "iPhone"
+        }
+      ],
+      "version": "27.2"
+    }
+  ]
+}

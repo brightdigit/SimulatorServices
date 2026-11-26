@@ -37,7 +37,7 @@ internal class ListTests: XCTestCase {
     XCTAssertEqual(listCommand.arguments, ["list", "-j"])
   }
 
-  internal func testParse() throws {
+  internal func testParse() async throws {
     let actualList: SimulatorList = .random()
     let expectation = expectation(description: "decoder called")
     let expectedData: Data = .random()
@@ -48,10 +48,8 @@ internal class ListTests: XCTestCase {
     }
     let listCommand = List(decoder: decoder)
     let expectedList = try listCommand.parse(expectedData)
-    waitForExpectations(timeout: 1.0) { error in
-      XCTAssertNil(error)
-      XCTAssertEqual(expectedList, actualList)
-    }
+    await fulfillment(of: [expectation], timeout: 1.0)
+    XCTAssertEqual(expectedList, actualList)
   }
 }
 

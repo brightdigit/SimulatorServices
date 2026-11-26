@@ -31,7 +31,8 @@
 /// - Note: This enum conforms to several protocols for functionality.
 /// - SeeAlso: ``RawAvailableOptions`` for the available raw options.
 /// - SeeAlso: ``unknownValue()`` for retrieving the unknown value.
-/// - Important: The ``unknown`` case allows for custom product family names.
+/// - Important: The ``ProductFamily/unknown(_:)`` case allows for custom
+/// product family names.
 public enum ProductFamily {
   // swiftlint:disable missing_docs
   case iPhone
@@ -43,7 +44,7 @@ public enum ProductFamily {
   // swiftlint:enable missing_docs
 
   /// Available raw options for the product family.
-  public enum RawAvailableOptions: String, CaseIterable {
+  public enum RawAvailableOptions: String, CaseIterable, Sendable {
     case iPhone
     case iPad
     case appleTV = "Apple TV"
@@ -51,16 +52,14 @@ public enum ProductFamily {
     case appleVision = "Apple Vision"
   }
 
-  /// Initialize with a raw option.
-  public init(rawOption: RawAvailableOptions) {
-    switch rawOption {
-    case .iPhone: self = .iPhone
-    case .iPad: self = .iPad
-    case .appleTV: self = .appleTV
-    case .appleWatch: self = .appleWatch
-    case .appleVision: self = .appleVision
-    }
-  }
+  /// Each raw option and the case it stands for.
+  public static let rawOptions: BidirectionalMap<RawAvailableOptions, Self> = [
+    .iPhone: .iPhone,
+    .iPad: .iPad,
+    .appleTV: .appleTV,
+    .appleWatch: .appleWatch,
+    .appleVision: .appleVision,
+  ]
 
   /// Retrieve the unknown value if it exists.
   public func unknownValue() -> String? {
@@ -72,8 +71,10 @@ public enum ProductFamily {
 }
 
 extension ProductFamily: RawDefined {}
-extension ProductFamily: Equatable {}
+extension ProductFamily: Hashable {}
 extension ProductFamily: Decodable {}
 extension ProductFamily: Sendable {}
 extension ProductFamily: CaseIterable {}
 extension ProductFamily: RandomEnum {}
+
+extension ProductFamily: RawMapped {}

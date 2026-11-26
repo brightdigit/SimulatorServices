@@ -28,9 +28,9 @@
 //
 
 /// A structure representing a runtime.
-public struct Runtime: Decodable, Equatable, Sendable {
+public struct Runtime: Decodable, Hashable, Sendable {
   /// A structure representing a supported device type for the runtime.
-  public struct SupportedDeviceType: Decodable, Equatable, Sendable {
+  public struct SupportedDeviceType: Decodable, Hashable, Sendable {
     /// The bundle path of the device type.
     public let bundlePath: Path  // URL?
 
@@ -71,6 +71,55 @@ public struct Runtime: Decodable, Equatable, Sendable {
   /// A boolean indicating whether the runtime is available.
   public let isAvailable: Bool
 
+  /// Why the runtime isn't available, when ``isAvailable`` is `false`,
+  /// such as `The iOS 16.0 simulator runtime is not supported on hosts
+  /// after macOS 26.99.99.`
+  public let availabilityError: String?
+
   /// The name of the runtime.
   public let name: String
+
+  // Public API: reordering the parameters would break callers.
+  // swiftlint:disable function_default_parameter_at_end
+  /// Creates a runtime as `simctl list -j` reports it, for example to build
+  /// a ``SimulatorList`` in a preview or test without running `simctl`.
+  ///
+  /// - Parameters:
+  ///   - supportedDeviceTypes: The device types the runtime supports.
+  ///   - bundlePath: The `.simruntime` bundle's path.
+  ///   - buildversion: The build, such as `24A434`.
+  ///   - platform: The platform.
+  ///   - runtimeRoot: The runtime root's path.
+  ///   - identifier: The runtime identifier.
+  ///   - version: The version.
+  ///   - isInternal: Whether it's an Apple-internal runtime.
+  ///   - isAvailable: Whether this Mac can use it.
+  ///   - availabilityError: Why it isn't available, if it isn't.
+  ///   - name: The name, such as `iOS 27.0`.
+  public init(
+    supportedDeviceTypes: [SupportedDeviceType] = [],
+    bundlePath: Path,
+    buildversion: String,
+    platform: Platform,
+    runtimeRoot: Path,
+    identifier: RuntimeID,
+    version: Version,
+    isInternal: Bool = false,
+    isAvailable: Bool = true,
+    availabilityError: String? = nil,
+    name: String
+  ) {
+    self.supportedDeviceTypes = supportedDeviceTypes
+    self.bundlePath = bundlePath
+    self.buildversion = buildversion
+    self.platform = platform
+    self.runtimeRoot = runtimeRoot
+    self.identifier = identifier
+    self.version = version
+    self.isInternal = isInternal
+    self.isAvailable = isAvailable
+    self.availabilityError = availabilityError
+    self.name = name
+  }
+  // swiftlint:enable function_default_parameter_at_end
 }

@@ -30,9 +30,9 @@
 import Foundation
 
 /// A structure representing a pair of devices.
-public struct DevicePair: Decodable, Equatable, Sendable {
+public struct DevicePair: Decodable, Hashable, Sendable {
   /// A structure representing an individual device.
-  public struct Device: Decodable, Equatable, Sendable {
+  public struct Device: Decodable, Hashable, Sendable {
     /// The name of the device.
     public let name: String
 

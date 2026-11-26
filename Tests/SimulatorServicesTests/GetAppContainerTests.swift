@@ -102,7 +102,10 @@ internal class GetAppContainerTests: XCTestCase {
     )
 
     XCTAssertThrowsError(try appContainer.parse(nil)) { error in
-      XCTAssertEqual(error as? GetAppContainer.Error, GetAppContainer.Error.missingData)
+      XCTAssertEqual(
+        error as? SimCtlError,
+        .unreadableOutput(arguments: appContainer.arguments, nil)
+      )
     }
   }
 
@@ -118,8 +121,8 @@ internal class GetAppContainerTests: XCTestCase {
 
     XCTAssertThrowsError(try appContainer.parse(Self.utf32String)) { error in
       XCTAssertEqual(
-        error as? GetAppContainer.Error,
-        GetAppContainer.Error.invalidData(Self.utf32String)
+        error as? SimCtlError,
+        .unreadableOutput(arguments: appContainer.arguments, nil)
       )
     }
   }
@@ -134,17 +137,7 @@ internal class GetAppContainerTests: XCTestCase {
       simulator: simulator
     )
 
-    let error: ProcessError?
-    if #available(iOS 13.4, *) {
-      error = try ProcessError(withMessage: "No such file or directory")
-    } else {
-      error = UncaughtSignal(
-        reason: 2,
-        status: 2,
-        data: Data("No such file or directory".utf8),
-        output: nil
-      ).map(ProcessError.uncaughtSignal)
-    }
+    let error = try ProcessError(withMessage: "No such file or directory")
 
     guard let error else {
       XCTAssertNotNil(error)

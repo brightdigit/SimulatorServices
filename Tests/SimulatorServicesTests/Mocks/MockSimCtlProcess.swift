@@ -31,22 +31,51 @@ import Foundation
 
 @testable import SimulatorServices
 
-internal class MockSimCtlProcess: InternalSimCtlProcess {
-  private let result: Result<Data?, Error>
-  internal var executableURL: URL?
-  internal var arguments: [String]?
+/// Replays one result for every command, and records the last command run.
+///
+/// Guarded by an `NSLock` rather than `Mutex`, which needs iOS 18 / watchOS 11
+/// and newer than the package's minimums.
+internal final class MockSimCtlProcess: CommandRunning, @unchecked Sendable {
+  private let result: Result<Data?, ProcessError>
+  private let lock = NSLock()
+  private var storedLastCommand: Command?
 
-  internal init(
-    result: Result<Data?, Error>,
-    executableURL: URL? = nil,
-    arguments: [String]? = nil
-  ) {
-    self.result = result
-    self.executableURL = executableURL
-    self.arguments = arguments
+  private var lastCommand: Command? {
+    lock.withLock { storedLastCommand }
   }
 
-  internal func run(timeout _: DispatchTime) async throws -> Data? {
-    try result.get()
+  /// The executable of the last command run.
+  internal var executableURL: URL? { lastCommand?.executableURL }
+  /// The arguments of the last command run.
+  internal var arguments: [String]? { lastCommand?.arguments }
+  /// The environment of the last command run, `nil` when it inherits.
+  internal var environment: [String: String]? { lastCommand?.environment }
+
+  /// - Parameter result: Standard output for a command that exits with
+  ///   status 0, or how it fails.
+  internal init(result: Result<Data?, ProcessError>) {
+    self.result = result
+  }
+
+  internal func run(_ command: Command) async throws(CommandError) -> CommandOutput {
+    lock.withLock { storedLastCommand = command }
+    switch result {
+    case .success(let output):
+      return CommandOutput(standardOutput: output ?? Data())
+
+    case .failure(.uncaughtSignal(let signal)):
+      return CommandOutput(
+        standardOutput: signal.output ?? Data(),
+        standardError: signal.data ?? Data(),
+        termination: signal.reason == 1
+          ? .exited(Int32(signal.status)) : .signaled(Int32(signal.status))
+      )
+
+    case .failure(.launchFailed(let description)):
+      throw .launchFailed(description)
+
+    case .failure(.unreadableOutput(let description)):
+      throw .unreadableOutput(description)
+    }
   }
 }

@@ -37,7 +37,7 @@ Use version up to `1.1.0`.
 
 ### Usage
 
-**SimulatorServices** uses the ``SimCtl`` object to pass subcommands. Each subcommand objects takes custom arguments or property and can parse the standard output into an easy to use Swift object. There are currently two supported subcommands: ``GetAppContainers`` and ``List``.
+**SimulatorServices** uses the ``SimCtl`` object to pass subcommands. Each subcommand objects takes custom arguments or property and can parse the standard output into an easy to use Swift object. There are currently two supported subcommands: ``GetAppContainer`` and ``List``.
 
 ### Listing Simulators
 
@@ -130,6 +130,16 @@ This code is distributed under the MIT license. See the [LICENSE](https://github
 - ``List``
 - ``GetAppContainer``
 
+### Deleting Runtimes and Changing Devices
+
+- ``RuntimeDelete``
+- ``DeviceDelete``
+- ``DeleteUnavailable``
+- ``Boot``
+- ``Shutdown``
+- ``Erase``
+- ``SimCtlError``
+
 ### Command Arguments
 
 - ``ContainerID``
@@ -152,6 +162,26 @@ This code is distributed under the MIT license. See the [LICENSE](https://github
 - ``DeviceTypeID``
 - ``RuntimeID``
 - ``Path``
+
+### Reading Runtimes Together
+
+- ``SimctlSnapshot``
+- ``DirectorySizeMeasurer``
+
+### Versions and Builds
+
+- ``VersionNumber``
+- ``MajorMinorVersion``
+- ``BuildNumber``
+- ``VersionedBuild``
+
+### Finding Xcode
+
+- ``XcodeLocating``
+- ``XcodeSnapshot``
+- ``XcodeInstallation``
+- ``XcodeToolOutput``
+- ``XcodeDiscoveryError``
 
 
 ### Creating your own subcommands

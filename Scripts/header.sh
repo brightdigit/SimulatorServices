@@ -7,7 +7,8 @@ usage() {
   echo "  -c creator    Name of the creator"
   echo "  -o company    Name of the company with the copyright"
   echo "  -p package    Package or library name"
-  echo "  -y year       Copyright year (optional, defaults to current year)"
+  echo "  -y year       Copyright year for new headers (optional, defaults to"
+  echo "                the current year; an existing header keeps its year)"
   exit 1
 }
 
@@ -34,8 +35,9 @@ if [ -z "$directory" ] || [ -z "$creator" ] || [ -z "$company" ] || [ -z "$packa
   usage
 fi
 
-# Define the header template
-header_template="//
+# Define the header template using a heredoc
+read -r -d '' header_template <<'EOF'
+//
 //  %s
 //  %s
 //
@@ -62,20 +64,37 @@ header_template="//
 //  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
-//"
+//
+EOF
 
 # Loop through each Swift file in the specified directory and subdirectories
 find "$directory" -type f -name "*.swift" | while read -r file; do
-  # Check if the first line is the swift-format-ignore indicator
-  first_line=$(head -n 1 "$file")
-  if [[ "$first_line" == "// swift-format-ignore-file" ]]; then
+  # Skip files carrying `// swift-format-ignore-file` anywhere in the leading
+  # comment block. This is the opt-out used by generated files (e.g.
+  # swift-openapi-generator emits it via `additionalFileComments`) and lets
+  # them sit anywhere in the tree without needing a path-based exclusion.
+  if awk '
+    /^\/\/[[:space:]]*swift-format-ignore-file[[:space:]]*$/ { found = 1; exit }
+    /^[[:space:]]*$/ || /^\/\// { next }
+    { exit }
+    END { exit !found }
+  ' "$file"; then
     echo "Skipping $file due to swift-format-ignore directive."
     continue
   fi
 
   # Create the header with the current filename
-  filename=$(basename "$file")
-  header=$(printf "$header_template" "$filename" "$package" "$creator" "$year" "$company")
+  # Escape % characters in user-provided values to prevent format specifier injection
+  filename=$(basename "$file" | sed 's/%/%%/g')
+  package_safe=$(printf '%s' "$package" | sed 's/%/%%/g')
+  creator_safe=$(printf '%s' "$creator" | sed 's/%/%%/g')
+  # Keep the year of an existing header so re-running the script doesn't churn
+  # every file each January.
+  file_year=$(sed -n 's|^//  Copyright © \([0-9]\{4\}\) .*|\1|p' "$file" | head -n 1)
+  year_safe=$(printf '%s' "${file_year:-$year}" | sed 's/%/%%/g')
+  company_safe=$(printf '%s' "$company" | sed 's/%/%%/g')
+
+  header=$(printf "$header_template" "$filename" "$package_safe" "$creator_safe" "$year_safe" "$company_safe")
 
   # Remove all consecutive lines at the beginning which start with "// ", contain only whitespace, or only "//"
   awk '
@@ -90,7 +109,7 @@ find "$directory" -type f -name "*.swift" | while read -r file; do
 
   # Add the header to the cleaned file
   (echo "$header"; echo; cat temp_file) > "$file"
-  
+
   # Remove the temporary file
   rm temp_file
 done

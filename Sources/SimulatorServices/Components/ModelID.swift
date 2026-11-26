@@ -28,7 +28,7 @@
 //
 
 /// A structure representing a model ID.
-public struct ModelID: Decodable, Equatable, Sendable, CustomStringConvertible {
+public struct ModelID: Decodable, Hashable, Sendable, CustomStringConvertible {
   /// An enumeration representing the name of the model.
   public enum Name: String, Sendable, CaseIterable {
     /// The iPod model.

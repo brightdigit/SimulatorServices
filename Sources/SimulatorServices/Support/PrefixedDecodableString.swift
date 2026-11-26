@@ -42,7 +42,7 @@ public protocol PrefixedDecodableString: Decodable, LosslessStringConvertible {
   var suffix: String { get }
 
   /// Initializes an instance of the conforming type with a provided suffix.
-  init(suffix: any StringProtocol) throws
+  init(suffix: any StringProtocol) throws(DecodingError)
 }
 
 extension PrefixedDecodableString {
@@ -73,7 +73,9 @@ extension PrefixedDecodableString {
   /// - Parameter value: The string from which to retrieve the suffix.
   /// - Returns: The suffix part of the string.
   /// - Throws: A `PrefixMismatchError` if the prefix does not match.
-  public static func suffix(forString value: String) throws -> any StringProtocol {
+  public static func suffix(
+    forString value: String
+  ) throws(PrefixMismatchError) -> any StringProtocol {
     guard value.starts(with: decodableStringPrefix) else {
       throw PrefixMismatchError(singleStringValue: value)
     }

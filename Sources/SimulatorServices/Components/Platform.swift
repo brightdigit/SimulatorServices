@@ -70,31 +70,25 @@ public enum Platform {
     case tvOS
     case watchOS
     case xrOS
-
-    /// Initializes a raw option based on a platform.
-    ///
-    /// - Parameter option: The platform option to initialize the raw option from.
-    public init?(option: Platform) {
-      switch option {
-      case .iOS: self = .iOS
-      case .tvOS: self = .tvOS
-      case .watchOS: self = .watchOS
-      case .xrOS: self = .xrOS
-      default: return nil
-      }
-    }
   }
 
-  /// Initializes the platform with a raw option.
+  /// Names to show for platforms whose raw value isn't the name people use.
   ///
-  /// - Parameter rawOption: The raw option to initialize the platform from.
-  public init(rawOption: RawAvailableOptions) {
-    switch rawOption {
-    case .iOS: self = .iOS
-    case .tvOS: self = .tvOS
-    case .watchOS: self = .watchOS
-    case .xrOS: self = .xrOS
-    }
+  /// `simctl` still calls visionOS `xrOS`.
+  public static let displayNames: [Platform: String] = [.xrOS: "visionOS"]
+
+  /// Each raw option and the case it stands for.
+  public static let rawOptions: BidirectionalMap<RawAvailableOptions, Self> = [
+    .iOS: .iOS,
+    .tvOS: .tvOS,
+    .watchOS: .watchOS,
+    .xrOS: .xrOS,
+  ]
+
+  /// The name to show for this platform: its entry in ``displayNames``,
+  /// otherwise its raw value, such as `iOS`.
+  public var displayName: String {
+    Self.displayNames[self] ?? underlyingValue
   }
 
   /// Retrieves the custom string for an unknown platform.
@@ -116,3 +110,10 @@ extension Platform: Sendable {}
 extension Platform: RandomEnum {}
 extension Platform: Hashable {}
 extension Platform: CustomStringConvertible {}
+
+extension Platform: RawMapped {}
+
+extension Platform.RawAvailableOptions {
+  /// The type these options stand for.
+  public typealias OptionType = Platform
+}

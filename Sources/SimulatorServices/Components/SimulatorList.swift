@@ -30,7 +30,8 @@
 import Foundation
 
 /// Result from a call to the ``List`` subcommand.
-public struct SimulatorList: Decodable, Equatable, Sendable {
+public struct SimulatorList: Decodable, Hashable, Sendable {
+  /// The top-level keys of `simctl list -j`.
   public enum CodingKeys: CodingKey {
     case devicetypes
     case runtimes
@@ -47,7 +48,16 @@ public struct SimulatorList: Decodable, Equatable, Sendable {
   /// DevicePairs and thier IDs
   public let pairs: [UUID: DevicePair]
 
-  internal init(
+  /// Creates a list from its parts, for example to build a
+  /// ``SimctlSnapshot`` in a preview or test without running `simctl`.
+  ///
+  /// - Parameters:
+  ///   - devicetypes: The device types.
+  ///   - runtimes: The runtimes `simctl` knows.
+  ///   - devices: The devices, keyed by the runtime identifier they're
+  ///     listed under, even one with no installed runtime.
+  ///   - pairs: The device pairs, keyed by pair UUID.
+  public init(
     devicetypes: [DeviceType],
     runtimes: [Runtime],
     devices: [RuntimeID: [Device]],
@@ -59,7 +69,9 @@ public struct SimulatorList: Decodable, Equatable, Sendable {
     self.pairs = pairs
   }
 
-  // swiftlint:disable:next function_body_length
+  // swiftlint:disable function_body_length
+  /// Decodes `simctl list -j`, keying devices by runtime identifier and
+  /// pairs by UUID.
   public init(from decoder: any Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let devicetypes = try container.decode([DeviceType].self, forKey: .devicetypes)
@@ -96,4 +108,5 @@ public struct SimulatorList: Decodable, Equatable, Sendable {
       pairs: pairs
     )
   }
+  // swiftlint:enable function_body_length
 }

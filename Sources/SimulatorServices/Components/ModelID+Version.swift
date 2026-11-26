@@ -29,7 +29,7 @@
 
 extension ModelID {
   /// A structure representing the version of the model.
-  public struct Version: Equatable, Sendable {
+  public struct Version: Hashable, Sendable {
     /// The major version number.
     public let major: Int
 

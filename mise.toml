@@ -1,0 +1,9 @@
+# Lint tools for SimulatorServices. Run `mise install` once; Scripts/lint.sh puts them
+# on PATH. Versions match the Swift 6.4 toolchain (swift-format 604).
+[settings]
+experimental = true
+
+[tools]
+"spm:swiftlang/swift-format" = "604.0.0"
+"aqua:realm/SwiftLint" = "0.65.1"
+"spm:peripheryapp/periphery" = "3.7.4"

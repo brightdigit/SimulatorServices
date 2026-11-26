@@ -38,14 +38,6 @@ public struct List: Subcommand {
   /// Structure for the list of  devices, device types, runtimes, and device pairs.
   public typealias OutputType = SimulatorList
 
-  /// Errors thrown
-  public enum Error: Swift.Error {
-    /// No standard output data.
-    case missingData
-    /// Unable to decode the JSON returned by `simctl`
-    case deocdingError(DecodingError)
-  }
-
   @available(macOS 13.0, *)
   private static let decoder: any InternalListDecoder = {
     let decoder = JSONDecoder()
@@ -67,17 +59,20 @@ public struct List: Subcommand {
   /// Parses the JSON returned from `simctl`.
   /// - Parameter data: Stanard output from the `simctl` call.
   /// - Returns: A ``SimulatorList`` object containing all the information.
-  /// - Throws: ``Error`` if the standard output data is nil
-  ///           or the JSON could not be decoded.
-  public func parse(_ data: Data?) throws -> SimulatorList {
-    guard let data else { throw Error.missingData }
+  /// - Throws: ``SimCtlError/unreadableOutput(arguments:_:)`` if `simctl`
+  ///   printed nothing or JSON that couldn't be decoded.
+  public func parse(_ data: Data?) throws(SimCtlError) -> SimulatorList {
+    guard let data else {
+      throw .unreadableOutput(arguments: arguments, nil)
+    }
 
     do {
       return try decoder.decode(SimulatorList.self, from: data)
     } catch let error as DecodingError {
-      throw Error.deocdingError(error)
+      throw .unreadableOutput(arguments: arguments, error)
     } catch {
-      throw error
+      // A component's own decoding error, such as an unexpected identifier.
+      throw .unreadableOutput(arguments: arguments, nil)
     }
   }
 }

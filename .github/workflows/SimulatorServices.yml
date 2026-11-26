@@ -1,170 +1,178 @@
 name: SimulatorServices
+# Pull requests only: a push to a PR branch already triggers `pull_request`,
+# so a `push` trigger would run every commit twice. Use "Run workflow" for a
+# branch without a PR (it gets the full matrix on main and semver branches).
 on:
-  push:
-    branches-ignore:
-      - '*WIP'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.agents/**'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PACKAGE_NAME: SimulatorServices
 
 jobs:
+  configure:
+    name: Configure Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      full-matrix: ${{ steps.check.outputs.full }}
+      ubuntu-os: ${{ steps.matrix.outputs.ubuntu-os }}
+    steps:
+      - id: check
+        name: Determine matrix scope
+        run: |
+          FULL=false
+          REF="${{ github.ref }}"
+          EVENT="${{ github.event_name }}"
+          BASE_REF="${{ github.base_ref }}"
+
+          # Full matrix for PRs into main or a semver branch (v1.0.0, 1.2.3-alpha.1, …)
+          if [[ "$EVENT" == "pull_request" ]]; then
+            if [[ "$BASE_REF" == "main" || "$BASE_REF" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              FULL=true
+            fi
+          # Full matrix for a manual run on main or a semver branch
+          elif [[ "$REF" == "refs/heads/main" || "$REF" =~ ^refs/heads/v?[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            FULL=true
+          fi
+
+          echo "full=$FULL" >> "$GITHUB_OUTPUT"
+          echo "Full matrix: $FULL (ref=$REF, event=$EVENT, base_ref=$BASE_REF)"
+
+      - id: matrix
+        name: Build matrix values
+        run: |
+          if [[ "${{ steps.check.outputs.full }}" == "true" ]]; then
+            echo 'ubuntu-os=["noble","jammy"]' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ubuntu-os=["noble"]' >> "$GITHUB_OUTPUT"
+          fi
+
+  # Linux builds the platform-neutral code; everything that shells out to
+  # xcrun/simctl or uses FSEvents is behind `#if os(macOS)`.
   build-ubuntu:
     name: Build on Ubuntu
+    needs: configure
     runs-on: ubuntu-latest
-    container: swift:${{ matrix.swift-version }}-${{ matrix.os }}
-    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
+    # Package.swift declares swift-tools-version: 6.4, so 6.4 is the only lane.
+    container: swift:6.4-${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: ["noble", "jammy", "focal"]
-        swift-version: ["6.0", "5.10", "5.9"]
-        exclude:
-          - os: "noble"
-            swift-version: "5.9"
+        os: ${{ fromJSON(needs.configure.outputs.ubuntu-os) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: brightdigit/swift-build@v1
-      - name: Process Coverage
-        uses: sersoft-gmbh/swift-coverage-action@v4
-        with:
-          fail-on-empty-output: true
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: spm,${{ matrix.os }},${{ matrix.swift-version }}
+        id: build
+
+  # Minimal macOS builds — always run (SPM + iOS).
+  # A swift-tools-version: 6.4 manifest needs Swift 6.4, so every Apple lane
+  # runs on the xcode-27 image (macos-26 tops out at Xcode 26.x). Device names
+  # must exist on that image's 27.2 runtimes, or the simulator boot fails.
   build-macos:
     name: Build on macOS
-    runs-on: ${{ matrix.os }}
-    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
+    runs-on: xcode-27
     strategy:
       fail-fast: false
       matrix:
         include:
-          # SPM Build Matrix
-          - os: macos-14
-            xcode: "/Applications/Xcode_15.0.1.app"
-          - os: macos-14
-            xcode: "/Applications/Xcode_15.1.app"
-          - os: macos-14
-            xcode: "/Applications/Xcode_15.2.app"
-          - os: macos-15
-            xcode: "/Applications/Xcode_16.1.app"
-          - os: macos-15
-            xcode: "/Applications/Xcode_16.2.app"
-          
-          # iOS Build Matrix
+          # SPM build
+          - xcode: "/Applications/Xcode_27.2.app"
+
+          # iOS build
           - type: ios
-            os: macos-14
-            xcode: "/Applications/Xcode_15.0.1.app"
-            deviceName: "iPhone 15"
-            osVersion: "17.0.1"
-          - type: ios
-            os: macos-14
-            xcode: "/Applications/Xcode_15.1.app"
-            deviceName: "iPhone 15 Pro"
-            osVersion: "17.2"
-          - type: ios
-            os: macos-14
-            xcode: "/Applications/Xcode_15.2.app"
-            deviceName: "iPhone 15 Pro Max"
-            osVersion: "17.2"
-          - type: ios
-            os: macos-15
-            xcode: "/Applications/Xcode_16.1.app"
-            deviceName: "iPhone 16"
-            osVersion: "18.1"
-          - type: ios
-            os: macos-15
-            xcode: "/Applications/Xcode_16.2.app"
-            deviceName: "iPhone 16 Pro"
-            osVersion: "18.2"
-  
-          # watchOS Build Matrix
-          - type: watchos
-            os: macos-14
-            xcode: "/Applications/Xcode_15.0.1.app"
-            deviceName: "Apple Watch Series 9 (41mm)"
-            osVersion: "10.0"
-          - type: watchos
-            os: macos-14
-            xcode: "/Applications/Xcode_15.1.app"
-            deviceName: "Apple Watch Series 9 (45mm)"
-            osVersion: "10.2"
-          - type: watchos
-            os: macos-14
-            xcode: "/Applications/Xcode_15.2.app"
-            deviceName: "Apple Watch Ultra 2 (49mm)"
-            osVersion: "10.2"
-          - type: watchos
-            os: macos-15
-            xcode: "/Applications/Xcode_16.1.app"
-            deviceName: "Apple Watch Ultra 2 (49mm)"
-            osVersion: "11.1"
-          - type: watchos
-            os: macos-15
-            xcode: "/Applications/Xcode_16.2.app"
-            deviceName: "Apple Watch Ultra 2 (49mm)"
-            osVersion: "11.2"
-    
-          # visionOS Build Matrix
-          - type: visionos
-            os: macos-15
-            xcode: "/Applications/Xcode_16.2.app"
-            deviceName: "Apple Vision Pro"
-            osVersion: "2.1"
-    
-          # tvOS Build Matrix
-          - type: tvos
-            os: macos-15
-            xcode: "/Applications/Xcode_16.2.app"
-            deviceName: "Apple TV 4K (3rd generation)"
-            osVersion: "18.2"
-    
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "iPhone 17"
+            osVersion: "27.2"
+            download-platform: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build and Test
+        id: build
         uses: brightdigit/swift-build@v1
         with:
           type: ${{ matrix.type }}
           xcode: ${{ matrix.xcode }}
           deviceName: ${{ matrix.deviceName }}
           osVersion: ${{ matrix.osVersion }}
+          download-platform: ${{ matrix.download-platform }}
 
-      - name: Process Coverage
-        uses: sersoft-gmbh/swift-coverage-action@v4
-        with:
-          fail-on-empty-output: true
+  # Full macOS platform builds — only for PRs into main or semver branches
+  build-macos-platforms:
+    name: Build on macOS (Platforms)
+    needs: configure
+    runs-on: xcode-27
+    if: ${{ needs.configure.outputs.full-matrix == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - type: macos
+            xcode: "/Applications/Xcode_27.2.app"
 
-      - name: Upload Coverage
-        uses: codecov/codecov-action@v4
+          - type: watchos
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "Apple Watch Ultra 4 (49mm)"
+            osVersion: "27.2"
+            download-platform: true
+
+          - type: tvos
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "Apple TV 4K (4th generation)"
+            osVersion: "27.2"
+            download-platform: true
+
+          - type: visionos
+            xcode: "/Applications/Xcode_27.2.app"
+            deviceName: "Apple Vision Pro"
+            osVersion: "27.2"
+            download-platform: true
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and Test
+        id: build
+        uses: brightdigit/swift-build@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ matrix.type && format('{0}{1}', matrix.type, matrix.osVersion) || 'spm' }}
+          type: ${{ matrix.type }}
+          xcode: ${{ matrix.xcode }}
+          deviceName: ${{ matrix.deviceName }}
+          osVersion: ${{ matrix.osVersion }}
+          download-platform: ${{ matrix.download-platform }}
+
+  # Builds the DocC catalog with --warnings-as-errors, so an unresolved symbol
+  # link fails the PR. Swift Package Index hosts the published docs (.spi.yml).
+  docs:
+    name: Documentation
+    runs-on: xcode-27
+    steps:
+      - uses: actions/checkout@v6
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_27.2.app/Contents/Developer
+      - name: Build DocC
+        run: ./Scripts/docc.sh
 
   lint:
     name: Linting
-    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}  
-    runs-on: ubuntu-latest
-    needs: [build-ubuntu, build-macos]
-    env:
-      MINT_PATH: .mint/lib
-      MINT_LINK_PATH: .mint/bin
+    # Pinned: SwiftLint's Linux binary links libxml2.so.2, which ubuntu-latest
+    # (Ubuntu 26) no longer ships.
+    runs-on: ubuntu-24.04
+    if: ${{ !cancelled() && !failure() }}
+    needs: [build-ubuntu, build-macos, build-macos-platforms]
     steps:
-      - uses: actions/checkout@v4    
-      - name: Cache mint
-        id: cache-mint
-        uses: actions/cache@v4  
-        env:
-          cache-name: cache
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
         with:
-          path: |
-            .mint
-            Mint         
-          key: ${{ runner.os }}-mint-${{ hashFiles('**/Mintfile') }}
-          restore-keys: |
-            ${{ runner.os }}-mint-  
-      - name: Install mint
-        if: steps.cache-mint.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/yonaskolb/Mint.git
-          cd Mint
-          swift run mint install yonaskolb/mint
+          cache: true
       - name: Lint
-        run: ./Scripts/lint.sh
+        run: |
+          set -e
+          ./Scripts/lint.sh

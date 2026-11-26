@@ -89,6 +89,9 @@ opt_in_rules:
   - yoda_condition
 disabled_rules:
   - trailing_comma
+  # swift-format 604 puts `{` on its own line after a multi-line signature.
+  - opening_brace
+  - optional_data_string_conversion
 
 cyclomatic_complexity:
   - 6

@@ -3,7 +3,7 @@
 //  SimulatorServices
 //
 //  Created by Leo Dion.
-//  Copyright © 2025 BrightDigit.
+//  Copyright © 2026 BrightDigit.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -29,21 +29,21 @@
 
 import Foundation
 
-/// An error that occurred while running a process.
-public enum ProcessError: Error, LocalizedError, Equatable {
-  /// Represents a timeout from running a process asynchronously.
-  case timeout(DispatchTime)
-
-  /// Represents a process that exited with an error exit code.
+/// Why running a process failed.
+public enum ProcessError: Error, Equatable, Sendable, LocalizedError {
+  /// The process couldn't be started.
+  case launchFailed(String)
+  /// The process exited with a non-zero status or was killed by a signal.
   case uncaughtSignal(UncaughtSignal)
+  /// The process's output couldn't be read.
+  case unreadableOutput(String)
 
   /// A description of the error.
   public var errorDescription: String? {
     switch self {
-    case let .timeout(timeout):
-      return "Process did not complete within the specified timeout: \(timeout)"
-
-    case let .uncaughtSignal(signal): return signal.description
+    case let .launchFailed(description): "The process couldn't be started: \(description)"
+    case let .uncaughtSignal(signal): signal.description
+    case let .unreadableOutput(description): "The output couldn't be read: \(description)"
     }
   }
 }

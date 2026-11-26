@@ -30,7 +30,7 @@
 import Foundation
 
 /// Represents a device used in simulation.
-public struct Device: Decodable, Equatable, Sendable {
+public struct Device: Decodable, Hashable, Sendable {
   /// The path to the data directory.
   public let dataPath: Path  // URL?
 
@@ -50,7 +50,18 @@ public struct Device: Decodable, Equatable, Sendable {
   public let logPathSize: Int?
 
   /// The timestamp when the device was last booted.
+  ///
+  /// Xcode 27.1's `simctl list -j` doesn't report it. Use ``lastUsedAt``.
   public let lastBootedAt: Date?
+
+  /// When the device was last used, as `simctl list -j` reports it
+  /// (`lastUsedAt`, ISO 8601).
+  ///
+  /// Devices that have never been booted don't have it.
+  public let lastUsedAt: Date?
+
+  /// Why the device isn't available, when ``isAvailable`` is `false`.
+  public let availabilityError: String?
 
   /// The identifier for the device type.
   public let deviceTypeIdentifier: DeviceTypeID  // Identifier (Device)
@@ -60,4 +71,33 @@ public struct Device: Decodable, Equatable, Sendable {
 
   /// The name of the device.
   public let name: String
+
+  /// Creates a device.
+  public init(
+    udid: UUID,
+    name: String,
+    state: DeviceState,
+    deviceTypeIdentifier: DeviceTypeID,
+    dataPath: Path,
+    logPath: Path,
+    isAvailable: Bool = true,
+    availabilityError: String? = nil,
+    dataPathSize: Int? = nil,
+    logPathSize: Int? = nil,
+    lastBootedAt: Date? = nil,
+    lastUsedAt: Date? = nil
+  ) {
+    self.udid = udid
+    self.name = name
+    self.state = state
+    self.deviceTypeIdentifier = deviceTypeIdentifier
+    self.isAvailable = isAvailable
+    self.availabilityError = availabilityError
+    self.dataPath = dataPath
+    self.dataPathSize = dataPathSize
+    self.logPath = logPath
+    self.logPathSize = logPathSize
+    self.lastBootedAt = lastBootedAt
+    self.lastUsedAt = lastUsedAt
+  }
 }

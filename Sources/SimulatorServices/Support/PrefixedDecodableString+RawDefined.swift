@@ -32,8 +32,7 @@ where Self: RawDefined, Self.RawAvailableOptions.RawValue == String {
   /// Initializes an instance with the provided suffix.
   ///
   /// - Parameter suffix: The suffix part of the string after removing the prefix.
-  /// - Throws: An error if initialization fails.
-  public init(suffix: any StringProtocol) throws { self.init(rawValue: .init(suffix)) }
+  public init(suffix: any StringProtocol) { self.init(rawValue: .init(suffix)) }
 
   /// Initializes an instance by decoding from the given decoder.
   ///

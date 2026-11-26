@@ -39,12 +39,15 @@ internal class SimCtlTests: XCTestCase {
     fileprivate let expectedUUID: UUID
     fileprivate let expectedData: Data
     fileprivate let simctl: SimCtl
+    fileprivate let expectations: [XCTestExpectation]
     private init(
       command: MockSubcommand<UUID>,
       expectedUUID: UUID,
       expectedData: Data,
-      simctl: SimCtl
+      simctl: SimCtl,
+      expectations: [XCTestExpectation]
     ) {
+      self.expectations = expectations
       self.command = command
       self.expectedUUID = expectedUUID
       self.expectedData = expectedData
@@ -69,14 +72,15 @@ internal class SimCtlTests: XCTestCase {
         )
       let simctl = SimCtl(
         xcRunURL: expectedXcRunURL,
-        processFactory: MockSimCtlProcess(result: .success(expectedData))
+        runner: MockSimCtlProcess(result: .success(expectedData))
       )
 
       self.init(
         command: command,
         expectedUUID: expectedUUID,
         expectedData: expectedData,
-        simctl: simctl
+        simctl: simctl,
+        expectations: [commandExpectation]
       )
     }
   }
@@ -87,20 +91,16 @@ internal class SimCtlTests: XCTestCase {
     )
     let simctl = SimCtl(
       xcRunURL: expectedXcRunURL,
-      processFactory: MockSimCtlProcess(result: .success(nil))
+      runner: MockSimCtlProcess(result: .success(nil))
     )
     XCTAssertEqual(expectedXcRunURL, simctl.xcRunURL)
   }
 
-  internal func testRunSubcommandParse() throws {
+  internal func testRunSubcommandParse() async throws {
     let details = SubcommandTest(from: self)
-    let runExpectation = expectation(description: "run")
-    Task {
-      let actualUUID = try await details.simctl.run(details.command)
-      XCTAssertEqual(actualUUID, details.expectedUUID)
-      runExpectation.fulfill()
-    }
-    waitForExpectations(timeout: 1.0) { error in XCTAssertNil(error) }
+    let actualUUID = try await details.simctl.run(details.command)
+    XCTAssertEqual(actualUUID, details.expectedUUID)
+    await fulfillment(of: details.expectations, timeout: 1.0)
   }
 }
 // swiftlint:enable strict_fileprivate

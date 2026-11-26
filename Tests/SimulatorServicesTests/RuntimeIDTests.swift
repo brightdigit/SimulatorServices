@@ -54,6 +54,31 @@ internal final class RuntimeIDTests: XCTestCase {
       XCTAssertEqual(runtime, actualWDesc)
     }
   }
+
+  // Recorded from `simctl runtime list -j` with Xcode 27.1 on 2026-10-29:
+  // an iOS 27.2 runtime for specific hardware.
+  internal func testHardwareVariant() throws {
+    let string = "com.apple.CoreSimulator.SimRuntime.iOS-27-2-iPhone19-4"
+    let runtime = try XCTUnwrap(RuntimeID(string))
+
+    XCTAssertEqual(runtime.platform, .iOS)
+    XCTAssertEqual(runtime.version.majorVersion, 27)
+    XCTAssertEqual(runtime.version.minorVersion, 2)
+    XCTAssertEqual(runtime.variant, "iPhone19-4")
+    XCTAssertEqual(runtime.description, string)
+    XCTAssertNotEqual(runtime, try RuntimeID(suffix: "iOS-27-2"))
+    XCTAssertNil(try RuntimeID(suffix: "iOS-27-2").variant)
+  }
+
+  internal func testDecodeHardwareVariant() throws {
+    let json = Data(#"["com.apple.CoreSimulator.SimRuntime.iOS-27-2-iPhone19-4"]"#.utf8)
+    let decoded = try JSONDecoder().decode([RuntimeID].self, from: json)
+    XCTAssertEqual(decoded.first?.variant, "iPhone19-4")
+  }
+
+  internal func testTooFewComponents() {
+    XCTAssertThrowsError(try RuntimeID(suffix: "iOS-27"))
+  }
 }
 
 extension Array {
